@@ -40,7 +40,15 @@ const normalizeArray = (items = [], type = "products") =>
           name: item.name || "",
           description: item.description || "",
           image: item.image || "",
-          available: Boolean(item.available)
+          available: Boolean(item.available),
+          options: Array.isArray(item.options)
+            ? item.options.map((option) => ({
+                id: option.id || slugify(option.label || "opcion"),
+                label: option.label || "",
+                type: option.type || "single",
+                choices: Array.isArray(option.choices) ? option.choices.filter(Boolean) : []
+              }))
+            : []
         };
 
         if (type === "team") {
@@ -56,7 +64,8 @@ const normalizeArray = (items = [], type = "products") =>
           ...base,
           price: item.price || "",
           category: item.category || "",
-          tags: Array.isArray(item.tags) ? item.tags.filter(Boolean) : []
+          tags: Array.isArray(item.tags) ? item.tags.filter(Boolean) : [],
+          details: Array.isArray(item.details) ? item.details.filter(Boolean) : []
         };
       })
     : [];
@@ -101,7 +110,12 @@ const fetchJson = async (url, options = {}) => {
 const loadCatalog = async () => {
   try {
     if (isHttp()) {
-      const catalog = normalizeCatalog(await fetchJson(`/api/catalog?ts=${Date.now()}`));
+      let catalog;
+      try {
+        catalog = normalizeCatalog(await fetchJson(`/api/catalog?ts=${Date.now()}`));
+      } catch {
+        catalog = normalizeCatalog(await fetchJson(`data/catalog.json?ts=${Date.now()}`));
+      }
       storeCatalog(catalog);
       return catalog;
     }
@@ -140,6 +154,8 @@ const getVisibleItems = (items = []) => items.filter((item) => item.available);
 
 const imgSrc = (item) => item.image || "assets/menu-fuego.jpeg";
 
+const hasOptions = (item) => Array.isArray(item.options) && item.options.some((option) => option.choices.length);
+
 const tagMarkup = (tags = []) =>
   tags.length
     ? `<div class="tag-row">${tags.map((tag) => `<span>${escapeHtml(tag)}</span>`).join("")}</div>`
@@ -158,7 +174,12 @@ const productCardMarkup = (item, extraClass = "") => `
       <h3>${escapeHtml(item.name)}</h3>
       <p>${escapeHtml(item.description)}</p>
       ${tagMarkup(item.tags)}
-      <button class="card-add" type="button" data-add-item data-item-id="${escapeHtml(item.id)}" data-item-name="${escapeHtml(item.name)}" data-item-price="${escapeHtml(item.price)}" data-item-category="${escapeHtml(item.category || "Especial")}">Agregar a mi selección <span aria-hidden="true">+</span></button>
+      ${
+        hasOptions(item)
+          ? `<p class="option-hint">Personaliza: ${escapeHtml(item.options.map((option) => option.label).join(" · "))}</p>`
+          : ""
+      }
+      <button class="card-add" type="button" data-add-item data-item-id="${escapeHtml(item.id)}" data-item-name="${escapeHtml(item.name)}" data-item-price="${escapeHtml(item.price)}" data-item-category="${escapeHtml(item.category || "Especial")}">${hasOptions(item) ? "Personalizar" : "Agregar a mi selección"} <span aria-hidden="true">+</span></button>
     </div>
   </article>
 `;
@@ -173,6 +194,9 @@ let menuIndex = 0;
 let menuItems = [];
 let menuTimer;
 let lastCatalogHash = "";
+let allOrderItems = [];
+let activeOrderCategory = "Todos";
+let modalItem = null;
 
 const renderMechanism = () => {
   const stack = $("[data-mechanism-stack]");
@@ -262,6 +286,26 @@ const saveSelection = (items) => {
 
 const selectionCount = (items) => items.reduce((total, item) => total + Number(item.qty || 1), 0);
 
+const optionSummary = (item) => {
+  const parts = [];
+  if (Array.isArray(item.options)) parts.push(...item.options.filter(Boolean));
+  if (item.notes) parts.push(`Nota: ${item.notes}`);
+  return parts.join(" / ");
+};
+
+const selectionKeyFor = (item) =>
+  [item.id, ...(item.options || []), item.notes || ""].join("|").toLowerCase();
+
+const addSelectionItem = (item) => {
+  const items = getSelection();
+  const key = selectionKeyFor(item);
+  const existing = items.find((entry) => selectionKeyFor(entry) === key);
+  if (existing) existing.qty += 1;
+  else items.push({ ...item, qty: 1 });
+  saveSelection(items);
+  renderSelection();
+};
+
 const renderSelection = () => {
   const items = getSelection();
   $$('[data-cart-count]').forEach((node) => {
@@ -277,8 +321,8 @@ const renderSelection = () => {
         .map(
           (item) => `
             <article class="cart-item">
-              <div><span>${escapeHtml(item.category || "Especial")}</span><h3>${escapeHtml(item.name)}</h3><small>${escapeHtml(item.price || "")}</small></div>
-              <div class="cart-item-actions"><b>x${item.qty}</b><button type="button" data-remove-selection="${escapeHtml(item.id)}" aria-label="Quitar ${escapeHtml(item.name)}">−</button></div>
+              <div><span>${escapeHtml(item.category || "Especial")}</span><h3>${escapeHtml(item.name)}</h3><small>${escapeHtml(item.price || "")}</small>${optionSummary(item) ? `<p>${escapeHtml(optionSummary(item))}</p>` : ""}</div>
+              <div class="cart-item-actions"><b>x${item.qty}</b><button type="button" data-remove-selection="${escapeHtml(selectionKeyFor(item))}" aria-label="Quitar ${escapeHtml(item.name)}">−</button></div>
             </article>
           `
         )
@@ -305,6 +349,54 @@ const closeCart = () => {
   document.body.classList.remove("cart-open");
 };
 
+const closeItemModal = () => {
+  const modal = $("[data-item-modal]");
+  const form = $("[data-item-modal-form]");
+  if (!modal) return;
+  modal.hidden = true;
+  modal.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("item-modal-open");
+  modalItem = null;
+  form?.reset();
+};
+
+const openItemModal = (item) => {
+  const modal = $("[data-item-modal]");
+  const form = $("[data-item-modal-form]");
+  if (!modal || !form) return;
+  const options = $("[data-item-modal-options]", modal);
+  if (!options) return;
+
+  modalItem = item;
+  $("[data-item-modal-category]", modal).textContent = item.category || "Menu";
+  $("[data-item-modal-title]", modal).textContent = item.name || "";
+  $("[data-item-modal-description]", modal).textContent = item.description || "";
+  $("[data-item-modal-price]", modal).textContent = item.price || "";
+  options.innerHTML = item.options
+    .map(
+      (option) => `
+        <fieldset class="custom-option">
+          <legend>${escapeHtml(option.label)}</legend>
+          ${option.choices
+            .map(
+              (choice, index) => `
+                <label>
+                  <input type="radio" name="${escapeHtml(option.id)}" value="${escapeHtml(choice)}" ${index === 0 ? "checked" : ""}>
+                  <span>${escapeHtml(choice)}</span>
+                </label>
+              `
+            )
+            .join("")}
+        </fieldset>
+      `
+    )
+    .join("");
+
+  modal.hidden = false;
+  modal.setAttribute("aria-hidden", "false");
+  document.body.classList.add("item-modal-open");
+};
+
 const initSelection = () => {
   renderSelection();
 
@@ -313,13 +405,20 @@ const initSelection = () => {
     const removeButton = event.target.closest("[data-remove-selection]");
 
     if (addButton) {
-      const items = getSelection();
       const id = addButton.dataset.itemId;
-      const existing = items.find((item) => item.id === id);
-      if (existing) existing.qty += 1;
-      else items.push({ id, name: addButton.dataset.itemName, price: addButton.dataset.itemPrice, category: addButton.dataset.itemCategory, qty: 1 });
-      saveSelection(items);
-      renderSelection();
+      const catalogItem = allOrderItems.find((item) => item.id === id);
+      if (catalogItem && hasOptions(catalogItem)) {
+        openItemModal(catalogItem);
+        return;
+      }
+      addSelectionItem({
+        id,
+        name: addButton.dataset.itemName,
+        price: addButton.dataset.itemPrice,
+        category: addButton.dataset.itemCategory,
+        options: [],
+        notes: ""
+      });
       addButton.classList.add("is-added");
       addButton.innerHTML = "Agregado · sumar otro <span aria-hidden=\"true\">+</span>";
       window.setTimeout(() => addButton.classList.remove("is-added"), 900);
@@ -327,7 +426,7 @@ const initSelection = () => {
 
     if (removeButton) {
       const items = getSelection().flatMap((item) => {
-        if (item.id !== removeButton.dataset.removeSelection) return [item];
+        if (selectionKeyFor(item) !== removeButton.dataset.removeSelection) return [item];
         if (item.qty > 1) return [{ ...item, qty: item.qty - 1 }];
         return [];
       });
@@ -338,6 +437,28 @@ const initSelection = () => {
 
   $$('[data-open-cart]').forEach((button) => button.addEventListener("click", openCart));
   $$('[data-close-cart]').forEach((button) => button.addEventListener("click", closeCart));
+  $$('[data-close-item-modal]').forEach((button) => button.addEventListener("click", closeItemModal));
+  $('[data-item-modal-form]')?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    if (!modalItem) return;
+    const data = new FormData(event.currentTarget);
+    const selectedOptions = modalItem.options
+      .map((option) => {
+        const value = data.get(option.id);
+        return value ? `${option.label}: ${value}` : "";
+      })
+      .filter(Boolean);
+    addSelectionItem({
+      id: modalItem.id,
+      name: modalItem.name,
+      price: modalItem.price,
+      category: modalItem.category,
+      options: selectedOptions,
+      notes: String(data.get("notes") || "").trim()
+    });
+    closeItemModal();
+    openCart();
+  });
   $('[data-clear-selection]')?.addEventListener("click", () => {
     saveSelection([]);
     renderSelection();
@@ -345,7 +466,7 @@ const initSelection = () => {
   $('[data-send-selection]')?.addEventListener("click", () => {
     const items = getSelection();
     const message = items.length
-      ? `Hola, quiero pedir:\n${items.map((item) => `• ${item.qty} x ${item.name} (${item.price})`).join("\n")}\n\n¿Me comparten disponibilidad y tiempo de entrega?`
+      ? `Hola, quiero pedir:\n${items.map((item) => `• ${item.qty} x ${item.name} (${item.price})${optionSummary(item) ? `\n  ${optionSummary(item)}` : ""}`).join("\n")}\n\n¿Me comparten disponibilidad y tiempo de entrega?`
       : "Hola, quiero conocer la disponibilidad del menú de hoy.";
     window.open(`https://wa.me/528181681933?text=${encodeURIComponent(message)}`, "_blank", "noopener");
   });
@@ -386,12 +507,35 @@ const initReservation = () => {
   });
 };
 
+const renderOrderGrid = () => {
+  const grid = $("[data-order-grid]");
+  if (!grid) return;
+  const visible = activeOrderCategory === "Todos"
+    ? allOrderItems
+    : allOrderItems.filter((item) => item.category === activeOrderCategory);
+  grid.innerHTML = visible.length
+    ? visible.map((item) => productCardMarkup(item, item.category?.includes("Bebidas") || item.category?.includes("Cocteleria") ? "drink-card" : "")).join("")
+    : emptyMarkup("No hay productos en esta categoria por ahora.");
+  revealOnScroll();
+};
+
+const initOrderFilters = () => {
+  $$("[data-order-filter]").forEach((button) => {
+    button.addEventListener("click", () => {
+      activeOrderCategory = button.dataset.orderFilter || "Todos";
+      $$("[data-order-filter]").forEach((item) => item.classList.toggle("is-active", item === button));
+      renderOrderGrid();
+    });
+  });
+};
+
 const renderPublicCatalog = (catalog) => {
   const products = getVisibleItems(catalog.products);
   const drinks = getVisibleItems(catalog.drinks);
   const team = getVisibleItems(catalog.team);
 
   menuItems = products;
+  allOrderItems = [...products, ...drinks];
   if (menuIndex >= menuItems.length) menuIndex = 0;
   renderMechanism();
 
@@ -408,6 +552,8 @@ const renderPublicCatalog = (catalog) => {
       ? drinks.map((item) => productCardMarkup(item, "drink-card")).join("")
       : emptyMarkup("No hay bebidas disponibles por ahora.");
   }
+
+  renderOrderGrid();
 
   const teamGrid = $("[data-team-grid]");
   if (teamGrid) {
@@ -552,6 +698,7 @@ const initPublic = async () => {
   initMenuBook();
   initSelection();
   initReservation();
+  initOrderFilters();
   await refreshPublicCatalog();
   menuTimer = window.setInterval(() => {
     if (!document.hidden) moveMechanism(1);

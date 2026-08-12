@@ -84,7 +84,20 @@ const normalizeItems = (items, type) => {
       name: String(item.name || "").trim(),
       description: String(item.description || "").trim(),
       image: String(item.image || "").trim(),
-      available: Boolean(item.available)
+      available: Boolean(item.available),
+      options: Array.isArray(item.options)
+        ? item.options.map((option) => ({
+            id: String(option.id || option.label || "opcion")
+              .toLowerCase()
+              .normalize("NFD")
+              .replace(/[\u0300-\u036f]/g, "")
+              .replace(/[^a-z0-9]+/g, "-")
+              .replace(/(^-|-$)/g, ""),
+            label: String(option.label || "").trim(),
+            type: String(option.type || "single").trim(),
+            choices: Array.isArray(option.choices) ? option.choices.map((choice) => String(choice).trim()).filter(Boolean) : []
+          }))
+        : []
     };
 
     if (type === "team") {
@@ -100,7 +113,8 @@ const normalizeItems = (items, type) => {
       ...base,
       price: String(item.price || "").trim(),
       category: String(item.category || "").trim(),
-      tags: Array.isArray(item.tags) ? item.tags.map((tag) => String(tag).trim()).filter(Boolean) : []
+      tags: Array.isArray(item.tags) ? item.tags.map((tag) => String(tag).trim()).filter(Boolean) : [],
+      details: Array.isArray(item.details) ? item.details.map((detail) => String(detail).trim()).filter(Boolean) : []
     };
   });
 };

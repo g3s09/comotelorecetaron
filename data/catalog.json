@@ -1,55 +1,45 @@
 {
   "version": 1,
-  "updatedAt": "2026-08-12T02:45:00.000Z",
+  "updatedAt": "2026-08-12T03:40:00.000Z",
   "products": [
     {
-      "id": "rib-eye",
-      "name": "Rib-Eye",
-      "description": "Corte al carbon servido con nopal asado y cebollitas.",
-      "price": "$310",
-      "category": "Cortes",
-      "tags": ["Al carbon", "Favorito"],
-      "image": "assets/menu-cortes.png",
+      "id": "frijoles-charros",
+      "name": "Frijoles Charros",
+      "description": "Entrada tradicional para abrir mesa.",
+      "price": "$55",
+      "category": "Entradas",
+      "tags": ["Entrada"],
+      "image": "assets/menu-entradas.png",
       "available": true
     },
     {
-      "id": "arrachera-corte",
-      "name": "Arrachera",
-      "description": "Corte clasico de la parrilla, suave y directo al antojo.",
-      "price": "$205",
-      "category": "Cortes",
-      "tags": ["Al carbon"],
-      "image": "assets/menu-cortes.png",
+      "id": "sopa-azteca",
+      "name": "Sopa Azteca",
+      "description": "Sopa de la casa servida caliente.",
+      "price": "$60",
+      "category": "Entradas",
+      "tags": ["Entrada"],
+      "image": "assets/menu-entradas.png",
       "available": true
     },
     {
-      "id": "orden-birria",
-      "name": "Orden de Birria (3)",
-      "description": "Birria con consome para ese sabor de la casa.",
-      "price": "$125",
-      "category": "Birria",
-      "tags": ["Casa", "Consome"],
-      "image": "assets/menu-especialidades.png",
+      "id": "sopa-hongos",
+      "name": "Sopa de Hongos",
+      "description": "Sopa caliente de hongos.",
+      "price": "$65",
+      "category": "Entradas",
+      "tags": ["Entrada"],
+      "image": "assets/menu-entradas.png",
       "available": true
     },
     {
-      "id": "quesabirrias",
-      "name": "Orden de Quesabirrias (3)",
-      "description": "Quesabirrias con el toque tradicional de la casa.",
-      "price": "$140",
-      "category": "Birria",
-      "tags": ["Queso", "Consome"],
-      "image": "assets/menu-especialidades.png",
-      "available": true
-    },
-    {
-      "id": "hamburguesa-clasica",
-      "name": "Hamburguesa Clasica",
-      "description": "Carne de la casa al carbon, aderezo especial y guacamole.",
-      "price": "$110",
-      "category": "Hamburguesas",
-      "tags": ["Al carbon"],
-      "image": "assets/menu-hamburguesas.png",
+      "id": "sopa-queso",
+      "name": "Sopa de Queso",
+      "description": "Sopa caliente con sabor cremoso.",
+      "price": "$65",
+      "category": "Entradas",
+      "tags": ["Entrada"],
+      "image": "assets/menu-entradas.png",
       "available": true
     },
     {
@@ -58,14 +48,376 @@
       "description": "Jugosa carne de tu eleccion sobre una costra de queso.",
       "price": "$75",
       "category": "Tradicionales",
-      "tags": ["Queso"],
+      "tags": ["Queso", "Taco"],
       "image": "assets/menu-entradas.png",
+      "available": true,
+      "options": [
+        {
+          "id": "verdura",
+          "label": "¿Con todo?",
+          "type": "single",
+          "choices": ["Con todo: cebolla, cilantro y rabano", "Sin cebolla", "Sin cilantro", "Sin rabano", "Solo carne y queso"]
+        }
+      ]
+    },
+    {
+      "id": "costra-campechana",
+      "name": "Costra Campechana",
+      "description": "Costra de queso con carne campechana.",
+      "price": "$80",
+      "category": "Tradicionales",
+      "tags": ["Queso", "Taco"],
+      "image": "assets/menu-entradas.png",
+      "available": true,
+      "options": [
+        {
+          "id": "verdura",
+          "label": "¿Con todo?",
+          "type": "single",
+          "choices": ["Con todo: cebolla, cilantro y rabano", "Sin cebolla", "Sin cilantro", "Sin rabano", "Solo carne y queso"]
+        }
+      ]
+    },
+    {
+      "id": "mulita-arrachera",
+      "name": "Mulita Arrachera",
+      "description": "Carne en dos costras de queso.",
+      "price": "$135",
+      "category": "Tradicionales",
+      "tags": ["Queso", "Taco"],
+      "image": "assets/menu-entradas.png",
+      "available": true,
+      "options": [
+        {
+          "id": "verdura",
+          "label": "¿Con todo?",
+          "type": "single",
+          "choices": ["Con todo: cebolla, cilantro y rabano", "Sin cebolla", "Sin cilantro", "Sin rabano", "Solo carne y queso"]
+        }
+      ]
+    },
+    {
+      "id": "orden-birria",
+      "name": "Orden de Birria (3)",
+      "description": "Tres tacos de birria con consome.",
+      "price": "$125",
+      "category": "Birria",
+      "tags": ["Consome", "Casa"],
+      "image": "assets/menu-especialidades.png",
+      "available": true,
+      "options": [
+        {
+          "id": "verdura",
+          "label": "Complementos",
+          "type": "single",
+          "choices": ["Con todo: cebolla, cilantro y rabano", "Sin cebolla", "Sin cilantro", "Sin rabano", "Verdura aparte"]
+        }
+      ]
+    },
+    {
+      "id": "taco-birria",
+      "name": "Taco de Birria",
+      "description": "Taco individual de birria.",
+      "price": "$65",
+      "category": "Birria",
+      "tags": ["Taco"],
+      "image": "assets/menu-especialidades.png",
+      "available": true,
+      "options": [
+        {
+          "id": "verdura",
+          "label": "Complementos",
+          "type": "single",
+          "choices": ["Con todo: cebolla, cilantro y rabano", "Sin cebolla", "Sin cilantro", "Sin rabano", "Verdura aparte"]
+        }
+      ]
+    },
+    {
+      "id": "orden-quesabirrias",
+      "name": "Orden de Quesabirrias (3)",
+      "description": "Tres quesabirrias con consome.",
+      "price": "$140",
+      "category": "Birria",
+      "tags": ["Queso", "Consome"],
+      "image": "assets/menu-especialidades.png",
+      "available": true,
+      "options": [
+        {
+          "id": "verdura",
+          "label": "Complementos",
+          "type": "single",
+          "choices": ["Con todo: cebolla, cilantro y rabano", "Sin cebolla", "Sin cilantro", "Sin rabano", "Verdura aparte"]
+        }
+      ]
+    },
+    {
+      "id": "taco-quesabirria",
+      "name": "Quesabirria individual",
+      "description": "Quesabirria por pieza.",
+      "price": "$65",
+      "category": "Birria",
+      "tags": ["Queso", "Taco"],
+      "image": "assets/menu-especialidades.png",
+      "available": true,
+      "options": [
+        {
+          "id": "verdura",
+          "label": "Complementos",
+          "type": "single",
+          "choices": ["Con todo: cebolla, cilantro y rabano", "Sin cebolla", "Sin cilantro", "Sin rabano", "Verdura aparte"]
+        }
+      ]
+    },
+    {
+      "id": "hamburguesa-clasica",
+      "name": "Hamburguesa Clasica",
+      "description": "200 g de carne de la casa al carbon, aderezo especial y guacamole.",
+      "price": "$110",
+      "category": "Hamburguesas",
+      "tags": ["Al carbon"],
+      "image": "assets/menu-hamburguesas.png",
       "available": true
+    },
+    {
+      "id": "hamburguesa-hawaiana",
+      "name": "Hamburguesa Hawaiana",
+      "description": "Carne, piña asada, jamon a la parrilla, costra de mezcla de quesos y guacamole especial.",
+      "price": "$130",
+      "category": "Hamburguesas",
+      "tags": ["Piña asada"],
+      "image": "assets/menu-hamburguesas.png",
+      "available": true
+    },
+    {
+      "id": "hamburguesa-cavernicola",
+      "name": "Hamburguesa Cavernicola",
+      "description": "Carne a la parrilla rellena de queso manchego, cebolla asada, guacamole especial y chile jalapeño momia.",
+      "price": "$160",
+      "category": "Hamburguesas",
+      "tags": ["Picante"],
+      "image": "assets/menu-hamburguesas.png",
+      "available": true
+    },
+    {
+      "id": "rib-eye",
+      "name": "Rib-Eye",
+      "description": "Corte al carbon servido con nopal asado y cebollitas.",
+      "price": "$310",
+      "category": "Cortes",
+      "tags": ["Al carbon", "Favorito"],
+      "image": "assets/menu-cortes.png",
+      "available": true,
+      "options": [
+        {
+          "id": "termino",
+          "label": "Termino",
+          "type": "single",
+          "choices": ["Medio", "3/4", "Bien asado"]
+        },
+        {
+          "id": "guarnicion",
+          "label": "Guarnicion",
+          "type": "single",
+          "choices": ["Verdura al grill", "Elotes a la mantequilla", "Papas gajo", "Papas a la francesa", "Queso especial", "Frijoles charros"]
+        }
+      ]
+    },
+    {
+      "id": "picaña",
+      "name": "Picaña",
+      "description": "Corte al carbon para amantes de la carne.",
+      "price": "$310",
+      "category": "Cortes",
+      "tags": ["Al carbon"],
+      "image": "assets/menu-cortes.png",
+      "available": true,
+      "options": [
+        {
+          "id": "termino",
+          "label": "Termino",
+          "type": "single",
+          "choices": ["Medio", "3/4", "Bien asado"]
+        },
+        {
+          "id": "guarnicion",
+          "label": "Guarnicion",
+          "type": "single",
+          "choices": ["Verdura al grill", "Elotes a la mantequilla", "Papas gajo", "Papas a la francesa", "Queso especial", "Frijoles charros"]
+        }
+      ]
+    },
+    {
+      "id": "new-york",
+      "name": "New York",
+      "description": "Corte al carbon servido con nopal asado y cebollitas.",
+      "price": "$290",
+      "category": "Cortes",
+      "tags": ["Al carbon"],
+      "image": "assets/menu-cortes.png",
+      "available": true,
+      "options": [
+        {
+          "id": "termino",
+          "label": "Termino",
+          "type": "single",
+          "choices": ["Medio", "3/4", "Bien asado"]
+        },
+        {
+          "id": "guarnicion",
+          "label": "Guarnicion",
+          "type": "single",
+          "choices": ["Verdura al grill", "Elotes a la mantequilla", "Papas gajo", "Papas a la francesa", "Queso especial", "Frijoles charros"]
+        }
+      ]
+    },
+    {
+      "id": "filete-mignon",
+      "name": "Filete Mignon",
+      "description": "Corte al carbon servido con nopal asado y cebollitas.",
+      "price": "$305",
+      "category": "Cortes",
+      "tags": ["Al carbon"],
+      "image": "assets/menu-cortes.png",
+      "available": true,
+      "options": [
+        {
+          "id": "termino",
+          "label": "Termino",
+          "type": "single",
+          "choices": ["Medio", "3/4", "Bien asado"]
+        },
+        {
+          "id": "guarnicion",
+          "label": "Guarnicion",
+          "type": "single",
+          "choices": ["Verdura al grill", "Elotes a la mantequilla", "Papas gajo", "Papas a la francesa", "Queso especial", "Frijoles charros"]
+        }
+      ]
+    },
+    {
+      "id": "arrachera-corte",
+      "name": "Arrachera",
+      "description": "Corte clasico de la parrilla servido con nopal asado y cebollitas.",
+      "price": "$205",
+      "category": "Cortes",
+      "tags": ["Al carbon"],
+      "image": "assets/menu-cortes.png",
+      "available": true,
+      "options": [
+        {
+          "id": "termino",
+          "label": "Termino",
+          "type": "single",
+          "choices": ["Medio", "3/4", "Bien asado"]
+        },
+        {
+          "id": "guarnicion",
+          "label": "Guarnicion",
+          "type": "single",
+          "choices": ["Verdura al grill", "Elotes a la mantequilla", "Papas gajo", "Papas a la francesa", "Queso especial", "Frijoles charros"]
+        }
+      ]
+    },
+    {
+      "id": "pollo-carbon",
+      "name": "Pollo al Carbon",
+      "description": "Pidelo adobado, BBQ, mango habanero, chiltepin o a la diabla.",
+      "price": "$170",
+      "category": "Cortes",
+      "tags": ["Pollo"],
+      "image": "assets/menu-cortes.png",
+      "available": true,
+      "options": [
+        {
+          "id": "salsa",
+          "label": "Salsa",
+          "type": "single",
+          "choices": ["Adobado", "BBQ", "Mango habanero", "Chiltepin", "A la diabla"]
+        },
+        {
+          "id": "guarnicion",
+          "label": "Guarnicion",
+          "type": "single",
+          "choices": ["Verdura al grill", "Elotes a la mantequilla", "Papas gajo", "Papas a la francesa", "Queso especial", "Frijoles charros"]
+        }
+      ]
+    },
+    {
+      "id": "taco-asada",
+      "name": "Taco Asada",
+      "description": "Taco individual de asada.",
+      "price": "$30",
+      "category": "Tacos",
+      "tags": ["Antojo"],
+      "image": "assets/menu-antojitos.png",
+      "available": true,
+      "options": [
+        {
+          "id": "verdura",
+          "label": "¿Con todo?",
+          "type": "single",
+          "choices": ["Con todo: cebolla, cilantro y rabano", "Sin cebolla", "Sin cilantro", "Sin rabano", "Verdura aparte"]
+        }
+      ]
+    },
+    {
+      "id": "taco-campechano",
+      "name": "Taco Campechano",
+      "description": "Taco individual campechano.",
+      "price": "$30",
+      "category": "Tacos",
+      "tags": ["Antojo"],
+      "image": "assets/menu-antojitos.png",
+      "available": true,
+      "options": [
+        {
+          "id": "verdura",
+          "label": "¿Con todo?",
+          "type": "single",
+          "choices": ["Con todo: cebolla, cilantro y rabano", "Sin cebolla", "Sin cilantro", "Sin rabano", "Verdura aparte"]
+        }
+      ]
+    },
+    {
+      "id": "taco-pastor",
+      "name": "Taco Pastor",
+      "description": "Taco individual de pastor.",
+      "price": "$28",
+      "category": "Tacos",
+      "tags": ["Antojo"],
+      "image": "assets/menu-antojitos.png",
+      "available": true,
+      "options": [
+        {
+          "id": "verdura",
+          "label": "¿Con todo?",
+          "type": "single",
+          "choices": ["Con todo: cebolla, cilantro y rabano", "Sin cebolla", "Sin cilantro", "Sin rabano", "Verdura aparte"]
+        }
+      ]
+    },
+    {
+      "id": "taco-arrachera",
+      "name": "Taco Arrachera",
+      "description": "Taco individual de arrachera.",
+      "price": "$53",
+      "category": "Tacos",
+      "tags": ["Especialidad"],
+      "image": "assets/menu-antojitos.png",
+      "available": true,
+      "options": [
+        {
+          "id": "verdura",
+          "label": "¿Con todo?",
+          "type": "single",
+          "choices": ["Con todo: cebolla, cilantro y rabano", "Sin cebolla", "Sin cilantro", "Sin rabano", "Verdura aparte"]
+        }
+      ]
     },
     {
       "id": "molcajete-mixto",
       "name": "Molcajete Mixto",
-      "description": "Base de salsa con proteina de eleccion, cebollas asadas, nopal y queso.",
+      "description": "Base de salsa con proteina de tu eleccion, cebollas asadas, nopal y queso.",
       "price": "$260",
       "category": "Molcajetes",
       "tags": ["Para compartir"],
@@ -73,22 +425,22 @@
       "available": true
     },
     {
-      "id": "pollo-al-carbon",
-      "name": "Pollo al Carbon",
-      "description": "Pollo al carbon con opciones de salsas de la casa.",
-      "price": "$170",
-      "category": "Parrilla",
-      "tags": ["Al carbon"],
-      "image": "assets/menu-cortes.png",
+      "id": "queso-fundido-natural",
+      "name": "Queso Fundido Natural",
+      "description": "Servido en sarten de hierro fundido.",
+      "price": "$90",
+      "category": "Queso Fundido",
+      "tags": ["Queso"],
+      "image": "assets/menu-especialidades.png",
       "available": true
     },
     {
-      "id": "esquites-suprema-brasa",
-      "name": "Esquites Suprema Brasa",
-      "description": "Rib-eye, granos de elote, mantequilla, tocino, champinones y papas cambray.",
-      "price": "$250",
-      "category": "Sabores de la sierra",
-      "tags": ["Casa"],
+      "id": "queso-fundido-arrachera",
+      "name": "Queso Fundido Arrachera",
+      "description": "Queso fundido con arrachera.",
+      "price": "$165",
+      "category": "Queso Fundido",
+      "tags": ["Queso"],
       "image": "assets/menu-especialidades.png",
       "available": true
     }
@@ -99,25 +451,97 @@
       "name": "Agua Fresca del Dia",
       "description": "Disponible por jarra o por vaso.",
       "price": "Jarra $65 / C-U $35",
-      "category": "Bebidas frias",
+      "category": "Bebidas Frias",
       "tags": ["Fria"],
       "image": "assets/menu-bebidas.png",
-      "available": true
+      "available": true,
+      "options": [
+        {
+          "id": "hielos",
+          "label": "Hielos",
+          "type": "single",
+          "choices": ["Con hielos", "Sin hielos", "Poco hielo"]
+        }
+      ]
     },
     {
-      "id": "naranjada-limonada",
-      "name": "Naranjada o Limonada",
-      "description": "Refresco citrico para acompanar cortes y tacos.",
+      "id": "agua-horchata",
+      "name": "Agua de Horchata",
+      "description": "Agua fresca de horchata.",
+      "price": "Jarra $85 / C-U $35",
+      "category": "Bebidas Frias",
+      "tags": ["Horchata"],
+      "image": "assets/menu-bebidas.png",
+      "available": true,
+      "options": [
+        {
+          "id": "hielos",
+          "label": "Hielos",
+          "type": "single",
+          "choices": ["Con hielos", "Sin hielos", "Poco hielo"]
+        }
+      ]
+    },
+    {
+      "id": "naranjada",
+      "name": "Naranjada",
+      "description": "Bebida citrica refrescante.",
       "price": "Jarra $165 / C-U $50",
-      "category": "Bebidas frias",
-      "tags": ["Refrescante"],
+      "category": "Bebidas Frias",
+      "tags": ["Citrica"],
+      "image": "assets/menu-bebidas.png",
+      "available": true,
+      "options": [
+        {
+          "id": "hielos",
+          "label": "Hielos",
+          "type": "single",
+          "choices": ["Con hielos", "Sin hielos", "Poco hielo"]
+        }
+      ]
+    },
+    {
+      "id": "limonada",
+      "name": "Limonada",
+      "description": "Bebida citrica refrescante.",
+      "price": "Jarra $165 / C-U $50",
+      "category": "Bebidas Frias",
+      "tags": ["Citrica"],
+      "image": "assets/menu-bebidas.png",
+      "available": true,
+      "options": [
+        {
+          "id": "hielos",
+          "label": "Hielos",
+          "type": "single",
+          "choices": ["Con hielos", "Sin hielos", "Poco hielo"]
+        }
+      ]
+    },
+    {
+      "id": "cafe",
+      "name": "Cafe",
+      "description": "Bebida caliente.",
+      "price": "$25",
+      "category": "Bebidas Calientes",
+      "tags": ["Caliente"],
       "image": "assets/menu-bebidas.png",
       "available": true
     },
     {
       "id": "loma-verde",
       "name": "Loma Verde",
-      "description": "Mocktail con miel de romero, toronja, albahaca y tonica.",
+      "description": "Miel de romero, toronja, albahaca y tonica.",
+      "price": "$75",
+      "category": "Mocktails",
+      "tags": ["Sin alcohol"],
+      "image": "assets/menu-bebidas.png",
+      "available": true
+    },
+    {
+      "id": "entre-veredas",
+      "name": "Entre Veredas",
+      "description": "Pepino, tonica, nectar de piña y limon.",
       "price": "$75",
       "category": "Mocktails",
       "tags": ["Sin alcohol"],
@@ -127,9 +551,9 @@
     {
       "id": "mezcalina-casa",
       "name": "Mezcalina",
-      "description": "Mezcal, vino y pina.",
+      "description": "Mezcal, vino y piña.",
       "price": "$95",
-      "category": "Cocteleria de la casa",
+      "category": "Cocteleria de la Casa",
       "tags": ["Casa"],
       "image": "assets/menu-cocteleria.png",
       "available": true
@@ -145,9 +569,29 @@
       "available": true
     },
     {
+      "id": "gin-tonic",
+      "name": "Gin and Tonic",
+      "description": "Agua tonica, gin, frutos rojos o maracuya.",
+      "price": "$100",
+      "category": "Internacional",
+      "tags": ["Clasico"],
+      "image": "assets/menu-cocteleria.png",
+      "available": true
+    },
+    {
       "id": "pay-limon",
       "name": "Pay de Limon",
       "description": "Postre de la casa para cerrar la mesa.",
+      "price": "$50",
+      "category": "Postres",
+      "tags": ["Postre"],
+      "image": "assets/menu-bebidas.png",
+      "available": true
+    },
+    {
+      "id": "flan",
+      "name": "Flan",
+      "description": "Postre clasico.",
       "price": "$50",
       "category": "Postres",
       "tags": ["Postre"],

@@ -29,11 +29,12 @@
       </button>
       <nav class="top-nav" data-nav>
         <a href="#menu">Carta</a>
+        <a href="#ordenar">Ordenar</a>
         <a href="#bebidas">Bebidas</a>
         <a href="#reserva">Reservar</a>
         <a href="#areas">Areas</a>
         <a href="#redes">Redes</a>
-        <a class="nav-order" href="https://wa.me/528181681933" target="_blank" rel="noopener">Ordenar</a>
+        <button class="nav-order" type="button" data-open-cart>Mi seleccion</button>
       </nav>
     </header>
 
@@ -49,8 +50,8 @@
           <p class="hero-slogan reveal-up delay-3">Fuego vivo, cortes con caracter y una cocina tradicional para disfrutarse sin prisas.</p>
           <div class="hero-actions reveal-up delay-4">
             <a class="btn btn-primary" href="#menu">Ver Menu</a>
+            <a class="btn btn-secondary" href="#ordenar">Ordenar del menu</a>
             <a class="btn btn-secondary" href="#reserva">Reservar mesa</a>
-            <a class="btn btn-secondary" href="https://wa.me/528181681933" target="_blank" rel="noopener">Ordenar Ahora</a>
           </div>
           <p class="horizontal-hint reveal-up delay-4"><span aria-hidden="true">← →</span> Desliza para explorar cada seccion</p>
         </div>
@@ -136,6 +137,38 @@
             </div>
             <button class="btn btn-secondary" type="button" data-open-cart>Ver mi seleccion <span data-cart-count>0</span></button>
           </div>
+        </div>
+      </section>
+
+      <section class="order-section section-shell" id="ordenar" aria-label="Ordenar del menu">
+        <div class="section-heading" data-reveal>
+          <p class="eyebrow">Ordena a tu gusto</p>
+          <h2>Menu seleccionable con detalles, precios y opciones.</h2>
+          <p>Elige una categoria, personaliza tacos, birria, cortes y bebidas, y envia tu seleccion completa por WhatsApp.</p>
+        </div>
+        <div class="order-tools" data-reveal>
+          <div class="order-filters" aria-label="Filtrar menu">
+            <button class="is-active" type="button" data-order-filter="Todos">Todos</button>
+            <button type="button" data-order-filter="Birria">Birria</button>
+            <button type="button" data-order-filter="Tacos">Tacos</button>
+            <button type="button" data-order-filter="Cortes">Cortes</button>
+            <button type="button" data-order-filter="Hamburguesas">Hamburguesas</button>
+            <button type="button" data-order-filter="Bebidas Frias">Bebidas</button>
+            <button type="button" data-order-filter="Cocteleria de la Casa">Cocteleria</button>
+          </div>
+          <button class="btn btn-primary" type="button" data-open-cart>Enviar seleccion <span data-cart-count>0</span></button>
+        </div>
+        <div class="order-layout">
+          <div class="order-grid" data-order-grid aria-live="polite"></div>
+          <aside class="order-gallery" data-reveal>
+            <span class="menu-book-kicker">Imagenes para visualizar</span>
+            <h3>Carta visual</h3>
+            <div>
+              <img src="assets/menu-especialidades.png" alt="Menu de especialidades de la casa" loading="lazy">
+              <img src="assets/menu-cortes.png" alt="Menu de cortes al carbon" loading="lazy">
+              <img src="assets/menu-bebidas.png" alt="Menu de bebidas y postres" loading="lazy">
+            </div>
+          </aside>
         </div>
       </section>
 
@@ -261,6 +294,24 @@
           <button class="btn btn-quiet" type="button" data-clear-selection>Vaciar seleccion</button>
         </div>
       </div>
+    </aside>
+
+    <aside class="item-modal" data-item-modal aria-label="Personalizar producto" aria-hidden="true" hidden>
+      <div class="item-modal-backdrop" data-close-item-modal></div>
+      <form class="item-modal-panel" data-item-modal-form>
+        <div class="item-modal-heading">
+          <div>
+            <span class="eyebrow" data-item-modal-category>Menu</span>
+            <h2 data-item-modal-title>Producto</h2>
+            <p data-item-modal-description></p>
+            <strong data-item-modal-price></strong>
+          </div>
+          <button class="icon-button" type="button" data-close-item-modal aria-label="Cerrar personalizacion">×</button>
+        </div>
+        <div class="item-modal-options" data-item-modal-options></div>
+        <label class="item-notes">Notas del pedido<textarea name="notes" rows="3" placeholder="Ej. salsa aparte, sin picante, entregar separado..."></textarea></label>
+        <button class="btn btn-primary" type="submit">Agregar a mi seleccion</button>
+      </form>
     </aside>
 
     <script src="scripts.js?v=20260812-areas-1" defer></script>
