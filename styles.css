@@ -120,6 +120,8 @@ body[data-page="home"] main > .signal-band {
 }
 
 body[data-page="home"] main > .ritual-section,
+body[data-page="home"] main > .order-section.section-shell,
+body[data-page="home"] main > .drinks-section.section-shell,
 body[data-page="home"] main > .social-section {
   width: 100vw;
   max-width: none;
@@ -1519,6 +1521,7 @@ svg {
 
 .order-section {
   padding-top: clamp(5rem, 8vh, 6rem);
+  padding-inline: max(1rem, calc((100vw - 1180px) / 2));
   padding-bottom: 2rem;
 }
 

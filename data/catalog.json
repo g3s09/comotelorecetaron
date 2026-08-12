@@ -199,6 +199,46 @@
       "available": true
     },
     {
+      "id": "hamburguesa-costra",
+      "name": "Hamburguesa De Costra",
+      "description": "Carne sobre vegetales, aderezo de tocino ahumado, costra de carne asada y guacamole especial.",
+      "price": "$140",
+      "category": "Hamburguesas",
+      "tags": ["Costra"],
+      "image": "assets/menu-hamburguesas.png",
+      "available": true
+    },
+    {
+      "id": "hamburguesa-argentina",
+      "name": "Hamburguesa Argentina",
+      "description": "Carne con chorizo argentino al carbon, chimichurri y corona de queso manchego.",
+      "price": "$140",
+      "category": "Hamburguesas",
+      "tags": ["Chorizo argentino"],
+      "image": "assets/menu-hamburguesas.png",
+      "available": true
+    },
+    {
+      "id": "hamburguesa-baño-queso",
+      "name": "Hamburguesa Baño de Queso",
+      "description": "Carne al carbon con aderezo de cebolla dulce, tocino, mostaza y base cremosa de queso cheddar.",
+      "price": "$185",
+      "category": "Hamburguesas",
+      "tags": ["Queso"],
+      "image": "assets/menu-hamburguesas.png",
+      "available": true
+    },
+    {
+      "id": "hamburguesa-iberica",
+      "name": "Hamburguesa Iberica",
+      "description": "Carne, chorizo pamplona, chistorra y queso suizo gratinado.",
+      "price": "$150",
+      "category": "Hamburguesas",
+      "tags": ["Chistorra"],
+      "image": "assets/menu-hamburguesas.png",
+      "available": true
+    },
+    {
       "id": "rib-eye",
       "name": "Rib-Eye",
       "description": "Corte al carbon servido con nopal asado y cebollitas.",
@@ -343,6 +383,40 @@
       ]
     },
     {
+      "id": "tomahawk",
+      "name": "Tomahawk",
+      "description": "Corte de 1200 g para 3 personas.",
+      "price": "$1120",
+      "category": "Cortes",
+      "tags": ["Para compartir"],
+      "image": "assets/menu-cortes.png",
+      "available": true,
+      "options": [
+        {
+          "id": "termino",
+          "label": "Termino",
+          "type": "single",
+          "choices": ["Medio", "3/4", "Bien asado"]
+        },
+        {
+          "id": "guarnicion",
+          "label": "Guarnicion",
+          "type": "single",
+          "choices": ["Verdura al grill", "Elotes a la mantequilla", "Papas gajo", "Papas a la francesa", "Queso especial", "Frijoles charros"]
+        }
+      ]
+    },
+    {
+      "id": "costillas-asadas",
+      "name": "Costillas Asadas",
+      "description": "350 g de costillas al carbon con elote, papas, cebolla y salsa de tu eleccion.",
+      "price": "$195",
+      "category": "Cortes",
+      "tags": ["Costillas"],
+      "image": "assets/menu-cortes.png",
+      "available": true
+    },
+    {
       "id": "taco-asada",
       "name": "Taco Asada",
       "description": "Taco individual de asada.",
@@ -403,6 +477,60 @@
       "price": "$53",
       "category": "Tacos",
       "tags": ["Especialidad"],
+      "image": "assets/menu-antojitos.png",
+      "available": true,
+      "options": [
+        {
+          "id": "verdura",
+          "label": "¿Con todo?",
+          "type": "single",
+          "choices": ["Con todo: cebolla, cilantro y rabano", "Sin cebolla", "Sin cilantro", "Sin rabano", "Verdura aparte"]
+        }
+      ]
+    },
+    {
+      "id": "orden-asada",
+      "name": "Orden de Asada",
+      "description": "Orden de tacos de asada.",
+      "price": "$85",
+      "category": "Tacos",
+      "tags": ["Orden"],
+      "image": "assets/menu-antojitos.png",
+      "available": true,
+      "options": [
+        {
+          "id": "verdura",
+          "label": "¿Con todo?",
+          "type": "single",
+          "choices": ["Con todo: cebolla, cilantro y rabano", "Sin cebolla", "Sin cilantro", "Sin rabano", "Verdura aparte"]
+        }
+      ]
+    },
+    {
+      "id": "orden-campechano",
+      "name": "Orden Campechano",
+      "description": "Orden de tacos campechanos.",
+      "price": "$85",
+      "category": "Tacos",
+      "tags": ["Orden"],
+      "image": "assets/menu-antojitos.png",
+      "available": true,
+      "options": [
+        {
+          "id": "verdura",
+          "label": "¿Con todo?",
+          "type": "single",
+          "choices": ["Con todo: cebolla, cilantro y rabano", "Sin cebolla", "Sin cilantro", "Sin rabano", "Verdura aparte"]
+        }
+      ]
+    },
+    {
+      "id": "orden-pastor",
+      "name": "Orden Pastor",
+      "description": "Orden de tacos de pastor.",
+      "price": "$60",
+      "category": "Tacos",
+      "tags": ["Orden"],
       "image": "assets/menu-antojitos.png",
       "available": true,
       "options": [
@@ -483,6 +611,24 @@
       ]
     },
     {
+      "id": "agua-jamaica",
+      "name": "Agua de Jamaica",
+      "description": "Agua fresca de jamaica.",
+      "price": "C-U $35",
+      "category": "Bebidas Frias",
+      "tags": ["Jamaica"],
+      "image": "assets/menu-bebidas.png",
+      "available": true,
+      "options": [
+        {
+          "id": "hielos",
+          "label": "Hielos",
+          "type": "single",
+          "choices": ["Con hielos", "Sin hielos", "Poco hielo"]
+        }
+      ]
+    },
+    {
       "id": "naranjada",
       "name": "Naranjada",
       "description": "Bebida citrica refrescante.",
@@ -523,6 +669,56 @@
       "name": "Cafe",
       "description": "Bebida caliente.",
       "price": "$25",
+      "category": "Bebidas Calientes",
+      "tags": ["Caliente"],
+      "image": "assets/menu-bebidas.png",
+      "available": true
+    },
+    {
+      "id": "boing",
+      "name": "Boing",
+      "description": "Bebida fria embotellada.",
+      "price": "$30",
+      "category": "Bebidas Frias",
+      "tags": ["Fria"],
+      "image": "assets/menu-bebidas.png",
+      "available": true
+    },
+    {
+      "id": "coca-cola",
+      "name": "Coca-Cola",
+      "description": "Refresco frio.",
+      "price": "$30",
+      "category": "Bebidas Frias",
+      "tags": ["Fria"],
+      "image": "assets/menu-bebidas.png",
+      "available": true
+    },
+    {
+      "id": "malteadas",
+      "name": "Malteadas",
+      "description": "Malteada fria de la casa.",
+      "price": "$45",
+      "category": "Bebidas Frias",
+      "tags": ["Fria"],
+      "image": "assets/menu-bebidas.png",
+      "available": true
+    },
+    {
+      "id": "cafe-con-pan",
+      "name": "Cafe con Pan",
+      "description": "Bebida caliente con pan.",
+      "price": "$35",
+      "category": "Bebidas Calientes",
+      "tags": ["Caliente"],
+      "image": "assets/menu-bebidas.png",
+      "available": true
+    },
+    {
+      "id": "jamaica-caliente",
+      "name": "Jamaica Caliente",
+      "description": "Bebida caliente de jamaica.",
+      "price": "$35",
       "category": "Bebidas Calientes",
       "tags": ["Caliente"],
       "image": "assets/menu-bebidas.png",

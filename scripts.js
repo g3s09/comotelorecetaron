@@ -510,9 +510,12 @@ const initReservation = () => {
 const renderOrderGrid = () => {
   const grid = $("[data-order-grid]");
   if (!grid) return;
-  const visible = activeOrderCategory === "Todos"
-    ? allOrderItems
-    : allOrderItems.filter((item) => item.category === activeOrderCategory);
+  const visible = allOrderItems.filter((item) => {
+    if (activeOrderCategory === "Todos") return true;
+    if (activeOrderCategory === "Bebidas") return item.kind === "drink";
+    if (activeOrderCategory === "Cocteleria") return item.kind === "drink" && /cocteleria|internacional|mocktails/i.test(item.category || "");
+    return item.category === activeOrderCategory;
+  });
   grid.innerHTML = visible.length
     ? visible.map((item) => productCardMarkup(item, item.category?.includes("Bebidas") || item.category?.includes("Cocteleria") ? "drink-card" : "")).join("")
     : emptyMarkup("No hay productos en esta categoria por ahora.");
@@ -535,7 +538,10 @@ const renderPublicCatalog = (catalog) => {
   const team = getVisibleItems(catalog.team);
 
   menuItems = products;
-  allOrderItems = [...products, ...drinks];
+  allOrderItems = [
+    ...products.map((item) => ({ ...item, kind: "food" })),
+    ...drinks.map((item) => ({ ...item, kind: "drink" }))
+  ];
   if (menuIndex >= menuItems.length) menuIndex = 0;
   renderMechanism();
 
