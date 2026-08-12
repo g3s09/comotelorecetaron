@@ -1,0 +1,159 @@
+{
+  "version": 1,
+  "updatedAt": "2026-08-12T02:45:00.000Z",
+  "products": [
+    {
+      "id": "rib-eye",
+      "name": "Rib-Eye",
+      "description": "Corte al carbon servido con nopal asado y cebollitas.",
+      "price": "$310",
+      "category": "Cortes",
+      "tags": ["Al carbon", "Favorito"],
+      "image": "assets/menu-cortes.png",
+      "available": true
+    },
+    {
+      "id": "arrachera-corte",
+      "name": "Arrachera",
+      "description": "Corte clasico de la parrilla, suave y directo al antojo.",
+      "price": "$205",
+      "category": "Cortes",
+      "tags": ["Al carbon"],
+      "image": "assets/menu-cortes.png",
+      "available": true
+    },
+    {
+      "id": "orden-birria",
+      "name": "Orden de Birria (3)",
+      "description": "Birria con consome para ese sabor de la casa.",
+      "price": "$125",
+      "category": "Birria",
+      "tags": ["Casa", "Consome"],
+      "image": "assets/menu-especialidades.png",
+      "available": true
+    },
+    {
+      "id": "quesabirrias",
+      "name": "Orden de Quesabirrias (3)",
+      "description": "Quesabirrias con el toque tradicional de la casa.",
+      "price": "$140",
+      "category": "Birria",
+      "tags": ["Queso", "Consome"],
+      "image": "assets/menu-especialidades.png",
+      "available": true
+    },
+    {
+      "id": "hamburguesa-clasica",
+      "name": "Hamburguesa Clasica",
+      "description": "Carne de la casa al carbon, aderezo especial y guacamole.",
+      "price": "$110",
+      "category": "Hamburguesas",
+      "tags": ["Al carbon"],
+      "image": "assets/menu-hamburguesas.png",
+      "available": true
+    },
+    {
+      "id": "costra-asada",
+      "name": "Costra Asada",
+      "description": "Jugosa carne de tu eleccion sobre una costra de queso.",
+      "price": "$75",
+      "category": "Tradicionales",
+      "tags": ["Queso"],
+      "image": "assets/menu-entradas.png",
+      "available": true
+    },
+    {
+      "id": "molcajete-mixto",
+      "name": "Molcajete Mixto",
+      "description": "Base de salsa con proteina de eleccion, cebollas asadas, nopal y queso.",
+      "price": "$260",
+      "category": "Molcajetes",
+      "tags": ["Para compartir"],
+      "image": "assets/menu-cortes.png",
+      "available": true
+    },
+    {
+      "id": "pollo-al-carbon",
+      "name": "Pollo al Carbon",
+      "description": "Pollo al carbon con opciones de salsas de la casa.",
+      "price": "$170",
+      "category": "Parrilla",
+      "tags": ["Al carbon"],
+      "image": "assets/menu-cortes.png",
+      "available": true
+    },
+    {
+      "id": "esquites-suprema-brasa",
+      "name": "Esquites Suprema Brasa",
+      "description": "Rib-eye, granos de elote, mantequilla, tocino, champinones y papas cambray.",
+      "price": "$250",
+      "category": "Sabores de la sierra",
+      "tags": ["Casa"],
+      "image": "assets/menu-especialidades.png",
+      "available": true
+    }
+  ],
+  "drinks": [
+    {
+      "id": "agua-fresca-dia",
+      "name": "Agua Fresca del Dia",
+      "description": "Disponible por jarra o por vaso.",
+      "price": "Jarra $65 / C-U $35",
+      "category": "Bebidas frias",
+      "tags": ["Fria"],
+      "image": "assets/menu-bebidas.png",
+      "available": true
+    },
+    {
+      "id": "naranjada-limonada",
+      "name": "Naranjada o Limonada",
+      "description": "Refresco citrico para acompanar cortes y tacos.",
+      "price": "Jarra $165 / C-U $50",
+      "category": "Bebidas frias",
+      "tags": ["Refrescante"],
+      "image": "assets/menu-bebidas.png",
+      "available": true
+    },
+    {
+      "id": "loma-verde",
+      "name": "Loma Verde",
+      "description": "Mocktail con miel de romero, toronja, albahaca y tonica.",
+      "price": "$75",
+      "category": "Mocktails",
+      "tags": ["Sin alcohol"],
+      "image": "assets/menu-bebidas.png",
+      "available": true
+    },
+    {
+      "id": "mezcalina-casa",
+      "name": "Mezcalina",
+      "description": "Mezcal, vino y pina.",
+      "price": "$95",
+      "category": "Cocteleria de la casa",
+      "tags": ["Casa"],
+      "image": "assets/menu-cocteleria.png",
+      "available": true
+    },
+    {
+      "id": "margarita",
+      "name": "Margarita",
+      "description": "Limon, maracuya, naranja y jamaica.",
+      "price": "$80",
+      "category": "Internacional",
+      "tags": ["Clasico"],
+      "image": "assets/menu-cocteleria.png",
+      "available": true
+    },
+    {
+      "id": "pay-limon",
+      "name": "Pay de Limon",
+      "description": "Postre de la casa para cerrar la mesa.",
+      "price": "$50",
+      "category": "Postres",
+      "tags": ["Postre"],
+      "image": "assets/menu-bebidas.png",
+      "available": true
+    }
+  ],
+  "team": []
+}

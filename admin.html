@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0D0D0D">
+    <meta name="robots" content="noindex,nofollow">
+    <title>Administracion | Como Te Lo Recetaron</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css?v=20260612-premium-5">
+  </head>
+  <body data-page="admin">
+    <main class="admin-shell" id="principal">
+      <section class="admin-login" data-admin-login>
+        <div class="admin-login-panel">
+          <p class="eyebrow">Panel interno</p>
+          <h1>Administracion de menu</h1>
+          <p>Este acceso es para administradores. El publico no ve herramientas de edicion.</p>
+          <form class="admin-auth-form" data-admin-auth>
+            <label>
+              Clave de administrador
+              <input type="password" name="token" autocomplete="current-password" required>
+            </label>
+            <button class="btn btn-primary" type="submit">Entrar al panel</button>
+          </form>
+          <p class="admin-note" data-admin-auth-message aria-live="polite"></p>
+        </div>
+      </section>
+
+      <section class="admin-app" data-admin-app hidden>
+        <header class="admin-header">
+          <a class="brand-lockup" href="index.html">
+            <span class="brand-seal">CTLR</span>
+            <span class="brand-name">Como Te Lo Recetaron</span>
+          </a>
+          <div class="admin-actions">
+            <a class="btn btn-secondary" href="index.html" target="_blank" rel="noopener">Ver sitio</a>
+            <button class="btn btn-quiet" type="button" data-admin-logout>Salir</button>
+          </div>
+        </header>
+
+        <div class="admin-dashboard">
+          <aside class="admin-sidebar" aria-label="Secciones administrativas">
+            <button class="admin-tab is-active" type="button" data-admin-tab="products">Productos</button>
+            <button class="admin-tab" type="button" data-admin-tab="drinks">Bebidas</button>
+            <button class="admin-tab" type="button" data-admin-tab="team">Equipo</button>
+            <button class="admin-tab" type="button" data-admin-tab="tools">Herramientas</button>
+          </aside>
+
+          <div class="admin-panels">
+            <section class="admin-panel is-active" data-admin-panel="products">
+              <div class="admin-panel-heading">
+                <div>
+                  <p class="eyebrow">Carta principal</p>
+                  <h2>Productos</h2>
+                </div>
+                <button class="btn btn-secondary" type="button" data-reset-form="products">Nuevo producto</button>
+              </div>
+              <form class="admin-form" data-admin-form="products">
+                <input type="hidden" name="id">
+                <label>Nombre <input name="name" type="text" required></label>
+                <label>Precio <input name="price" type="text" required placeholder="$389"></label>
+                <label>Categoria <input name="category" type="text" required placeholder="Cortes"></label>
+                <label>Etiquetas <input name="tags" type="text" placeholder="Nuevo, Favorito, Picante"></label>
+                <label class="span-2">Descripcion <textarea name="description" rows="4" required></textarea></label>
+                <label>URL de fotografia <input name="image" type="text" placeholder="assets/menu-ribeye.jpeg"></label>
+                <label>Subir fotografia <input name="imageFile" type="file" accept="image/*"></label>
+                <label class="check-row"><input name="available" type="checkbox" checked> Disponible</label>
+                <button class="btn btn-primary span-2" type="submit">Guardar producto</button>
+              </form>
+              <div class="admin-list" data-admin-list="products"></div>
+            </section>
+
+            <section class="admin-panel" data-admin-panel="drinks">
+              <div class="admin-panel-heading">
+                <div>
+                  <p class="eyebrow">Barra</p>
+                  <h2>Bebidas</h2>
+                </div>
+                <button class="btn btn-secondary" type="button" data-reset-form="drinks">Nueva bebida</button>
+              </div>
+              <form class="admin-form" data-admin-form="drinks">
+                <input type="hidden" name="id">
+                <label>Nombre <input name="name" type="text" required></label>
+                <label>Precio <input name="price" type="text" required placeholder="$85"></label>
+                <label>Categoria <input name="category" type="text" required placeholder="Sin alcohol"></label>
+                <label>Etiquetas <input name="tags" type="text" placeholder="Nuevo, Frio, Favorito"></label>
+                <label class="span-2">Descripcion <textarea name="description" rows="4" required></textarea></label>
+                <label>URL de fotografia <input name="image" type="text" placeholder="assets/menu-parrilla.jpeg"></label>
+                <label>Subir fotografia <input name="imageFile" type="file" accept="image/*"></label>
+                <label class="check-row"><input name="available" type="checkbox" checked> Disponible</label>
+                <button class="btn btn-primary span-2" type="submit">Guardar bebida</button>
+              </form>
+              <div class="admin-list" data-admin-list="drinks"></div>
+            </section>
+
+            <section class="admin-panel" data-admin-panel="team">
+              <div class="admin-panel-heading">
+                <div>
+                  <p class="eyebrow">Equipo</p>
+                  <h2>Integrantes</h2>
+                </div>
+                <button class="btn btn-secondary" type="button" data-reset-form="team">Nuevo integrante</button>
+              </div>
+              <form class="admin-form" data-admin-form="team">
+                <input type="hidden" name="id">
+                <label>Nombre <input name="name" type="text" required></label>
+                <label>Cargo <input name="role" type="text" required></label>
+                <label>Instagram <input name="instagram" type="url" placeholder="https://instagram.com/..."></label>
+                <label>Facebook <input name="facebook" type="url" placeholder="https://facebook.com/..."></label>
+                <label class="span-2">Descripcion <textarea name="description" rows="4" required></textarea></label>
+                <label>URL de fotografia <input name="image" type="text" placeholder="assets/fondo-toro.jpeg"></label>
+                <label>Subir fotografia <input name="imageFile" type="file" accept="image/*"></label>
+                <label class="check-row"><input name="available" type="checkbox" checked> Visible en sitio</label>
+                <button class="btn btn-primary span-2" type="submit">Guardar integrante</button>
+              </form>
+              <div class="admin-list" data-admin-list="team"></div>
+            </section>
+
+            <section class="admin-panel" data-admin-panel="tools">
+              <div class="admin-panel-heading">
+                <div>
+                  <p class="eyebrow">Herramientas</p>
+                  <h2>Respaldo y publicacion</h2>
+                </div>
+              </div>
+              <div class="admin-tools">
+                <button class="btn btn-secondary" type="button" data-export-catalog>Exportar JSON</button>
+                <label class="import-control">
+                  Importar JSON
+                  <input type="file" accept="application/json" data-import-catalog>
+                </label>
+                <button class="btn btn-quiet" type="button" data-refresh-catalog>Recargar datos</button>
+              </div>
+              <p class="admin-note">Los cambios se guardan en el archivo de datos cuando el sitio corre con <code>node server.js</code>.</p>
+            </section>
+          </div>
+        </div>
+
+        <div class="toast" role="status" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <script src="scripts.js?v=20260612-premium-5" defer></script>
+  </body>
+</html>
