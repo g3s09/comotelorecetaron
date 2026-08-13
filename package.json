@@ -2,6 +2,7 @@
   "name": "como-te-lo-recetaron",
   "version": "1.0.0",
   "private": true,
+  "main": "api/app.js",
   "engines": {
     "node": ">=20"
   },
