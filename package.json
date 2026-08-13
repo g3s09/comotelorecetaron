@@ -1,0 +1,15 @@
+{
+  "name": "como-te-lo-recetaron",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "node api/app.js",
+    "start": "node api/app.js"
+  },
+  "dependencies": {
+    "@vercel/blob": "^2.0.0"
+  }
+}

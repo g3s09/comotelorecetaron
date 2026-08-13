@@ -22,6 +22,7 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 5.5rem;
 }
 
 body {
@@ -80,9 +81,11 @@ body[data-page="home"] main {
   align-items: stretch;
   overflow-x: auto;
   overflow-y: hidden;
-  scroll-snap-type: x mandatory;
-  scroll-behavior: smooth;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  scroll-behavior: auto;
   scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
 }
 
 body[data-page="home"] main::-webkit-scrollbar {
@@ -96,8 +99,11 @@ body[data-page="home"] main > * {
   min-height: 100svh;
   height: 100svh;
   overflow-y: auto;
+  overscroll-behavior-y: contain;
   scroll-snap-align: start;
+  scroll-snap-stop: always;
   scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
   scrollbar-color: rgba(212, 175, 55, 0.48) transparent;
 }
 

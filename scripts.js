@@ -195,6 +195,7 @@ let menuItems = [];
 let menuTimer;
 let lastCatalogHash = "";
 let allOrderItems = [];
+let revealObserver;
 let activeOrderCategory = "Todos";
 let modalItem = null;
 
@@ -606,14 +607,23 @@ const refreshPublicCatalog = async () => {
   renderPublicCatalog(catalog);
 };
 
+
 const initHeader = () => {
   const header = $("[data-header]");
   const toggle = $("[data-nav-toggle]");
   const nav = $("[data-nav]");
+  let frameId = 0;
 
-  window.addEventListener("scroll", () => {
+  const updateHeader = () => {
+    frameId = 0;
     header?.classList.toggle("is-scrolled", window.scrollY > 12);
-  });
+  };
+  const scheduleHeaderUpdate = () => {
+    if (!frameId) frameId = window.requestAnimationFrame(updateHeader);
+  };
+
+  document.addEventListener("scroll", scheduleHeaderUpdate, { capture: true, passive: true });
+  updateHeader();
 
   toggle?.addEventListener("click", () => {
     const open = !document.body.classList.contains("nav-open");
@@ -629,39 +639,64 @@ const initHeader = () => {
   });
 };
 
+
 const initHorizontalRail = () => {
   const rail = document.body.dataset.page === "home" ? $("main") : null;
   if (!rail) return;
 
   rail.setAttribute("tabindex", "0");
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let pendingWheelDelta = 0;
+  let wheelFrameId = 0;
+  const navLinks = $$('[data-nav] a[href^="#"]');
+  const panelLinks = $$('[data-nav] a[href^="#"], .hero-actions a[href^="#"], .brand-lockup[href^="#"]');
+
+  panelLinks.forEach((link) => {
+    link.addEventListener("click", (event) => {
+      const target = $(link.getAttribute("href"));
+      if (!target) return;
+      event.preventDefault();
+      target.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth", block: "nearest", inline: "start" });
+    });
+  });
 
   rail.addEventListener(
     "wheel",
     (event) => {
-      if (Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
+      if (event.ctrlKey || Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
       const panel = event.target.closest("main > *");
       if (!panel || panel.scrollHeight > panel.clientHeight + 4) return;
+
       event.preventDefault();
-      rail.scrollBy({ left: event.deltaY, behavior: "auto" });
+      const unit = event.deltaMode === WheelEvent.DOM_DELTA_LINE ? 18 : event.deltaMode === WheelEvent.DOM_DELTA_PAGE ? rail.clientWidth : 1;
+      pendingWheelDelta += event.deltaY * unit;
+      if (wheelFrameId) return;
+      wheelFrameId = window.requestAnimationFrame(() => {
+        rail.scrollBy({ left: pendingWheelDelta, behavior: "auto" });
+        pendingWheelDelta = 0;
+        wheelFrameId = 0;
+      });
     },
     { passive: false }
   );
 
   rail.addEventListener("keydown", (event) => {
-    if (!["ArrowLeft", "ArrowRight"].includes(event.key)) return;
+    if (!["ArrowLeft", "ArrowRight"].includes(event.key) || event.target.closest("input, textarea, select, [contenteditable=\"true\"]")) return;
     event.preventDefault();
-    rail.scrollBy({ left: event.key === "ArrowRight" ? rail.clientWidth : -rail.clientWidth, behavior: "smooth" });
+    rail.scrollBy({
+      left: event.key === "ArrowRight" ? rail.clientWidth * 0.9 : -rail.clientWidth * 0.9,
+      behavior: prefersReducedMotion ? "auto" : "smooth"
+    });
   });
 
-  const navLinks = $$('[data-nav] a[href^="#"]');
-  const panels = $$('main > [id]');
+  const panels = $$("main > [id]");
   if (!("IntersectionObserver" in window)) return;
   const observer = new IntersectionObserver(
     (entries) => {
       const active = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
       if (!active) return;
       navLinks.forEach((link) => {
-        const current = link.getAttribute("href") === `#${active.target.id}`;
+        const current = link.getAttribute("href") === "#" + active.target.id;
         link.classList.toggle("is-current", current);
         if (current) link.setAttribute("aria-current", "page");
         else link.removeAttribute("aria-current");
@@ -672,6 +707,7 @@ const initHorizontalRail = () => {
   panels.forEach((panel) => observer.observe(panel));
 };
 
+
 const revealOnScroll = () => {
   const revealItems = $$("[data-reveal]");
 
@@ -680,20 +716,22 @@ const revealOnScroll = () => {
     return;
   }
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("is-visible");
-          observer.unobserve(entry.target);
-        }
-      });
-    },
-    { threshold: 0.14, rootMargin: "0px 0px -40px" }
-  );
+  if (!revealObserver) {
+    revealObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.14, rootMargin: "0px 0px -40px" }
+    );
+  }
 
   revealItems.forEach((item) => {
-    if (!item.classList.contains("is-visible")) observer.observe(item);
+    if (!item.classList.contains("is-visible")) revealObserver.observe(item);
   });
 };
 
