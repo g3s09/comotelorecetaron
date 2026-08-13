@@ -13,10 +13,21 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="preload" as="image" href="assets/toro.jpeg">
-    <link rel="stylesheet" href="styles.css?v=20260812-supabase-mobile-2">
+    <link rel="stylesheet" href="styles.css?v=20260813-unified-menu">
   </head>
   <body data-page="home">
     <a class="skip-link" href="#principal">Saltar al contenido</a>
+
+    <aside class="welcome-intro" data-welcome-intro aria-label="Bienvenida">
+      <div class="welcome-smoke" aria-hidden="true"></div>
+      <div class="welcome-embers" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="welcome-intro-content" role="status" aria-live="polite">
+        <span class="welcome-kicker">Bienvenido a</span>
+        <strong>Como Te Lo Recetaron</strong>
+        <span class="welcome-subtitle">Carbón <b>·</b> Brasas <b>·</b> Tradición</span>
+      </div>
+    </aside>
+
 
     <header class="site-header" data-header>
       <a class="brand-lockup" href="#inicio" aria-label="Como Te Lo Recetaron">
@@ -28,15 +39,17 @@
         <span></span>
       </button>
       <nav class="top-nav" data-nav>
-        <a href="#menu">Carta</a>
-        <a href="#ordenar">Ordenar</a>
-        <a href="#bebidas">Bebidas</a>
+        <a href="#menu">Carta y ordenar</a>
         <a href="#reserva">Reservar</a>
         <a href="#areas">Areas</a>
         <a href="#redes">Redes</a>
         <button class="nav-order" type="button" data-open-cart>Mi seleccion</button>
       </nav>
     </header>
+    <div class="rail-dial" data-rail-dial aria-hidden="true" style="--rail-progress: .14">
+      <span data-rail-current>01</span>
+      <small>/<b data-rail-total>07</b></small>
+    </div>
 
     <main id="principal">
       <section class="hero" id="inicio" aria-label="Portada Como Te Lo Recetaron">
@@ -49,8 +62,7 @@
           <h1 class="hero-title reveal-up delay-2">Como Te Lo Recetaron</h1>
           <p class="hero-slogan reveal-up delay-3">Fuego vivo, cortes con caracter y una cocina tradicional para disfrutarse sin prisas.</p>
           <div class="hero-actions reveal-up delay-4">
-            <a class="btn btn-primary" href="#menu">Ver Menu</a>
-            <a class="btn btn-secondary" href="#ordenar">Ordenar del menu</a>
+            <a class="btn btn-primary" href="#menu">Ver carta y ordenar</a>
             <a class="btn btn-secondary" href="#reserva">Reservar mesa</a>
           </div>
           <p class="horizontal-hint reveal-up delay-4"><span aria-hidden="true">← →</span> Desliza para explorar cada seccion</p>
@@ -63,8 +75,8 @@
           <span>Cortes sellados al punto</span>
         </div>
         <div>
-          <strong>Menu por secciones</strong>
-          <span>hola</span>
+          <strong>Carta a tu ritmo</strong>
+          <span>Explora, personaliza y ordena en un solo lugar</span>
         </div>
         <div>
           <strong>Servicio directo</strong>
@@ -76,7 +88,7 @@
         <div class="section-copy" data-reveal>
           <p class="eyebrow">Ritual de la brasa</p>
           <h2>Un lugar para llegar con hambre y quedarse por la mesa.</h2>
-          <p>Esta un 50% listo para su despliegue.</p>
+          <p>Carne al carbón, antojitos y bebidas preparados para compartir una mesa que se queda en la memoria.</p>
         </div>
         <div class="ritual-grid">
           <figure class="ritual-photo tall" data-reveal>
@@ -94,13 +106,14 @@
       <section class="menu-section" id="menu" aria-label="Menu al carbon">
         <div class="section-shell">
           <div class="section-heading" data-reveal>
-            <p class="eyebrow">Nuestra carta</p>
-            <h2>Elige tu antojo y encuentra la seccion en segundos.</h2>
-            <p>Consulta la carta completa por categorias. Cada lamina conserva el sabor visual de nuestro menu impreso y se adapta a cualquier pantalla.</p>
+            <p class="eyebrow">Carta y ordenar</p>
+            <h2>Todo el menú, a un toque de tu selección.</h2>
+            <p>Explora cada categoría, consulta los ingredientes y precios, personaliza lo que necesites y envía tu pedido completo por WhatsApp.</p>
           </div>
 
           <div class="menu-book" data-menu-book data-reveal>
             <div class="menu-book-nav" role="tablist" aria-label="Secciones de la carta">
+              <button class="menu-book-tab" type="button" role="tab" aria-selected="false" data-menu-tab data-menu-filter="Todos" data-menu-image="assets/menu-especialidades.png" data-menu-title="Carta completa" data-menu-note="Todo el sabor de Como Te Lo Recetaron: cocina al carbón, antojitos, bebidas y postres.">Todo</button>
               <button class="menu-book-tab" type="button" role="tab" aria-selected="false" data-menu-tab data-menu-filter="Entradas" data-menu-image="assets/menu-entradas.png" data-menu-title="Entradas y tradicionales" data-menu-note="Para comenzar al centro: costras, mulitas, volcanes, tostadas y entradas de la casa.">Entradas</button>
               <button class="menu-book-tab" type="button" role="tab" aria-selected="false" data-menu-tab data-menu-filter="Especialidades" data-menu-image="assets/menu-especialidades.png" data-menu-title="Especialidades de la casa" data-menu-note="Birria, queso fundido, molcajetes y platos con ese toque de carbon que nos distingue.">Especialidades</button>
               <button class="menu-book-tab" type="button" role="tab" aria-selected="false" data-menu-tab data-menu-filter="Hamburguesas" data-menu-image="assets/menu-hamburguesas.png" data-menu-title="Hamburguesas al carbon" data-menu-note="Carne al carbon, tocino, quesos y extras para armar tu hamburguesa favorita.">Hamburguesas</button>
@@ -122,12 +135,38 @@
             </div>
           </div>
 
-          <div class="featured-menu" data-reveal>
+          <div class="featured-menu menu-ordering" data-reveal>
             <div class="featured-menu-heading">
-              <p class="eyebrow" data-featured-menu-kicker>Cortes y parrilla</p>
-              <h3 data-featured-menu-title>Elige el corte que quieres llevar a la mesa.</h3>
+              <div>
+                <p class="eyebrow" data-featured-menu-kicker>Cortes y parrilla</p>
+                <h3 data-featured-menu-title>Elige el corte que quieres llevar a la mesa.</h3>
+              </div>
+              <button class="btn btn-primary" type="button" data-open-cart>Mi selección <span data-cart-count>0</span></button>
             </div>
-            <div class="catalog-grid" data-products-grid aria-live="polite"></div>
+            <div class="order-filters menu-filters" aria-label="Filtrar carta completa">
+              <button type="button" data-order-filter="Todos">Todo</button>
+              <button type="button" data-order-filter="Entradas">Entradas</button>
+              <button type="button" data-order-filter="Especialidades">Especialidades</button>
+              <button type="button" data-order-filter="Birria">Birria</button>
+              <button type="button" data-order-filter="Tacos">Antojitos</button>
+              <button class="is-active" type="button" data-order-filter="Cortes">Cortes</button>
+              <button type="button" data-order-filter="Hamburguesas">Hamburguesas</button>
+              <button type="button" data-order-filter="Bebidas">Bebidas y postres</button>
+              <button type="button" data-order-filter="Cocteleria">Coctelería</button>
+            </div>
+            <div class="menu-order-layout">
+              <div class="catalog-grid" data-products-grid aria-live="polite"></div>
+              <aside class="order-gallery" data-reveal>
+                <span class="menu-book-kicker">Ver antes de elegir</span>
+                <h3>La carta visual</h3>
+                <p>Todos los productos se pueden agregar a tu selección; los que lo necesitan te pedirán sus detalles.</p>
+                <div>
+                  <img src="assets/menu-especialidades.png" alt="Carta de especialidades de la casa" loading="lazy">
+                  <img src="assets/menu-bebidas.png" alt="Carta de bebidas y postres" loading="lazy">
+                  <img src="assets/menu-cocteleria.png" alt="Carta de coctelería de la casa" loading="lazy">
+                </div>
+              </aside>
+            </div>
           </div>
 
           <div class="menu-cta" data-reveal>
@@ -137,40 +176,6 @@
             </div>
             <button class="btn btn-secondary" type="button" data-open-cart>Ver mi seleccion <span data-cart-count>0</span></button>
           </div>
-        </div>
-      </section>
-
-      <section class="order-section section-shell" id="ordenar" aria-label="Ordenar del menu">
-        <div class="section-heading" data-reveal>
-          <p class="eyebrow">Ordena a tu gusto</p>
-          <h2>Menu seleccionable con detalles, precios y opciones.</h2>
-          <p>Elige una categoria, personaliza tacos, birria, cortes y bebidas, y envia tu seleccion completa por WhatsApp.</p>
-        </div>
-        <div class="order-tools" data-reveal>
-          <div class="order-filters" aria-label="Filtrar menu">
-            <button type="button" data-order-filter="Todos">Todo</button>
-            <button type="button" data-order-filter="Entradas">Entradas</button>
-            <button type="button" data-order-filter="Especialidades">Especialidades</button>
-            <button type="button" data-order-filter="Birria">Birria</button>
-            <button type="button" data-order-filter="Tacos">Antojitos</button>
-            <button class="is-active" type="button" data-order-filter="Cortes">Cortes</button>
-            <button type="button" data-order-filter="Hamburguesas">Hamburguesas</button>
-            <button type="button" data-order-filter="Bebidas">Bebidas</button>
-            <button type="button" data-order-filter="Cocteleria">Cocteleria</button>
-          </div>
-          <button class="btn btn-primary" type="button" data-open-cart>Enviar seleccion <span data-cart-count>0</span></button>
-        </div>
-        <div class="order-layout">
-          <div class="order-grid" data-order-grid aria-live="polite"></div>
-          <aside class="order-gallery" data-reveal>
-            <span class="menu-book-kicker">Imagenes para visualizar</span>
-            <h3>Carta visual</h3>
-            <div>
-              <img src="assets/menu-especialidades.png" alt="Menu de especialidades de la casa" loading="lazy">
-              <img src="assets/menu-cortes.png" alt="Menu de cortes al carbon" loading="lazy">
-              <img src="assets/menu-bebidas.png" alt="Menu de bebidas y postres" loading="lazy">
-            </div>
-          </aside>
         </div>
       </section>
 
@@ -217,15 +222,6 @@
         </div>
       </section>
 
-      <section class="drinks-section section-shell" id="bebidas" aria-label="Bebidas">
-        <div class="section-heading" data-reveal>
-          <p class="eyebrow">Bebidas</p>
-          <h2>Bebidas, mocktails, cocteles y postres de la carta.</h2>
-          <p>Opciones reales del menu para acompanar humo, sal y fuego.</p>
-        </div>
-        <div class="drinks-grid" data-drinks-grid aria-live="polite"></div>
-      </section>
-
       <section class="areas-section" id="areas" aria-label="Areas para reservar">
         <div class="section-shell">
           <div class="section-heading" data-reveal>
@@ -268,6 +264,7 @@
       <footer class="site-footer">
         <p>Como Te Lo Recetaron</p>
         <span>Gracias por su consumo y preferencia. No olviden sus tarjetas para sellar.</span>
+        <small>Diseño y desarrollo por Bit&amp;Gear · Todos los derechos reservados.</small>
       </footer>
     </main>
 
@@ -316,6 +313,7 @@
       </form>
     </aside>
 
-    <script src="scripts.js?v=20260812-supabase-mobile-2" defer></script>
+    <script src="data/catalog-complete.js?v=20260813-complete" defer></script>
+    <script src="scripts.js?v=20260813-unified-menu" defer></script>
   </body>
 </html>

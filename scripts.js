@@ -70,11 +70,21 @@ const normalizeArray = (items = [], type = "products") =>
       })
     : [];
 
+const completeMenu = typeof window !== "undefined" && window.CTLR_COMPLETE_MENU ? window.CTLR_COMPLETE_MENU : {};
+
+const mergeCatalogItems = (items = [], type = "products") => {
+  const extras = Array.isArray(completeMenu[type]) ? completeMenu[type] : [];
+  const merged = new Map();
+  normalizeArray(extras, type).forEach((item) => merged.set(item.id, item));
+  normalizeArray(items, type).forEach((item) => merged.set(item.id, item));
+  return Array.from(merged.values());
+};
+
 const normalizeCatalog = (catalog = {}) => ({
   version: 1,
   updatedAt: catalog.updatedAt || new Date().toISOString(),
-  products: normalizeArray(catalog.products, "products"),
-  drinks: normalizeArray(catalog.drinks, "drinks"),
+  products: mergeCatalogItems(catalog.products, "products"),
+  drinks: mergeCatalogItems(catalog.drinks, "drinks"),
   team: normalizeArray(catalog.team, "team")
 });
 
@@ -203,13 +213,13 @@ let modalItem = null;
 const categoryRules = {
   Todos: () => true,
   Entradas: (item) => ["Entradas", "Tradicionales"].includes(item.category),
-  Especialidades: (item) => ["Birria", "Molcajetes", "Queso Fundido"].includes(item.category),
+  Especialidades: (item) => ["Birria", "Molcajetes", "Queso Fundido", "Especialidades"].includes(item.category),
   Birria: (item) => item.category === "Birria",
-  Tacos: (item) => item.category === "Tacos",
+  Tacos: (item) => ["Tacos", "Gramaje"].includes(item.category),
   Cortes: (item) => item.category === "Cortes",
   Hamburguesas: (item) => item.category === "Hamburguesas",
   Bebidas: (item) => item.kind === "drink",
-  Cocteleria: (item) => item.kind === "drink" && /cocteleria|internacional|mocktails/i.test(item.category || "")
+  Cocteleria: (item) => item.kind === "drink" && /cocteler[ií]a|internacional|mocktails/i.test(item.category || "")
 };
 
 const categoryCopy = {
@@ -242,21 +252,31 @@ const updateMenuBook = (category) => {
     item.classList.toggle("is-active", active);
     item.setAttribute("aria-selected", String(active));
   });
-  if (!tab) return;
+  const menuViews = {
+    Todos: { image: "assets/menu-especialidades.png", title: "Carta completa", note: "Todo el sabor de Como Te Lo Recetaron: cocina al carbón, antojitos, bebidas y postres." },
+    Birria: { image: "assets/menu-especialidades.png", title: "Birria de la casa", note: "Consomé, tacos y quesabirrias preparados a tu gusto." },
+    Tacos: { image: "assets/menu-antojitos.png", title: "Antojitos y tacos", note: "Tacos y órdenes con los complementos que tú eliges." },
+    Especialidades: { image: "assets/menu-especialidades.png", title: "Especialidades de la casa", note: "Birria, molcajetes y queso fundido con el sello de la brasa." },
+    Bebidas: { image: "assets/menu-bebidas.png", title: "Bebidas, postres y para festejar", note: "Aguas frescas, bebidas calientes, cervezas, mocktails y postres." },
+    Cocteleria: { image: "assets/menu-cocteleria.png", title: "Coctelería de la casa", note: "Cocteles de la casa, internacionales y mocktails para acompañar el fuego." }
+  };
+  const view = tab
+    ? { image: tab.dataset.menuImage, title: tab.dataset.menuTitle, note: tab.dataset.menuNote }
+    : menuViews[category] || menuViews.Todos;
 
   const image = $('[data-menu-book-image]', book);
   const title = $('[data-menu-book-title]', book);
   const note = $('[data-menu-book-note]', book);
-  if (image && image.getAttribute("src") !== tab.dataset.menuImage) {
+  if (image && image.getAttribute("src") !== view.image) {
     image.classList.add("is-switching");
     window.setTimeout(() => {
-      image.src = tab.dataset.menuImage || image.src;
-      image.alt = "Carta de " + (tab.dataset.menuTitle || "Como Te Lo Recetaron");
+      image.src = view.image || image.src;
+      image.alt = "Carta de " + (view.title || "Como Te Lo Recetaron");
       image.classList.remove("is-switching");
     }, 120);
   }
-  if (title) title.textContent = tab.dataset.menuTitle || "Carta de la casa";
-  if (note) note.textContent = tab.dataset.menuNote || "Consulta nuestra seleccion de temporada.";
+  if (title) title.textContent = view.title || "Carta de la casa";
+  if (note) note.textContent = view.note || "Consulta nuestra seleccion de temporada.";
 };
 
 const renderFeaturedMenu = () => {
@@ -283,6 +303,8 @@ const selectMenuCategory = (category) => {
   updateOrderFilterControls();
   renderFeaturedMenu();
   renderOrderGrid();
+  const menuPanel = $("#menu");
+  if (menuPanel) menuPanel.scrollTo({ top: 0, behavior: "smooth" });
 };
 
 const renderMechanism = () => {
@@ -691,23 +713,77 @@ const initHeader = () => {
 };
 
 
+const initWelcome = () => {
+  const intro = $("[data-welcome-intro]");
+  if (!intro) return;
+
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const dismiss = () => {
+    if (intro.classList.contains("is-leaving")) return;
+    intro.classList.add("is-leaving");
+    window.setTimeout(() => intro.remove(), reducedMotion ? 80 : 560);
+  };
+
+  window.setTimeout(dismiss, reducedMotion ? 180 : 1650);
+  intro.addEventListener("click", dismiss, { once: true });
+  window.addEventListener("keydown", dismiss, { once: true });
+};
+
 const initHorizontalRail = () => {
   const rail = document.body.dataset.page === "home" ? $("main") : null;
   if (!rail) return;
 
   rail.setAttribute("tabindex", "0");
   const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  let pendingWheelDelta = 0;
-  let wheelFrameId = 0;
+  const panels = Array.from(rail.children).filter((panel) => panel instanceof HTMLElement);
+  const dial = $("[data-rail-dial]");
+  const current = $("[data-rail-current]");
+  const total = $("[data-rail-total]");
+  let wheelDelta = 0;
+  let wheelResetTimer;
+  let lockedUntil = 0;
+  let settleTimer;
+  let touchStart = null;
   const navLinks = $$('[data-nav] a[href^="#"]');
   const panelLinks = $$('[data-nav] a[href^="#"], .hero-actions a[href^="#"], .brand-lockup[href^="#"]');
+
+  if (total) total.textContent = String(panels.length).padStart(2, "0");
+
+  const currentIndex = () => {
+    const center = rail.scrollLeft + rail.clientWidth / 2;
+    return panels.reduce(
+      (best, panel, index) => (Math.abs(panel.offsetLeft + panel.offsetWidth / 2 - center) < Math.abs(panels[best].offsetLeft + panels[best].offsetWidth / 2 - center) ? index : best),
+      0
+    );
+  };
+
+  const updateDial = () => {
+    const index = currentIndex();
+    if (current) current.textContent = String(index + 1).padStart(2, "0");
+    if (dial) dial.style.setProperty("--rail-progress", String((index + 1) / Math.max(panels.length, 1)));
+  };
+
+  const goToPanel = (index) => {
+    const next = panels[Math.max(0, Math.min(index, panels.length - 1))];
+    if (!next) return;
+    lockedUntil = Date.now() + 620;
+    rail.scrollTo({ left: next.offsetLeft, behavior: prefersReducedMotion ? "auto" : "smooth" });
+  };
+
+  const canScrollInside = (target, direction) => {
+    const panel = target instanceof Element ? target.closest("main > *") : null;
+    if (!panel || panel.scrollHeight <= panel.clientHeight + 8) return false;
+    const hasRoom = direction > 0 ? panel.scrollTop + panel.clientHeight < panel.scrollHeight - 4 : panel.scrollTop > 4;
+    return hasRoom && !target.closest(".menu-book-nav, .order-filters");
+  };
 
   panelLinks.forEach((link) => {
     link.addEventListener("click", (event) => {
       const target = $(link.getAttribute("href"));
       if (!target) return;
       event.preventDefault();
-      target.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth", block: "nearest", inline: "start" });
+      const index = panels.indexOf(target);
+      if (index >= 0) goToPanel(index);
     });
   });
 
@@ -715,18 +791,16 @@ const initHorizontalRail = () => {
     "wheel",
     (event) => {
       if (event.ctrlKey || Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
-      const panel = event.target.closest("main > *");
-      if (!panel || panel.scrollHeight > panel.clientHeight + 4) return;
+      if (canScrollInside(event.target, event.deltaY)) return;
 
       event.preventDefault();
       const unit = event.deltaMode === WheelEvent.DOM_DELTA_LINE ? 18 : event.deltaMode === WheelEvent.DOM_DELTA_PAGE ? rail.clientWidth : 1;
-      pendingWheelDelta += event.deltaY * unit;
-      if (wheelFrameId) return;
-      wheelFrameId = window.requestAnimationFrame(() => {
-        rail.scrollBy({ left: pendingWheelDelta, behavior: "auto" });
-        pendingWheelDelta = 0;
-        wheelFrameId = 0;
-      });
+      wheelDelta += event.deltaY * unit;
+      window.clearTimeout(wheelResetTimer);
+      wheelResetTimer = window.setTimeout(() => { wheelDelta = 0; }, 170);
+      if (Date.now() < lockedUntil || Math.abs(wheelDelta) < 42) return;
+      goToPanel(currentIndex() + (wheelDelta > 0 ? 1 : -1));
+      wheelDelta = 0;
     },
     { passive: false }
   );
@@ -734,14 +808,35 @@ const initHorizontalRail = () => {
   rail.addEventListener("keydown", (event) => {
     if (!["ArrowLeft", "ArrowRight"].includes(event.key) || event.target.closest("input, textarea, select, [contenteditable=\"true\"]")) return;
     event.preventDefault();
-    rail.scrollBy({
-      left: event.key === "ArrowRight" ? rail.clientWidth * 0.9 : -rail.clientWidth * 0.9,
-      behavior: prefersReducedMotion ? "auto" : "smooth"
-    });
+    goToPanel(currentIndex() + (event.key === "ArrowRight" ? 1 : -1));
   });
 
-  const panels = $$("main > [id]");
+  rail.addEventListener("touchstart", (event) => {
+    const touch = event.touches[0];
+    touchStart = touch ? { x: touch.clientX, y: touch.clientY } : null;
+  }, { passive: true });
+
+  rail.addEventListener("touchend", (event) => {
+    if (!touchStart) return;
+    const touch = event.changedTouches[0];
+    const deltaX = touch.clientX - touchStart.x;
+    const deltaY = touch.clientY - touchStart.y;
+    touchStart = null;
+    if (Math.abs(deltaX) < 34 || Math.abs(deltaX) <= Math.abs(deltaY)) return;
+    goToPanel(currentIndex() + (deltaX < 0 ? 1 : -1));
+  }, { passive: true });
+
+  rail.addEventListener("scroll", () => {
+    updateDial();
+    window.clearTimeout(settleTimer);
+    settleTimer = window.setTimeout(() => {
+      if (Date.now() >= lockedUntil) goToPanel(currentIndex());
+    }, 120);
+  }, { passive: true });
+
+  updateDial();
   if (!("IntersectionObserver" in window)) return;
+  const navigablePanels = panels.filter((panel) => panel.id);
   const observer = new IntersectionObserver(
     (entries) => {
       const active = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
@@ -755,7 +850,7 @@ const initHorizontalRail = () => {
     },
     { root: rail, threshold: 0.6 }
   );
-  panels.forEach((panel) => observer.observe(panel));
+  navigablePanels.forEach((panel) => observer.observe(panel));
 };
 
 
@@ -788,6 +883,7 @@ const revealOnScroll = () => {
 
 const initPublic = async () => {
   initHeader();
+  initWelcome();
   initHorizontalRail();
   initMechanismControls();
   initMenuBook();
