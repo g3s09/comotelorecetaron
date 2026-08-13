@@ -13,7 +13,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="preload" as="image" href="assets/toro.jpeg">
-    <link rel="stylesheet" href="styles.css?v=20260812-areas-1">
+    <link rel="stylesheet" href="styles.css?v=20260812-supabase-mobile-2">
   </head>
   <body data-page="home">
     <a class="skip-link" href="#principal">Saltar al contenido</a>
@@ -101,31 +101,31 @@
 
           <div class="menu-book" data-menu-book data-reveal>
             <div class="menu-book-nav" role="tablist" aria-label="Secciones de la carta">
-              <button class="menu-book-tab is-active" type="button" role="tab" aria-selected="true" data-menu-tab data-menu-image="assets/menu-entradas.png" data-menu-title="Entradas y tradicionales" data-menu-note="Para comenzar al centro: costras, mulitas, volcanes, tostadas y entradas de la casa.">Entradas</button>
-              <button class="menu-book-tab" type="button" role="tab" aria-selected="false" data-menu-tab data-menu-image="assets/menu-especialidades.png" data-menu-title="Especialidades de la casa" data-menu-note="Birria, queso fundido, molcajetes y platos con ese toque de carbon que nos distingue.">Especialidades</button>
-              <button class="menu-book-tab" type="button" role="tab" aria-selected="false" data-menu-tab data-menu-image="assets/menu-hamburguesas.png" data-menu-title="Hamburguesas al carbon" data-menu-note="Carne al carbon, tocino, quesos y extras para armar tu hamburguesa favorita.">Hamburguesas</button>
-              <button class="menu-book-tab" type="button" role="tab" aria-selected="false" data-menu-tab data-menu-image="assets/menu-cortes.png" data-menu-title="Cortes y parrilla" data-menu-note="Rib-eye, picaña, New York, filete y tomahawk: el ritual de la brasa en su maxima expresion.">Cortes</button>
-              <button class="menu-book-tab" type="button" role="tab" aria-selected="false" data-menu-tab data-menu-image="assets/menu-antojitos.png" data-menu-title="Para el puro antojo" data-menu-note="Carne por gramaje y tacos para compartir como se debe: con tortillas, cebolla y cilantro.">Antojitos</button>
-              <button class="menu-book-tab" type="button" role="tab" aria-selected="false" data-menu-tab data-menu-image="assets/menu-bebidas.png" data-menu-title="Bebidas y postres" data-menu-note="Aguas frescas, bebidas calientes, cervezas, mocktails y un final dulce para la mesa.">Bebidas</button>
-              <button class="menu-book-tab" type="button" role="tab" aria-selected="false" data-menu-tab data-menu-image="assets/menu-cocteleria.png" data-menu-title="Cocteleria de la casa" data-menu-note="Cocteles clasicos e internacionales preparados para acompañar el fuego.">Cocteleria</button>
+              <button class="menu-book-tab" type="button" role="tab" aria-selected="false" data-menu-tab data-menu-filter="Entradas" data-menu-image="assets/menu-entradas.png" data-menu-title="Entradas y tradicionales" data-menu-note="Para comenzar al centro: costras, mulitas, volcanes, tostadas y entradas de la casa.">Entradas</button>
+              <button class="menu-book-tab" type="button" role="tab" aria-selected="false" data-menu-tab data-menu-filter="Especialidades" data-menu-image="assets/menu-especialidades.png" data-menu-title="Especialidades de la casa" data-menu-note="Birria, queso fundido, molcajetes y platos con ese toque de carbon que nos distingue.">Especialidades</button>
+              <button class="menu-book-tab" type="button" role="tab" aria-selected="false" data-menu-tab data-menu-filter="Hamburguesas" data-menu-image="assets/menu-hamburguesas.png" data-menu-title="Hamburguesas al carbon" data-menu-note="Carne al carbon, tocino, quesos y extras para armar tu hamburguesa favorita.">Hamburguesas</button>
+              <button class="menu-book-tab is-active" type="button" role="tab" aria-selected="true" data-menu-tab data-menu-filter="Cortes" data-menu-image="assets/menu-cortes.png" data-menu-title="Cortes y parrilla" data-menu-note="Rib-eye, picaña, New York, filete y tomahawk: el ritual de la brasa en su maxima expresion.">Cortes</button>
+              <button class="menu-book-tab" type="button" role="tab" aria-selected="false" data-menu-tab data-menu-filter="Tacos" data-menu-image="assets/menu-antojitos.png" data-menu-title="Para el puro antojo" data-menu-note="Carne por gramaje y tacos para compartir como se debe: con tortillas, cebolla y cilantro.">Antojitos</button>
+              <button class="menu-book-tab" type="button" role="tab" aria-selected="false" data-menu-tab data-menu-filter="Bebidas" data-menu-image="assets/menu-bebidas.png" data-menu-title="Bebidas y postres" data-menu-note="Aguas frescas, bebidas calientes, cervezas, mocktails y un final dulce para la mesa.">Bebidas</button>
+              <button class="menu-book-tab" type="button" role="tab" aria-selected="false" data-menu-tab data-menu-filter="Cocteleria" data-menu-image="assets/menu-cocteleria.png" data-menu-title="Cocteleria de la casa" data-menu-note="Cocteles clasicos e internacionales preparados para acompañar el fuego.">Cocteleria</button>
             </div>
             <div class="menu-book-view">
               <div class="menu-book-copy">
                 <span class="menu-book-kicker">Carta impresa · edicion actual</span>
-                <h3 data-menu-book-title>Entradas y tradicionales</h3>
-                <p data-menu-book-note>Para comenzar al centro: costras, mulitas, volcanes, tostadas y entradas de la casa.</p>
+                <h3 data-menu-book-title>Cortes y parrilla</h3>
+                <p data-menu-book-note>Rib-eye, picanha, New York, filete y tomahawk: el ritual de la brasa en su maxima expresion.</p>
                 <a class="btn btn-primary" href="https://wa.me/528181681933" target="_blank" rel="noopener">Pedir por WhatsApp</a>
               </div>
               <figure class="menu-book-figure">
-                <img data-menu-book-image src="assets/menu-entradas.png" alt="Carta de entradas y tradicionales" loading="eager">
+                <img data-menu-book-image src="assets/menu-cortes.png" alt="Carta de cortes y parrilla" loading="eager">
               </figure>
             </div>
           </div>
 
           <div class="featured-menu" data-reveal>
             <div class="featured-menu-heading">
-              <p class="eyebrow">Favoritos de la casa</p>
-              <h3>Lo mas pedido para decidir rapido.</h3>
+              <p class="eyebrow" data-featured-menu-kicker>Cortes y parrilla</p>
+              <h3 data-featured-menu-title>Elige el corte que quieres llevar a la mesa.</h3>
             </div>
             <div class="catalog-grid" data-products-grid aria-live="polite"></div>
           </div>
@@ -148,10 +148,12 @@
         </div>
         <div class="order-tools" data-reveal>
           <div class="order-filters" aria-label="Filtrar menu">
-            <button class="is-active" type="button" data-order-filter="Todos">Todos</button>
+            <button type="button" data-order-filter="Todos">Todo</button>
+            <button type="button" data-order-filter="Entradas">Entradas</button>
+            <button type="button" data-order-filter="Especialidades">Especialidades</button>
             <button type="button" data-order-filter="Birria">Birria</button>
-            <button type="button" data-order-filter="Tacos">Tacos</button>
-            <button type="button" data-order-filter="Cortes">Cortes</button>
+            <button type="button" data-order-filter="Tacos">Antojitos</button>
+            <button class="is-active" type="button" data-order-filter="Cortes">Cortes</button>
             <button type="button" data-order-filter="Hamburguesas">Hamburguesas</button>
             <button type="button" data-order-filter="Bebidas">Bebidas</button>
             <button type="button" data-order-filter="Cocteleria">Cocteleria</button>
@@ -314,6 +316,6 @@
       </form>
     </aside>
 
-    <script src="scripts.js?v=20260812-areas-1" defer></script>
+    <script src="scripts.js?v=20260812-supabase-mobile-2" defer></script>
   </body>
 </html>

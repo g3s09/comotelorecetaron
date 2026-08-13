@@ -196,8 +196,94 @@ let menuTimer;
 let lastCatalogHash = "";
 let allOrderItems = [];
 let revealObserver;
-let activeOrderCategory = "Todos";
+let activeOrderCategory = "Cortes";
+let activeMenuCategory = "Cortes";
 let modalItem = null;
+
+const categoryRules = {
+  Todos: () => true,
+  Entradas: (item) => ["Entradas", "Tradicionales"].includes(item.category),
+  Especialidades: (item) => ["Birria", "Molcajetes", "Queso Fundido"].includes(item.category),
+  Birria: (item) => item.category === "Birria",
+  Tacos: (item) => item.category === "Tacos",
+  Cortes: (item) => item.category === "Cortes",
+  Hamburguesas: (item) => item.category === "Hamburguesas",
+  Bebidas: (item) => item.kind === "drink",
+  Cocteleria: (item) => item.kind === "drink" && /cocteleria|internacional|mocktails/i.test(item.category || "")
+};
+
+const categoryCopy = {
+  Todos: ["Carta completa", "Explora todas las opciones disponibles."],
+  Entradas: ["Entradas y tradicionales", "Para comenzar al centro y abrir el apetito."],
+  Especialidades: ["Especialidades de la casa", "Birria, molcajetes y queso fundido con el sello de la brasa."],
+  Birria: ["Birria de la casa", "Consome, tacos y sabores de coccion lenta."],
+  Tacos: ["Antojitos y tacos", "Tacos para compartir como se debe: con tortillas, cebolla y cilantro."],
+  Cortes: ["Cortes y parrilla", "Elige el corte que quieres llevar a la mesa."],
+  Hamburguesas: ["Hamburguesas al carbon", "Carne, tocino, quesos y extras para armar tu favorita."],
+  Bebidas: ["Bebidas y postres", "Opciones para acompanar humo, sal y fuego."],
+  Cocteleria: ["Cocteleria de la casa", "Clasicos, internacionales y mocktails para acompanar el fuego."]
+};
+
+const matchesCategory = (item, category) => (categoryRules[category] || categoryRules.Todos)(item);
+
+const updateOrderFilterControls = () => {
+  $$('[data-order-filter]').forEach((button) => {
+    button.classList.toggle("is-active", button.dataset.orderFilter === activeOrderCategory);
+  });
+};
+
+const updateMenuBook = (category) => {
+  const book = $('[data-menu-book]');
+  if (!book) return;
+  const tab = $$('[data-menu-tab]', book).find((item) => item.dataset.menuFilter === category);
+  const tabs = $$('[data-menu-tab]', book);
+  tabs.forEach((item) => {
+    const active = item === tab;
+    item.classList.toggle("is-active", active);
+    item.setAttribute("aria-selected", String(active));
+  });
+  if (!tab) return;
+
+  const image = $('[data-menu-book-image]', book);
+  const title = $('[data-menu-book-title]', book);
+  const note = $('[data-menu-book-note]', book);
+  if (image && image.getAttribute("src") !== tab.dataset.menuImage) {
+    image.classList.add("is-switching");
+    window.setTimeout(() => {
+      image.src = tab.dataset.menuImage || image.src;
+      image.alt = "Carta de " + (tab.dataset.menuTitle || "Como Te Lo Recetaron");
+      image.classList.remove("is-switching");
+    }, 120);
+  }
+  if (title) title.textContent = tab.dataset.menuTitle || "Carta de la casa";
+  if (note) note.textContent = tab.dataset.menuNote || "Consulta nuestra seleccion de temporada.";
+};
+
+const renderFeaturedMenu = () => {
+  const grid = $('[data-products-grid]');
+  const copy = categoryCopy[activeMenuCategory] || categoryCopy.Todos;
+  const kicker = $('[data-featured-menu-kicker]');
+  const title = $('[data-featured-menu-title]');
+  const visible = allOrderItems.filter((item) => matchesCategory(item, activeMenuCategory));
+
+  if (kicker) kicker.textContent = copy[0];
+  if (title) title.textContent = copy[1];
+  if (grid) {
+    grid.innerHTML = visible.length
+      ? visible.map((item) => productCardMarkup(item, item.kind === "drink" ? "drink-card" : "")).join("")
+      : emptyMarkup("No hay opciones disponibles en esta seccion por ahora.");
+  }
+  revealOnScroll();
+};
+
+const selectMenuCategory = (category) => {
+  activeMenuCategory = category;
+  activeOrderCategory = category;
+  updateMenuBook(category);
+  updateOrderFilterControls();
+  renderFeaturedMenu();
+  renderOrderGrid();
+};
 
 const renderMechanism = () => {
   const stack = $("[data-mechanism-stack]");
@@ -241,34 +327,12 @@ const initMechanismControls = () => {
   $("[data-menu-next]")?.addEventListener("click", () => moveMechanism(1));
 };
 
+
 const initMenuBook = () => {
-  const book = $("[data-menu-book]");
+  const book = $('[data-menu-book]');
   if (!book) return;
-
-  const image = $("[data-menu-book-image]", book);
-  const title = $("[data-menu-book-title]", book);
-  const note = $("[data-menu-book-note]", book);
-
   $$('[data-menu-tab]', book).forEach((tab) => {
-    tab.addEventListener("click", () => {
-      $$('[data-menu-tab]', book).forEach((item) => {
-        const active = item === tab;
-        item.classList.toggle("is-active", active);
-        item.setAttribute("aria-selected", String(active));
-      });
-
-      if (image) {
-        image.classList.add("is-switching");
-        window.setTimeout(() => {
-          image.src = tab.dataset.menuImage || image.src;
-          image.alt = `Carta de ${tab.dataset.menuTitle || "Como Te Lo Recetaron"}`;
-          image.classList.remove("is-switching");
-        }, 120);
-      }
-
-      if (title) title.textContent = tab.dataset.menuTitle || "Carta de la casa";
-      if (note) note.textContent = tab.dataset.menuNote || "Consulta nuestra selección de temporada.";
-    });
+    tab.addEventListener("click", () => selectMenuCategory(tab.dataset.menuFilter || "Todos"));
   });
 };
 
@@ -508,28 +572,20 @@ const initReservation = () => {
   });
 };
 
+
 const renderOrderGrid = () => {
   const grid = $("[data-order-grid]");
   if (!grid) return;
-  const visible = allOrderItems.filter((item) => {
-    if (activeOrderCategory === "Todos") return true;
-    if (activeOrderCategory === "Bebidas") return item.kind === "drink";
-    if (activeOrderCategory === "Cocteleria") return item.kind === "drink" && /cocteleria|internacional|mocktails/i.test(item.category || "");
-    return item.category === activeOrderCategory;
-  });
+  const visible = allOrderItems.filter((item) => matchesCategory(item, activeOrderCategory));
   grid.innerHTML = visible.length
-    ? visible.map((item) => productCardMarkup(item, item.category?.includes("Bebidas") || item.category?.includes("Cocteleria") ? "drink-card" : "")).join("")
+    ? visible.map((item) => productCardMarkup(item, item.kind === "drink" ? "drink-card" : "")).join("")
     : emptyMarkup("No hay productos en esta categoria por ahora.");
   revealOnScroll();
 };
 
 const initOrderFilters = () => {
-  $$("[data-order-filter]").forEach((button) => {
-    button.addEventListener("click", () => {
-      activeOrderCategory = button.dataset.orderFilter || "Todos";
-      $$("[data-order-filter]").forEach((item) => item.classList.toggle("is-active", item === button));
-      renderOrderGrid();
-    });
+  $$('[data-order-filter]').forEach((button) => {
+    button.addEventListener("click", () => selectMenuCategory(button.dataset.orderFilter || "Todos"));
   });
 };
 
@@ -546,12 +602,7 @@ const renderPublicCatalog = (catalog) => {
   if (menuIndex >= menuItems.length) menuIndex = 0;
   renderMechanism();
 
-  const productGrid = $("[data-products-grid]");
-  if (productGrid) {
-    productGrid.innerHTML = products.length
-      ? products.map((item) => productCardMarkup(item)).join("")
-      : emptyMarkup("No hay productos disponibles por ahora.");
-  }
+  selectMenuCategory(activeMenuCategory);
 
   const drinksGrid = $("[data-drinks-grid]");
   if (drinksGrid) {

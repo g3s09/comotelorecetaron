@@ -9,8 +9,10 @@ const catalogFile = path.join(dataDir, "catalog.json");
 const port = Number(process.env.PORT || 4173);
 const isVercel = Boolean(process.env.VERCEL || process.env.VERCEL_ENV);
 const adminToken = process.env.CTLR_ADMIN_TOKEN || (isVercel ? "" : "brasas1933");
-const blobToken = process.env.BLOB_READ_WRITE_TOKEN || "";
-const catalogBlobPath = "catalog/catalog.json";
+const supabaseUrl = String(process.env.SUPABASE_URL || "").replace(/\/$/, "");
+const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
+const catalogRowId = "public";
+const imageBucket = "ctlr-images";
 
 const mimeTypes = {
   ".html": "text/html; charset=utf-8",
@@ -25,6 +27,8 @@ const mimeTypes = {
   ".ico": "image/x-icon"
 };
 
+const hasSupabase = () => Boolean(supabaseUrl && supabaseServiceRoleKey);
+
 const ensureDataFiles = () => {
   if (isVercel) return;
   fs.mkdirSync(dataDir, { recursive: true });
@@ -37,7 +41,7 @@ const ensureDataFiles = () => {
   }
 };
 
-const storageError = (message) => {
+const databaseError = (message) => {
   const error = new Error(message);
   error.statusCode = 503;
   return error;
@@ -45,59 +49,60 @@ const storageError = (message) => {
 
 const readSeedCatalog = () => {
   if (!fs.existsSync(catalogFile)) {
-    return JSON.stringify({ version: 1, updatedAt: new Date().toISOString(), products: [], drinks: [], team: [] });
+    return { version: 1, updatedAt: new Date().toISOString(), products: [], drinks: [], team: [] };
   }
-  return fs.readFileSync(catalogFile, "utf8");
+  return JSON.parse(fs.readFileSync(catalogFile, "utf8"));
 };
 
-const loadBlob = async () => {
-  if (!blobToken) return null;
-  return import("@vercel/blob");
+const supabaseHeaders = (extra = {}) => ({
+  apikey: supabaseServiceRoleKey,
+  Authorization: "Bearer " + supabaseServiceRoleKey,
+  ...extra
+});
+
+const supabaseRequest = async (resource, options = {}) => {
+  const response = await fetch(supabaseUrl + resource, {
+    cache: "no-store",
+    ...options,
+    headers: supabaseHeaders(options.headers)
+  });
+  if (!response.ok) {
+    const detail = await response.text();
+    throw new Error("Supabase respondio con " + response.status + ": " + (detail || "sin detalle"));
+  }
+  return response;
 };
 
 const readCatalog = async () => {
-  if (!isVercel || !blobToken) {
-    ensureDataFiles();
-    return readSeedCatalog();
-  }
-
+  if (!hasSupabase()) return readSeedCatalog();
   try {
-    const { list } = await loadBlob();
-    const { blobs } = await list({ prefix: catalogBlobPath, token: blobToken });
-    const catalogBlob = blobs.find((blob) => blob.pathname === catalogBlobPath);
-    if (!catalogBlob) return readSeedCatalog();
-
-    const response = await fetch(catalogBlob.url, { cache: "no-store" });
-    if (!response.ok) throw new Error("No se pudo leer el catalogo almacenado.");
-    return response.text();
+    const response = await supabaseRequest("/rest/v1/site_catalog?id=eq." + catalogRowId + "&select=data");
+    const rows = await response.json();
+    return rows[0]?.data || readSeedCatalog();
   } catch (error) {
-    console.error("No se pudo leer Vercel Blob; se usa el catalogo incluido.", error);
+    console.error("No se pudo leer Supabase; se usa el catalogo incluido.", error);
     return readSeedCatalog();
   }
 };
 
 const writeCatalog = async (catalog) => {
-  const serialized = JSON.stringify(catalog, null, 2);
   if (!isVercel) {
     ensureDataFiles();
-    fs.writeFileSync(catalogFile, serialized);
+    fs.writeFileSync(catalogFile, JSON.stringify(catalog, null, 2));
     return;
   }
-
-  const blob = await loadBlob();
-  if (!blob) {
-    throw storageError("Para guardar desde Vercel, conecta Vercel Blob y agrega BLOB_READ_WRITE_TOKEN.");
+  if (!hasSupabase()) {
+    throw databaseError("Configura SUPABASE_URL y SUPABASE_SERVICE_ROLE_KEY en Vercel para guardar el catalogo.");
   }
-
-  await blob.put(catalogBlobPath, serialized, {
-    access: "public",
-    addRandomSuffix: false,
-    allowOverwrite: true,
-    contentType: "application/json; charset=utf-8",
-    token: blobToken
+  await supabaseRequest("/rest/v1/site_catalog?on_conflict=id", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Prefer: "resolution=merge-duplicates,return=minimal"
+    },
+    body: JSON.stringify({ id: catalogRowId, data: catalog, updated_at: new Date().toISOString() })
   });
 };
-
 const sendJson = (response, statusCode, payload) => {
   response.writeHead(statusCode, {
     "Content-Type": "application/json; charset=utf-8",
@@ -198,13 +203,7 @@ const normalizeCatalog = (catalog) => ({
 
 const handleCatalog = async (request, response) => {
   if (request.method === "GET") {
-    const catalog = await readCatalog();
-    response.writeHead(200, {
-      "Content-Type": "application/json; charset=utf-8",
-      "Cache-Control": "no-store",
-      "Access-Control-Allow-Origin": "*"
-    });
-    response.end(catalog);
+    sendJson(response, 200, await readCatalog());
     return;
   }
 
@@ -269,16 +268,19 @@ const handleUpload = async (request, response) => {
       return;
     }
 
-    const blob = await loadBlob();
-    if (!blob) {
-      throw storageError("Para subir imagenes desde Vercel, conecta Vercel Blob y agrega BLOB_READ_WRITE_TOKEN.");
+    if (!hasSupabase()) {
+      throw databaseError("Configura SUPABASE_URL y SUPABASE_SERVICE_ROLE_KEY antes de subir imagenes desde Vercel.");
     }
-    const uploaded = await blob.put(`uploads/${filename}`, bytes, {
-      access: "public",
-      contentType: mimeType,
-      token: blobToken
+    const objectPath = imageBucket + "/" + filename;
+    await supabaseRequest("/storage/v1/object/" + objectPath, {
+      method: "POST",
+      headers: {
+        "Content-Type": mimeType,
+        "x-upsert": "true"
+      },
+      body: bytes
     });
-    sendJson(response, 200, { url: uploaded.url });
+    sendJson(response, 200, { url: supabaseUrl + "/storage/v1/object/public/" + objectPath });
   } catch (error) {
     sendJson(response, error.statusCode || 400, { error: error.message || "No se pudo subir la imagen." });
   }
