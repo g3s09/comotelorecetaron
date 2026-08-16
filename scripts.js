@@ -464,6 +464,8 @@ const openItemModal = (item) => {
       (option) => `
         <fieldset class="custom-option">
           <legend>${escapeHtml(option.label)}</legend>
+          <p class="custom-option-prompt">Elige una opci?n</p>
+          <div class="custom-option-choices">
           ${option.choices
             .map(
               (choice, index) => `
@@ -474,6 +476,7 @@ const openItemModal = (item) => {
               `
             )
             .join("")}
+          </div>
         </fieldset>
       `
     )
@@ -743,7 +746,9 @@ const initHorizontalRail = () => {
   let wheelResetTimer;
   let lockedUntil = 0;
   let settleTimer;
+  let railFrameId = 0;
   let touchStart = null;
+  let touchAxis = null;
   const navLinks = $$('[data-nav] a[href^="#"]');
   const panelLinks = $$('[data-nav] a[href^="#"], .hero-actions a[href^="#"], .brand-lockup[href^="#"]');
 
@@ -766,8 +771,34 @@ const initHorizontalRail = () => {
   const goToPanel = (index) => {
     const next = panels[Math.max(0, Math.min(index, panels.length - 1))];
     if (!next) return;
-    lockedUntil = Date.now() + 620;
-    rail.scrollTo({ left: next.offsetLeft, behavior: prefersReducedMotion ? "auto" : "smooth" });
+    const start = rail.scrollLeft;
+    const destination = next.offsetLeft;
+    const distance = destination - start;
+    if (Math.abs(distance) < 1) return;
+
+    window.cancelAnimationFrame(railFrameId);
+    if (prefersReducedMotion) {
+      rail.scrollLeft = destination;
+      updateDial();
+      return;
+    }
+
+    const compactScreen = window.matchMedia("(max-width: 820px)").matches;
+    const duration = Math.min(Math.max(compactScreen ? 720 : 620, Math.abs(distance) * 0.62), compactScreen ? 920 : 760);
+    const startedAt = performance.now();
+    lockedUntil = Date.now() + duration + 140;
+
+    const step = (now) => {
+      const progress = Math.min((now - startedAt) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 4);
+      rail.scrollLeft = start + distance * eased;
+      if (progress < 1) railFrameId = window.requestAnimationFrame(step);
+      else {
+        railFrameId = 0;
+        updateDial();
+      }
+    };
+    railFrameId = window.requestAnimationFrame(step);
   };
 
   const canScrollInside = (target, direction) => {
@@ -797,8 +828,8 @@ const initHorizontalRail = () => {
       const unit = event.deltaMode === WheelEvent.DOM_DELTA_LINE ? 18 : event.deltaMode === WheelEvent.DOM_DELTA_PAGE ? rail.clientWidth : 1;
       wheelDelta += event.deltaY * unit;
       window.clearTimeout(wheelResetTimer);
-      wheelResetTimer = window.setTimeout(() => { wheelDelta = 0; }, 170);
-      if (Date.now() < lockedUntil || Math.abs(wheelDelta) < 42) return;
+      wheelResetTimer = window.setTimeout(() => { wheelDelta = 0; }, 230);
+      if (Date.now() < lockedUntil || Math.abs(wheelDelta) < 68) return;
       goToPanel(currentIndex() + (wheelDelta > 0 ? 1 : -1));
       wheelDelta = 0;
     },
@@ -813,16 +844,32 @@ const initHorizontalRail = () => {
 
   rail.addEventListener("touchstart", (event) => {
     const touch = event.touches[0];
-    touchStart = touch ? { x: touch.clientX, y: touch.clientY } : null;
+    touchStart = touch ? { x: touch.clientX, y: touch.clientY, target: event.target } : null;
+    touchAxis = null;
   }, { passive: true });
+
+  rail.addEventListener("touchmove", (event) => {
+    if (!touchStart) return;
+    const touch = event.touches[0];
+    if (!touch) return;
+    const deltaX = touch.clientX - touchStart.x;
+    const deltaY = touch.clientY - touchStart.y;
+    if (!touchAxis && Math.max(Math.abs(deltaX), Math.abs(deltaY)) > 10) {
+      touchAxis = Math.abs(deltaX) > Math.abs(deltaY) ? "horizontal" : "vertical";
+    }
+    const controlsOwnSwipe = touchStart.target instanceof Element && touchStart.target.closest(".menu-book-nav, .order-filters, .cart-drawer, .item-modal");
+    if (touchAxis === "horizontal" && !controlsOwnSwipe) event.preventDefault();
+  }, { passive: false });
 
   rail.addEventListener("touchend", (event) => {
     if (!touchStart) return;
     const touch = event.changedTouches[0];
     const deltaX = touch.clientX - touchStart.x;
     const deltaY = touch.clientY - touchStart.y;
+    const wasHorizontal = touchAxis === "horizontal";
     touchStart = null;
-    if (Math.abs(deltaX) < 34 || Math.abs(deltaX) <= Math.abs(deltaY)) return;
+    touchAxis = null;
+    if (!wasHorizontal || Math.abs(deltaX) < 46 || Math.abs(deltaX) <= Math.abs(deltaY)) return;
     goToPanel(currentIndex() + (deltaX < 0 ? 1 : -1));
   }, { passive: true });
 
@@ -831,7 +878,7 @@ const initHorizontalRail = () => {
     window.clearTimeout(settleTimer);
     settleTimer = window.setTimeout(() => {
       if (Date.now() >= lockedUntil) goToPanel(currentIndex());
-    }, 120);
+    }, 180);
   }, { passive: true });
 
   updateDial();
