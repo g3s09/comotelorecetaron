@@ -360,7 +360,12 @@ const enrichMenuItem = (item) => {
 
   if (id === "gramaje-pastor") return replaceOptions([{ id: "gramaje", label: "Elige la cantidad", type: "single", choices: [choice("1 kg", "Porción para compartir.", { price: 360 }), choice("1/2 kg", "Porción de 500 gramos.", { price: 200 }), choice("1/4 kg", "Porción de 250 gramos.", { price: 140 })] }]);
 
-  if (id === "gramaje-arrachera") return replaceOptions([{ id: "gramaje", label: "Elige la cantidad", type: "single", choices: [choice("1 kg", "Porción para compartir.", { price: 645 }), choice("1/2 kg", "Porción de 500 gramos.", { price: 345 }), choice("1/4 kg", "Porción de 250 gramos.", { price: 195 })] }]);
+  if (id === "gramaje-arrachera") {
+    return replaceOptions([
+      { id: "gramaje", label: "Elige la cantidad", type: "single", choices: [choice("1 kg", "Porción para compartir.", { price: 645 }), choice("1/2 kg", "Porción de 500 gramos.", { price: 345 }), choice("1/4 kg", "Porción de 250 gramos.", { price: 195 })] },
+      { id: "termino", label: "Término de la arrachera", type: "single", choices: cutOptions[0].choices }
+    ]);
+  }
 
   if (["birria", "quesabirrias"].includes(id)) {
     const isQuesabirria = id === "quesabirrias";
@@ -817,6 +822,8 @@ const initOrderScrollCue = () => {
     if (!panel || !orderMenu) return;
     event.preventDefault();
     event.stopImmediatePropagation();
+    orderMenu.classList.add("is-visible");
+    $$('[data-reveal]', orderMenu).forEach((item) => item.classList.add("is-visible"));
     // En móvil primero se muestran el título y los filtros: así el cliente puede
     // cambiar de sección antes de llegar a la primera tarjeta del catálogo.
     const orderTop = orderMenu.getBoundingClientRect().top - panel.getBoundingClientRect().top + panel.scrollTop;

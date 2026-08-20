@@ -3154,9 +3154,17 @@ svg {
   }
 
   body[data-page="home"] .menu-section .section-heading { order: 1; }
-  body[data-page="home"] .menu-section .featured-menu { order: 2; }
-  body[data-page="home"] .menu-section .menu-book { order: 3; }
-  body[data-page="home"] .menu-section .menu-cta { order: 4; }
+  body[data-page="home"] .menu-section .order-scroll-cue { order: 2; }
+  body[data-page="home"] .menu-section .featured-menu { order: 3; }
+  body[data-page="home"] .menu-section .menu-book { order: 4; }
+  body[data-page="home"] .menu-section .menu-cta { order: 5; }
+
+  /* La carta vive en un panel con scroll propio. En Safari móvil no se debe
+     depender del observador de entrada para que aparezcan sus tarjetas. */
+  body[data-page="home"] .order-stage [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
 
   body[data-page="home"] .menu-book-nav,
   body[data-page="home"] .order-filters {
@@ -4021,13 +4029,17 @@ body[data-page="home"] .order-stage .catalog-card {
 
 @media (max-width: 620px) {
   .selection-float {
-    width: 3.25rem;
+    right: max(0.75rem, env(safe-area-inset-right));
+    bottom: calc(6rem + env(safe-area-inset-bottom));
+    z-index: 90;
+    width: auto;
+    min-height: 2.85rem;
     justify-content: center;
-    gap: 0.25rem;
-    padding: 0.45rem;
+    gap: 0.4rem;
+    padding: 0.45rem 0.7rem;
   }
 
-  .selection-float > span:not(.selection-float-icon) { display: none; }
+  .selection-float > span:not(.selection-float-icon) { display: inline; }
   .selection-float b { min-width: 1.15rem; min-height: 1.15rem; font-size: 0.62rem; }
 
   .checkout-payment-grid { grid-template-columns: 1fr; }
