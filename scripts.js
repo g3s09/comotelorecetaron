@@ -813,12 +813,14 @@ const initOrderScrollCue = () => {
   cue.addEventListener("click", (event) => {
     if (!window.matchMedia("(max-width: 820px)").matches) return;
     const panel = $("#menu");
-    const grid = $("[data-products-grid]");
-    if (!panel || !grid) return;
+    const orderMenu = $("#ordenar-carta");
+    if (!panel || !orderMenu) return;
     event.preventDefault();
     event.stopImmediatePropagation();
-    const gridTop = grid.getBoundingClientRect().top - panel.getBoundingClientRect().top + panel.scrollTop;
-    panel.scrollTo({ top: Math.max(0, gridTop - 88), behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+    // En móvil primero se muestran el título y los filtros: así el cliente puede
+    // cambiar de sección antes de llegar a la primera tarjeta del catálogo.
+    const orderTop = orderMenu.getBoundingClientRect().top - panel.getBoundingClientRect().top + panel.scrollTop;
+    panel.scrollTo({ top: Math.max(0, orderTop - 92), behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
   }, { capture: true });
 };
 
