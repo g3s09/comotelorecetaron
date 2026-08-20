@@ -35,7 +35,7 @@
 
     <header class="site-header" data-header>
       <a class="brand-lockup" href="#inicio" aria-label="Como Te Lo Recetaron">
-        <span class="brand-seal">CTLR</span>
+        <span class="brand-seal"><img src="assets/bienvenida-toro.png" alt=""></span>
         <span class="brand-name">Como Te Lo Recetaron</span>
       </a>
       <button class="nav-toggle" type="button" aria-label="Abrir menu" aria-expanded="false" data-nav-toggle>
@@ -46,6 +46,7 @@
         <a href="#menu">Ordenar</a>
         <a href="#reserva">Reservar</a>
         <a href="#areas">Areas</a>
+        <a href="#resenas">Reseñas</a>
         <a href="https://maps.app.goo.gl/98Uu8kPWvtGMrZLLA" target="_blank" rel="noopener">Ubicación</a>
         <a href="#redes">Redes</a>
         <button class="nav-order" type="button" data-open-cart>Mi seleccion</button>
@@ -226,7 +227,7 @@
               <span>Martes</span>
               <p>De 8:30 AM a 2:00 PM estaremos cerrados. Reanudamos servicio a partir de las 2:00 PM.</p>
             </div>
-            <p class="order-reservation-note" data-order-reservation-note hidden><b>Tu selección sigue guardada.</b> Completa esta reservación y no tendrás que elegir tus platillos nuevamente.</p>
+            <p class="order-reservation-note" data-order-reservation-note hidden><b>Tu selección está lista.</b> <span data-order-reservation-summary></span> Al confirmar la reservación se enviará junto con ella.</p>
             <div class="form-grid two-col">
               <label>Nombre<input name="name" type="text" placeholder="Tu nombre" required></label>
               <label>WhatsApp<input name="phone" type="tel" placeholder="10 digitos" required></label>
@@ -273,6 +274,49 @@
         </div>
       </section>
 
+      <section class="reviews-section section-shell" id="resenas" aria-label="Reseñas de muestra">
+        <div class="reviews-heading" data-reveal>
+          <div>
+            <p class="eyebrow">Reseñas</p>
+            <h2>Momentos que se disfrutan alrededor de la brasa.</h2>
+          </div>
+          <div class="reviews-heading-aside">
+            <p>Una vista previa del espacio para testimonios. Sustituye los comentarios por reseñas verificadas cuando las tengas.</p>
+            <a class="reviews-action" href="https://maps.app.goo.gl/98Uu8kPWvtGMrZLLA" target="_blank" rel="noopener">¿Ya nos visitaste? Comparte tu experiencia <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+        <div class="reviews-grid">
+          <article class="review-card" data-reveal>
+            <img src="assets/review-moments.png" alt="Comensales brindando alrededor de una mesa" loading="lazy">
+            <div><span>Comentario de muestra</span><p>“El ambiente invita a quedarse: buena comida, brasas y una mesa para compartir.”</p><small>Visita en familia</small></div>
+          </article>
+          <article class="review-card" data-reveal>
+            <img src="assets/momento-brasa.png" alt="Tacos y corte servidos al carbón" loading="lazy">
+            <div><span>Comentario de muestra</span><p>“Los cortes al carbón y los tacos fueron el centro de la noche.”</p><small>Cena entre amigos</small></div>
+          </article>
+          <article class="review-card" data-reveal>
+            <img src="assets/terraza.jpeg" alt="Terraza nocturna del restaurante" loading="lazy">
+            <div><span>Comentario de muestra</span><p>“La terraza tiene una vibra especial para una sobremesa sin prisas.”</p><small>Noche de terraza</small></div>
+          </article>
+          <article class="review-card" data-reveal>
+            <img src="assets/momento-bebidas.png" alt="Bebidas servidas en ambiente cálido" loading="lazy">
+            <div><span>Comentario de muestra</span><p>“Las bebidas y los postres son el cierre perfecto después de la parrilla.”</p><small>Hora de brindar</small></div>
+          </article>
+          <article class="review-card" data-reveal>
+            <img src="assets/balcon.jpeg" alt="Área de balcón del restaurante" loading="lazy">
+            <div><span>Comentario de muestra</span><p>“Un rincón cómodo para platicar, comer rico y volver a la próxima.”</p><small>Mesa en balcón</small></div>
+          </article>
+          <article class="review-card" data-reveal>
+            <img src="assets/momento-hamburguesa.png" alt="Hamburguesa preparada al carbón" loading="lazy">
+            <div><span>Comentario de muestra</span><p>“La hamburguesa llega generosa, con ese sabor ahumado que se antoja.”</p><small>Antojo al carbón</small></div>
+          </article>
+          <article class="review-card" data-reveal>
+            <img src="assets/review-moments.png" alt="Cena compartida junto a las brasas" loading="lazy">
+            <div><span>Comentario de muestra</span><p>“El servicio, las brasas y la compañía hacen que cada visita se sienta especial.”</p><small>Celebración en la casa</small></div>
+          </article>
+        </div>
+      </section>
+
       <section class="social-section section-shell" id="redes" aria-label="Redes sociales">
         <div class="social-copy" data-reveal>
           <p class="eyebrow">Redes sociales</p>
@@ -311,7 +355,7 @@
       <div class="cart-drawer-backdrop" data-close-cart></div>
       <div class="cart-drawer-panel">
         <div class="cart-drawer-heading">
-          <div><span class="eyebrow">Tu mesa, tu eleccion</span><h2>Mi seleccion</h2></div>
+          <div><span class="eyebrow">Tu mesa, tu eleccion</span><h2>Mi seleccion</h2><p class="cart-drawer-summary" data-cart-summary>Tu selección está lista para personalizar.</p></div>
           <button class="icon-button" type="button" data-close-cart aria-label="Cerrar seleccion">×</button>
         </div>
         <div class="cart-items" data-cart-items></div>
@@ -332,18 +376,18 @@
           <div><span class="eyebrow">Un último detalle</span><h2>¿Cómo recibes tu orden?</h2></div>
           <button class="icon-button" type="button" data-close-checkout aria-label="Cerrar finalización de pedido">×</button>
         </div>
-        <div class="checkout-total"><span>Tu selección</span><strong data-checkout-total>A confirmar</strong></div>
+        <div class="checkout-total" data-checkout-dependent hidden><span>Tu selección</span><strong data-checkout-total>A confirmar</strong></div>
         <fieldset class="fulfillment-picker">
           <legend>Elige una opción</legend>
-          <label><input type="radio" name="fulfillment" value="delivery"><span><b>Para llevar</b><small>Te la llevamos a donde estés.</small></span></label>
+          <label><input type="radio" name="fulfillment" value="delivery"><span><b>A domicilio</b><small>Te la llevamos a donde estés.</small></span></label>
           <label><input type="radio" name="fulfillment" value="pickup"><span><b>Pasar por mi pedido</b><small>Confirmamos cuando esté listo.</small></span></label>
-          <label><input type="radio" name="fulfillment" value="dine-in"><span><b>Consumir en el local</b><small>Conecta tu selección con una reservación.</small></span></label>
+          <label><input type="radio" name="fulfillment" value="dine-in"><span><b>Consumir en el Restaurante</b><small>Conecta tu selección con una reservación.</small></span></label>
         </fieldset>
-        <div class="checkout-contact form-grid two-col">
+        <div class="checkout-contact form-grid two-col" data-checkout-dependent hidden>
           <label>Nombre<input name="customerName" type="text" autocomplete="name" placeholder="¿A nombre de quién?"></label>
           <label>Teléfono<input name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="10 dígitos"></label>
         </div>
-        <section class="checkout-delivery-fields" data-checkout-delivery hidden>
+        <section class="checkout-delivery-fields" data-checkout-delivery data-checkout-dependent hidden>
           <div class="checkout-section-copy"><b>Datos para llevar tu orden</b><span>Comparte tu ubicación o escribe la dirección y una referencia.</span></div>
           <label>Dirección o ubicación<textarea name="address" rows="2" placeholder="Calle, número, colonia o ubicación compartida"></textarea></label>
           <button class="location-button" type="button" data-share-location><span aria-hidden="true">⌖</span> Mandar mi ubicación</button>
@@ -355,18 +399,20 @@
           </div>
           <small class="delivery-coverage-note">La cobertura, costo de envío y tiempo final se confirman por WhatsApp antes de preparar tu orden.</small>
         </section>
-        <section class="checkout-pickup-note" data-checkout-pickup hidden>
+        <section class="checkout-pickup-note" data-checkout-pickup data-checkout-dependent hidden>
           <span aria-hidden="true">⏱</span>
           <p>Dependiendo de tu orden, estará lista en <b>10 a 15 minutos</b>. Nuestro personal te confirmará a tiempo la salida de tu pedido.</p>
         </section>
-        <section class="checkout-local-note" data-checkout-local hidden>
+        <section class="checkout-local-note" data-checkout-local data-checkout-dependent hidden>
           <span aria-hidden="true">✦</span>
           <div><b>Tu selección se mantiene guardada.</b><p>Llévala a una reservación sin volver a elegir cada platillo.</p></div>
           <button class="btn btn-secondary" type="button" data-go-to-reservation>Ir a reservar mesa <span aria-hidden="true">→</span></button>
         </section>
-        <button class="btn btn-primary" type="submit" data-checkout-submit>Continuar por WhatsApp <span aria-hidden="true">↗</span></button>
-        <small class="checkout-help">La disponibilidad final y el tiempo de preparación se confirman directamente con el restaurante.</small>
-        <small class="checkout-privacy">Tu teléfono y ubicación sólo se usan para atender esta solicitud; no se comparten con terceros.</small>
+        <div class="checkout-actions" data-checkout-dependent hidden>
+          <button class="btn btn-primary" type="submit" data-checkout-submit>Continuar por WhatsApp <span aria-hidden="true">↗</span></button>
+          <small class="checkout-help">La disponibilidad final y el tiempo de preparación se confirman directamente con el restaurante.</small>
+          <small class="checkout-privacy">Tu teléfono y ubicación sólo se usan para atender esta solicitud; no se comparten con terceros.</small>
+        </div>
       </form>
     </aside>
 

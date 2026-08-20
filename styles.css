@@ -134,6 +134,7 @@ body[data-page="home"] main > .signal-band {
 body[data-page="home"] main > .ritual-section,
 body[data-page="home"] main > .order-section.section-shell,
 body[data-page="home"] main > .drinks-section.section-shell,
+body[data-page="home"] main > .reviews-section,
 body[data-page="home"] main > .social-section {
   width: 100vw;
   max-width: none;
@@ -145,7 +146,8 @@ body[data-page="home"] main > .menu-section > .section-shell,
 body[data-page="home"] main > .order-section.section-shell,
 body[data-page="home"] main > .reservation-section > .section-shell,
 body[data-page="home"] main > .areas-section > .section-shell,
-body[data-page="home"] main > .drinks-section.section-shell {
+body[data-page="home"] main > .drinks-section.section-shell,
+body[data-page="home"] main > .reviews-section {
   min-height: 100%;
 }
 
@@ -321,6 +323,16 @@ svg {
   height: 3.2rem;
   flex: 0 0 auto;
   font-size: 0.92rem;
+  overflow: hidden;
+}
+
+.brand-seal img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center 42%;
+  filter: saturate(0.88) contrast(1.14);
 }
 
 .brand-name {
@@ -2762,6 +2774,7 @@ svg {
 
   body[data-page="home"] main > .signal-band,
   body[data-page="home"] main > .ritual-section,
+  body[data-page="home"] main > .reviews-section,
   body[data-page="home"] main > .social-section,
   body[data-page="home"] main > .site-footer {
     padding-inline: 1rem;
@@ -4010,4 +4023,154 @@ body[data-page="home"] .order-stage .catalog-card {
   .checkout-payment-grid { grid-template-columns: 1fr; }
   .checkout-delivery-fields { padding: 0.8rem; }
   .checkout-panel .btn { min-height: 3.15rem; }
+}
+
+/* Carrito claro, compacto y listo para cerrar la orden. */
+.cart-drawer-panel {
+  background:
+    radial-gradient(circle at 92% 5%, rgba(226, 88, 34, 0.2), transparent 24%),
+    linear-gradient(160deg, rgba(177, 18, 38, 0.2), rgba(8, 8, 8, 0.92) 44%),
+    #100d0c;
+}
+
+.cart-drawer-summary {
+  max-width: 18rem;
+  margin: 0.55rem 0 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+.cart-items {
+  display: grid;
+  align-content: start;
+  gap: 0.6rem;
+}
+
+.cart-item {
+  min-height: 6.2rem;
+  padding: 0.85rem;
+  border: 1px solid rgba(255, 235, 190, 0.12);
+  border-radius: 1rem;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.09);
+}
+
+.cart-item h3 { font-size: 1.35rem; }
+.cart-item p { margin: 0.5rem 0 0; color: rgba(245, 245, 245, 0.63); font-size: 0.73rem; line-height: 1.4; }
+.cart-item-actions { flex-wrap: wrap; justify-content: flex-end; }
+.cart-item-actions button:last-child { color: #ffd8d8; }
+.cart-drawer-footer { padding-top: 1.1rem; }
+.cart-drawer-footer .btn:disabled { cursor: not-allowed; opacity: 0.46; filter: saturate(0.5); }
+
+.checkout-actions {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.checkout-actions .btn { width: 100%; }
+
+/* Reseñas: panel oscuro integrado a la experiencia, no una franja blanca ajena a la marca. */
+.reviews-section {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  align-content: start;
+  gap: 1.25rem;
+  overflow: hidden;
+  padding-top: clamp(6rem, 9vh, 6.5rem);
+  padding-bottom: 2.5rem;
+  border-block: 1px solid rgba(255, 235, 190, 0.14);
+  background:
+    linear-gradient(90deg, rgba(7, 7, 7, 0.97), rgba(9, 8, 7, 0.78) 52%, rgba(32, 7, 8, 0.9)),
+    url("assets/fondo-toro.jpeg") center / cover no-repeat;
+}
+
+.reviews-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.48;
+  background:
+    radial-gradient(circle at 50% 96%, rgba(226, 88, 34, 0.22), transparent 28%),
+    repeating-linear-gradient(112deg, transparent 0 3.5rem, rgba(255, 235, 190, 0.035) 3.55rem 3.6rem);
+}
+
+.reviews-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.reviews-heading .eyebrow { margin-bottom: 0.45rem; }
+.reviews-heading h2 { max-width: 44rem; margin: 0; font-family: "Cormorant Garamond", Georgia, serif; font-size: clamp(2.25rem, 4.2vw, 3.75rem); line-height: 0.9; }
+.reviews-heading-aside { display: grid; justify-items: start; gap: 0.72rem; max-width: 23rem; }
+.reviews-heading-aside > p { margin: 0; color: rgba(245, 245, 245, 0.68); font-size: 0.8rem; line-height: 1.5; }
+
+.reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.review-card {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid rgba(255, 235, 190, 0.17);
+  border-radius: 1.05rem;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.025) 55%, rgba(177, 18, 38, 0.14)),
+    rgba(12, 10, 10, 0.76);
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.11);
+  backdrop-filter: blur(16px) saturate(125%);
+  -webkit-backdrop-filter: blur(16px) saturate(125%);
+  transition: transform 200ms var(--ease), border-color 200ms ease;
+}
+
+.review-card:hover { transform: translateY(-0.25rem); border-color: rgba(245, 220, 129, 0.48); }
+.review-card img { display: block; width: 100%; height: 4.9rem; object-fit: cover; filter: saturate(0.88) contrast(1.08); }
+.review-card:nth-child(1) img { object-position: 62% 48%; }
+.review-card:nth-child(3) img { object-position: center 63%; }
+.review-card:nth-child(5) img { object-position: center 45%; }
+.review-card:nth-child(7) img { object-position: 28% 52%; }
+.review-card > div { display: grid; align-content: start; gap: 0.42rem; min-height: 7.5rem; padding: 0.7rem 0.78rem 0.76rem; }
+.review-card span { color: var(--gold); font-size: 0.63rem; font-weight: 900; letter-spacing: 0.11em; text-transform: uppercase; }
+.review-card p { margin: 0; color: var(--white); font-family: "Cormorant Garamond", Georgia, serif; font-size: 1.1rem; font-weight: 700; line-height: 1; }
+.review-card small { color: rgba(245, 245, 245, 0.6); font-size: 0.68rem; }
+
+.reviews-action {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 2.65rem;
+  padding: 0.65rem 0.9rem;
+  border: 1px solid rgba(212, 175, 55, 0.42);
+  border-radius: 0.9rem;
+  color: var(--gold);
+  background: rgba(9, 8, 7, 0.44);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.11);
+  font-size: 0.76rem;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.reviews-action:hover,
+.reviews-action:focus-visible { border-color: var(--gold); background: rgba(212, 175, 55, 0.14); outline: none; }
+
+@media (max-width: 920px) {
+  .reviews-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (max-width: 620px) {
+  .reviews-heading { align-items: flex-start; flex-direction: column; gap: 0.75rem; }
+  .reviews-heading-aside { max-width: none; }
+  .reviews-heading h2 { font-size: clamp(2.65rem, 13vw, 4rem); }
+  .reviews-grid { grid-template-columns: 1fr; gap: 0.65rem; }
+  .review-card { display: grid; grid-template-columns: 6.25rem minmax(0, 1fr); }
+  .review-card img { height: 100%; min-height: 7.55rem; }
+  .review-card > div { min-height: 0; padding: 0.7rem 0.76rem; }
+  .review-card p { font-size: 1.13rem; }
 }

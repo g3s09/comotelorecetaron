@@ -711,6 +711,7 @@ const getSelection = () => {
 
 const saveSelection = (items) => {
   window.localStorage.setItem(SELECTION_KEY, JSON.stringify(items));
+  if (!items.length) window.localStorage.removeItem(ORDER_CONTACT_KEY);
 };
 
 const selectionCount = (items) => items.reduce((total, item) => total + Number(item.qty || 1), 0);
@@ -779,6 +780,8 @@ const renderSelection = () => {
   const list = $('[data-cart-items]');
   const empty = $('[data-cart-empty]');
   const totalNode = $('[data-cart-total]');
+  const summary = $('[data-cart-summary]');
+  const orderButton = $('[data-send-selection]');
   if (!list) return;
 
   const total = items.reduce((sum, item) => {
@@ -786,6 +789,13 @@ const renderSelection = () => {
     return Number.isFinite(value) ? sum + value * Number(item.qty || 1) : sum;
   }, 0);
   if (totalNode) totalNode.textContent = total ? moneyLabel(total) : "A confirmar";
+  if (summary) {
+    const count = selectionCount(items);
+    summary.textContent = count
+      ? `${count} ${count === 1 ? "platillo" : "platillos"} · ${total ? moneyLabel(total) : "total por confirmar"}`
+      : "Tu selección está lista para personalizar.";
+  }
+  if (orderButton) orderButton.disabled = !items.length;
 
   list.innerHTML = items.length
     ? items
@@ -801,7 +811,8 @@ const renderSelection = () => {
     : `<div class="cart-empty-visual"><span>✦</span><p>Tu selección está vacía.</p></div>`;
 
   if (empty) empty.hidden = Boolean(items.length);
-}
+  syncReservationSelectionNotice();
+};
 
 const openCart = () => {
   const drawer = $('[data-cart-drawer]');
@@ -831,6 +842,26 @@ const continueChoosing = () => {
 const selectionTotal = (items = getSelection()) =>
   items.reduce((sum, item) => sum + (Number.isFinite(Number(item.unitPrice)) ? Number(item.unitPrice) * Number(item.qty || 1) : 0), 0);
 
+const syncReservationSelectionNotice = () => {
+  const note = $("[data-order-reservation-note]");
+  const summary = $("[data-order-reservation-summary]");
+  const items = getSelection();
+  if (!note) return;
+
+  if (!items.length) {
+    note.hidden = true;
+    window.localStorage.removeItem(ORDER_CONTACT_KEY);
+    return;
+  }
+
+  const count = selectionCount(items);
+  const total = selectionTotal(items);
+  if (summary) {
+    summary.textContent = `${count} ${count === 1 ? "platillo sigue guardado" : "platillos siguen guardados"}${total ? ` · ${moneyLabel(total)}` : ""}.`;
+  }
+  note.hidden = false;
+};
+
 const closeCheckout = () => {
   const modal = $("[data-checkout-modal]");
   if (!modal) return;
@@ -849,10 +880,14 @@ const updateCheckoutMode = (mode = "") => {
   const name = form.elements.customerName;
   const phone = form.elements.phone;
   const address = form.elements.address;
+  const hasChoice = Boolean(mode);
+  $$('[data-checkout-dependent]', form).forEach((section) => {
+    section.hidden = !hasChoice;
+  });
   if (delivery) delivery.hidden = mode !== "delivery";
   if (pickup) pickup.hidden = mode !== "pickup";
   if (dineIn) dineIn.hidden = mode !== "dine-in";
-  if (submit) submit.hidden = mode === "dine-in";
+  if (submit) submit.hidden = !hasChoice || mode === "dine-in";
   if (name) name.required = mode === "delivery" || mode === "pickup";
   if (phone) phone.required = mode === "delivery" || mode === "pickup";
   if (address) address.required = mode === "delivery";
@@ -867,10 +902,11 @@ const openCheckout = () => {
   const modal = $("[data-checkout-modal]");
   const form = $("[data-checkout-form]");
   if (!modal || !form) return;
+  form.reset();
   const total = selectionTotal(items);
   const totalNode = $("[data-checkout-total]", modal);
   if (totalNode) totalNode.textContent = total ? moneyLabel(total) : "A confirmar";
-  updateCheckoutMode(String(new FormData(form).get("fulfillment") || ""));
+  updateCheckoutMode("");
   closeCart();
   modal.hidden = false;
   modal.setAttribute("aria-hidden", "false");
@@ -879,7 +915,7 @@ const openCheckout = () => {
 };
 
 const checkoutMessage = (items, total, details) => {
-  const deliveryLabels = { delivery: "Para llevar · entrega", pickup: "Pasaré por mi pedido" };
+  const deliveryLabels = { delivery: "A domicilio", pickup: "Pasar por mi pedido" };
   const lines = [
     "Hola, quiero hacer este pedido:",
     ...items.flatMap((item) => [
@@ -921,7 +957,7 @@ const moveSelectionToReservation = (form) => {
     const reservationForm = $("[data-reservation-form]");
     if (reservationForm?.elements.name && !reservationForm.elements.name.value) reservationForm.elements.name.value = pending.name;
     if (reservationForm?.elements.phone && !reservationForm.elements.phone.value) reservationForm.elements.phone.value = pending.phone;
-    $("[data-order-reservation-note]")?.removeAttribute("hidden");
+    syncReservationSelectionNotice();
     reservationForm?.elements.date?.focus();
   }, 520);
 };
@@ -1156,12 +1192,12 @@ const initSelection = () => {
 const initReservation = () => {
   const form = $('[data-reservation-form]');
   if (!form) return;
+  syncReservationSelectionNotice();
   try {
     const pending = JSON.parse(window.localStorage.getItem(ORDER_CONTACT_KEY) || "null");
     if (pending && typeof pending === "object") {
       if (form.elements.name && !form.elements.name.value) form.elements.name.value = String(pending.name || "");
       if (form.elements.phone && !form.elements.phone.value) form.elements.phone.value = String(pending.phone || "");
-      $("[data-order-reservation-note]")?.removeAttribute("hidden");
     }
   } catch {
     window.localStorage.removeItem(ORDER_CONTACT_KEY);
@@ -1191,8 +1227,8 @@ const initReservation = () => {
       area: String(data.get("area") || "").trim(),
       note: String(data.get("note") || "").trim()
     };
-    const includesSavedSelection = Boolean(window.localStorage.getItem(ORDER_CONTACT_KEY));
-    const savedSelection = includesSavedSelection ? getSelection() : [];
+    const savedSelection = getSelection();
+    const includesSavedSelection = savedSelection.length > 0;
     const savedSelectionTotal = selectionTotal(savedSelection);
     const submitButton = form.querySelector('button[type="submit"]');
     if (submitButton) {
@@ -1541,6 +1577,7 @@ const initPublic = async () => {
   window.setInterval(refreshPublicCatalog, REFRESH_MS);
   window.addEventListener("storage", (event) => {
     if (event.key === CATALOG_KEY) refreshPublicCatalog();
+    if (event.key === SELECTION_KEY) renderSelection();
   });
 };
 
