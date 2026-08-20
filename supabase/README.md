@@ -9,3 +9,5 @@
 4. Haz un nuevo deploy.
 
 La tabla site_catalog guarda todo el menu como JSON y el bucket publico ctlr-images almacena las imagenes que se suben desde el panel. Si no hay una fila todavia, el sitio carga el catalogo inicial incluido en data/catalog.json.
+
+La tabla `reservations` guarda las solicitudes con estado `pendiente`. La página también arma el mensaje de WhatsApp para que el restaurante confirme cada mesa manualmente. La carta se puede consultar sin Supabase, pero en Vercel las reservas y los cambios hechos en el panel requieren las tres variables de entorno anteriores.

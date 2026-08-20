@@ -6,6 +6,7 @@ const rootDir = path.resolve(__dirname, "..");
 const dataDir = path.join(rootDir, "data");
 const uploadDir = path.join(rootDir, "uploads");
 const catalogFile = path.join(dataDir, "catalog.json");
+const reservationFile = path.join(dataDir, "reservations.json");
 const port = Number(process.env.PORT || 4173);
 const isVercel = Boolean(process.env.VERCEL || process.env.VERCEL_ENV);
 const adminToken = process.env.CTLR_ADMIN_TOKEN || (isVercel ? "" : "brasas1933");
@@ -13,6 +14,13 @@ const supabaseUrl = String(process.env.SUPABASE_URL || "").replace(/\/$/, "");
 const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
 const catalogRowId = "public";
 const imageBucket = "ctlr-images";
+
+let completeMenu = { products: [], drinks: [] };
+try {
+  completeMenu = require(path.join(dataDir, "catalog-complete.js"));
+} catch (error) {
+  console.error("No se pudo cargar la carta completa incluida.", error);
+}
 
 const mimeTypes = {
   ".html": "text/html; charset=utf-8",
@@ -39,6 +47,7 @@ const ensureDataFiles = () => {
       JSON.stringify({ version: 1, updatedAt: new Date().toISOString(), products: [], drinks: [], team: [] }, null, 2)
     );
   }
+  if (!fs.existsSync(reservationFile)) fs.writeFileSync(reservationFile, "[]", "utf8");
 };
 
 const databaseError = (message) => {
@@ -47,11 +56,27 @@ const databaseError = (message) => {
   return error;
 };
 
+const mergeCatalogCollection = (complete = [], current = []) => {
+  const merged = new Map();
+  complete.forEach((item) => merged.set(item.id, item));
+  current.forEach((item) => merged.set(item.id, item));
+  return Array.from(merged.values());
+};
+
+const withCompleteMenu = (catalog = {}) => ({
+  ...catalog,
+  version: 1,
+  updatedAt: catalog.updatedAt || new Date().toISOString(),
+  products: mergeCatalogCollection(completeMenu.products || [], catalog.products || []),
+  drinks: mergeCatalogCollection(completeMenu.drinks || [], catalog.drinks || []),
+  team: Array.isArray(catalog.team) ? catalog.team : []
+});
+
 const readSeedCatalog = () => {
   if (!fs.existsSync(catalogFile)) {
-    return { version: 1, updatedAt: new Date().toISOString(), products: [], drinks: [], team: [] };
+    return withCompleteMenu({});
   }
-  return JSON.parse(fs.readFileSync(catalogFile, "utf8"));
+  return withCompleteMenu(JSON.parse(fs.readFileSync(catalogFile, "utf8")));
 };
 
 const supabaseHeaders = (extra = {}) => ({
@@ -78,7 +103,7 @@ const readCatalog = async () => {
   try {
     const response = await supabaseRequest("/rest/v1/site_catalog?id=eq." + catalogRowId + "&select=data");
     const rows = await response.json();
-    return rows[0]?.data || readSeedCatalog();
+    return withCompleteMenu(rows[0]?.data || readSeedCatalog());
   } catch (error) {
     console.error("No se pudo leer Supabase; se usa el catalogo incluido.", error);
     return readSeedCatalog();
@@ -169,7 +194,28 @@ const normalizeItems = (items, type) => {
               .replace(/(^-|-$)/g, ""),
             label: String(option.label || "").trim(),
             type: String(option.type || "single").trim(),
-            choices: Array.isArray(option.choices) ? option.choices.map((choice) => String(choice).trim()).filter(Boolean) : []
+            choices: Array.isArray(option.choices)
+              ? option.choices
+                  .map((choice) => {
+                    if (choice && typeof choice === "object") {
+                      const label = String(choice.label || choice.name || "").trim();
+                      return {
+                        id: String(choice.id || label)
+                          .toLowerCase()
+                          .normalize("NFD")
+                          .replace(/[\u0300-\u036f]/g, "")
+                          .replace(/[^a-z0-9]+/g, "-")
+                          .replace(/(^-|-$)/g, ""),
+                        label,
+                        description: String(choice.description || "").trim(),
+                        price: Number.isFinite(Number(choice.price)) && choice.price !== "" && choice.price != null ? Number(choice.price) : null,
+                        priceDelta: Number.isFinite(Number(choice.priceDelta)) && choice.priceDelta !== "" && choice.priceDelta != null ? Number(choice.priceDelta) : 0
+                      };
+                    }
+                    return String(choice).trim();
+                  })
+                  .filter((choice) => (typeof choice === "string" ? Boolean(choice) : Boolean(choice.label)))
+              : []
           }))
         : []
     };
@@ -291,6 +337,77 @@ const handleAdminCheck = (request, response) => {
   sendJson(response, 200, { ok: true });
 };
 
+const normalizeReservation = (payload = {}) => ({
+  id: String(payload.id || `res-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`),
+  name: String(payload.name || "").trim().slice(0, 120),
+  phone: String(payload.phone || "").replace(/[^0-9+]/g, "").slice(0, 25),
+  date: String(payload.date || "").slice(0, 10),
+  time: String(payload.time || "").slice(0, 5),
+  people: String(payload.people || "").trim().slice(0, 40),
+  area: String(payload.area || "").trim().slice(0, 40),
+  note: String(payload.note || "").trim().slice(0, 800),
+  status: "pendiente",
+  created_at: new Date().toISOString()
+});
+
+const validReservation = (reservation) =>
+  Boolean(reservation.name && reservation.phone && /^\d{4}-\d{2}-\d{2}$/.test(reservation.date) && /^\d{2}:\d{2}$/.test(reservation.time) && reservation.people && ["Balcon", "Terraza", "Salon"].includes(reservation.area));
+
+const readReservations = async () => {
+  if (!hasSupabase()) {
+    ensureDataFiles();
+    return JSON.parse(fs.readFileSync(reservationFile, "utf8"));
+  }
+  const response = await supabaseRequest("/rest/v1/reservations?select=*&order=created_at.desc");
+  return response.json();
+};
+
+const writeReservation = async (reservation) => {
+  if (!isVercel) {
+    ensureDataFiles();
+    const reservations = await readReservations();
+    reservations.unshift(reservation);
+    fs.writeFileSync(reservationFile, JSON.stringify(reservations, null, 2));
+    return reservation;
+  }
+  if (!hasSupabase()) throw databaseError("Configura SUPABASE_URL y SUPABASE_SERVICE_ROLE_KEY en Vercel para guardar reservas.");
+  await supabaseRequest("/rest/v1/reservations", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Prefer: "return=representation" },
+    body: JSON.stringify(reservation)
+  });
+  return reservation;
+};
+
+const handleReservations = async (request, response) => {
+  if (request.method === "GET") {
+    if (!requireAdmin(request, response)) return;
+    try {
+      sendJson(response, 200, { reservations: await readReservations() });
+    } catch (error) {
+      sendJson(response, error.statusCode || 503, { error: error.message || "No se pudieron consultar las reservas." });
+    }
+    return;
+  }
+
+  if (request.method !== "POST") {
+    sendJson(response, 405, { error: "Metodo no permitido." });
+    return;
+  }
+
+  try {
+    const reservation = normalizeReservation(JSON.parse(await collectBody(request, 64 * 1024) || "{}"));
+    if (!validReservation(reservation)) {
+      sendJson(response, 400, { error: "Completa nombre, WhatsApp, fecha, hora, personas y área para solicitar la reserva." });
+      return;
+    }
+    await writeReservation(reservation);
+    sendJson(response, 201, { ok: true, reservation });
+  } catch (error) {
+    sendJson(response, error.statusCode || 400, { error: error.message || "No se pudo guardar la reserva." });
+  }
+};
+
 const serveStatic = (request, response) => {
   const requestUrl = new URL(request.url, `http://${request.headers.host || "localhost"}`);
   const pathname = decodeURIComponent(requestUrl.pathname);
@@ -339,6 +456,11 @@ const handler = async (request, response) => {
 
     if (requestUrl.pathname === "/api/admin-check") {
       handleAdminCheck(request, response);
+      return;
+    }
+
+    if (requestUrl.pathname === "/api/reservations") {
+      await handleReservations(request, response);
       return;
     }
 

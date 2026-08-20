@@ -65,6 +65,7 @@
                 <label>Categoria <input name="category" type="text" required placeholder="Cortes"></label>
                 <label>Etiquetas <input name="tags" type="text" placeholder="Nuevo, Favorito, Picante"></label>
                 <label class="span-2">Descripcion <textarea name="description" rows="4" required></textarea></label>
+                <label class="span-2">Preparaciones y opciones (JSON) <textarea name="options" rows="5" placeholder='[{"id":"termino","label":"Término","type":"single","choices":[{"label":"Medio","description":"Jugoso al centro"}]}]'></textarea><small>Conserva aquí las preparaciones; se muestran al cliente con su descripción y precio si lo indicas.</small></label>
                 <label>URL de fotografia <input name="image" type="text" placeholder="assets/menu-ribeye.jpeg"></label>
                 <label>Subir fotografia <input name="imageFile" type="file" accept="image/*"></label>
                 <label class="check-row"><input name="available" type="checkbox" checked> Disponible</label>
@@ -88,6 +89,7 @@
                 <label>Categoria <input name="category" type="text" required placeholder="Sin alcohol"></label>
                 <label>Etiquetas <input name="tags" type="text" placeholder="Nuevo, Frio, Favorito"></label>
                 <label class="span-2">Descripcion <textarea name="description" rows="4" required></textarea></label>
+                <label class="span-2">Preparaciones y opciones (JSON) <textarea name="options" rows="5" placeholder='[{"id":"hielos","label":"Hielos","type":"single","choices":[{"label":"Con hielos","description":"Bien fría"}]}]'></textarea><small>Usa <code>price</code> para un precio de presentación o <code>priceDelta</code> para un extra.</small></label>
                 <label>URL de fotografia <input name="image" type="text" placeholder="assets/menu-parrilla.jpeg"></label>
                 <label>Subir fotografia <input name="imageFile" type="file" accept="image/*"></label>
                 <label class="check-row"><input name="available" type="checkbox" checked> Disponible</label>
@@ -134,7 +136,7 @@
                 </label>
                 <button class="btn btn-quiet" type="button" data-refresh-catalog>Recargar datos</button>
               </div>
-              <p class="admin-note">Los cambios se guardan en el archivo de datos cuando el sitio corre con <code>node server.js</code>.</p>
+              <p class="admin-note">La carta completa, sus preparaciones y los cambios se guardan mediante la API. En Vercel configura Supabase antes de publicar cambios.</p>
             </section>
           </div>
         </div>
@@ -143,6 +145,7 @@
       </section>
     </main>
 
-    <script src="scripts.js?v=20260612-premium-5" defer></script>
+    <script src="data/catalog-complete.js?v=20260820-order-bridge" defer></script>
+    <script src="scripts.js?v=20260820-order-bridge" defer></script>
   </body>
 </html>

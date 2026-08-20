@@ -4,3 +4,4 @@ node_modules/
 .env.*
 uploads/
 .npm-cache/
+data/reservations.json

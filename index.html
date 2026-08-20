@@ -9,11 +9,15 @@
     <meta property="og:description" content="Cortes al carbon, birria, antojitos, bebidas y reservaciones por WhatsApp.">
     <meta property="og:image" content="assets/toro.jpeg">
     <title>Como Te Lo Recetaron | Carne al carbon</title>
+    <script type="application/ld+json">
+      {"@context":"https://schema.org","@type":"Restaurant","name":"Como Te Lo Recetaron | Carbón y Brasas","servesCuisine":"Mexicana al carbón","telephone":"+52 81 8168 1933","hasMap":"https://maps.app.goo.gl/98Uu8kPWvtGMrZLLA","openingHours":"Mo-Su 08:30-23:00","sameAs":["https://wa.me/528181681933"]}
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="preload" as="image" href="assets/toro.jpeg">
-    <link rel="stylesheet" href="styles.css?v=20260813-unified-menu">
+    <link rel="preload" as="image" href="assets/bienvenida-toro.png">
+    <link rel="stylesheet" href="styles.css?v=20260820-rail-glass">
   </head>
   <body data-page="home">
     <a class="skip-link" href="#principal">Saltar al contenido</a>
@@ -39,9 +43,10 @@
         <span></span>
       </button>
       <nav class="top-nav" data-nav>
-        <a href="#menu">Carta y ordenar</a>
+        <a href="#menu">Ordenar</a>
         <a href="#reserva">Reservar</a>
         <a href="#areas">Areas</a>
+        <a href="https://maps.app.goo.gl/98Uu8kPWvtGMrZLLA" target="_blank" rel="noopener">Ubicación</a>
         <a href="#redes">Redes</a>
         <button class="nav-order" type="button" data-open-cart>Mi seleccion</button>
       </nav>
@@ -49,6 +54,14 @@
     <div class="rail-dial" data-rail-dial aria-hidden="true" style="--rail-progress: .14">
       <span data-rail-current>01</span>
       <small>/<b data-rail-total>07</b></small>
+    </div>
+    <div class="rail-controls" aria-label="Navegación entre secciones">
+      <button type="button" class="rail-control" data-rail-prev aria-label="Ver sección anterior" title="Sección anterior">
+        <span aria-hidden="true">←</span><small>Anterior</small>
+      </button>
+      <button type="button" class="rail-control" data-rail-next aria-label="Ver siguiente sección" title="Siguiente sección">
+        <small>Siguiente</small><span aria-hidden="true">→</span>
+      </button>
     </div>
 
     <main id="principal">
@@ -62,33 +75,19 @@
           <h1 class="hero-title reveal-up delay-2">Como Te Lo Recetaron</h1>
           <p class="hero-slogan reveal-up delay-3">Fuego vivo, cortes con caracter y una cocina tradicional para disfrutarse sin prisas.</p>
           <div class="hero-actions reveal-up delay-4">
-            <a class="btn btn-primary" href="#menu">Ver carta y ordenar</a>
+            <a class="btn btn-primary" href="#menu">Ordenar ahora</a>
             <a class="btn btn-secondary" href="#reserva">Reservar mesa</a>
           </div>
-          <p class="horizontal-hint reveal-up delay-4"><span aria-hidden="true">← →</span> Desliza para explorar cada seccion</p>
+          <p class="horizontal-hint reveal-up delay-4"><span aria-hidden="true">← →</span> Usa las flechas para explorar cada sección</p>
         </div>
       </section>
 
-      <section class="signal-band" aria-label="Promesa de marca">
-        <div>
-          <strong>Brasa lenta</strong>
-          <span>Cortes sellados al punto</span>
-        </div>
-        <div>
-          <strong>Carta a tu ritmo</strong>
-          <span>Explora, personaliza y ordena en un solo lugar</span>
-        </div>
-        <div>
-          <strong>Servicio directo</strong>
-          <span>Reserva u ordena por WhatsApp en un toque</span>
-        </div>
-      </section>
-
-      <section class="ritual-section section-shell" aria-label="Experiencia de brasa">
+      <section class="ritual-section section-shell" aria-label="Paso previo para ordenar">
         <div class="section-copy" data-reveal>
-          <p class="eyebrow">Ritual de la brasa</p>
-          <h2>Un lugar para llegar con hambre y quedarse por la mesa.</h2>
-          <p>Carne al carbón, antojitos y bebidas preparados para compartir una mesa que se queda en la memoria.</p>
+          <p class="eyebrow">Un paso más</p>
+          <h2>Elige lo que se te antoja y arma tu orden.</h2>
+          <p>Cortes, birria, esquites y bebidas: cada platillo muestra sus detalles para que pidas exactamente como lo quieres.</p>
+          <a class="btn btn-primary ritual-order-link" href="#menu">Comenzar a ordenar <span aria-hidden="true">→</span></a>
         </div>
         <div class="ritual-grid">
           <figure class="ritual-photo tall" data-reveal>
@@ -103,24 +102,38 @@
         </div>
       </section>
 
-      <section class="menu-section" id="menu" aria-label="Menu al carbon">
+      <section class="menu-section order-stage" id="menu" aria-label="Ordenar">
         <div class="section-shell">
           <div class="section-heading" data-reveal>
-            <p class="eyebrow">Carta y ordenar</p>
-            <h2>Todo el menú, a un toque de tu selección.</h2>
-            <p>Explora cada categoría, consulta los ingredientes y precios, personaliza lo que necesites y envía tu pedido completo por WhatsApp.</p>
+            <p class="eyebrow">Ordenar</p>
+            <h2>Elige a tu ritmo. Nosotros encendemos la brasa.</h2>
+            <p>Explora por categoría, consulta cada detalle y personaliza solamente lo que tu orden necesita.</p>
           </div>
+
+          <a class="order-scroll-cue" href="#ordenar-carta" aria-label="Bajar a las opciones para ordenar">
+            <span class="order-scroll-cue-icon" aria-hidden="true">↓</span>
+            <span><small>La carta está lista</small><b>Desliza hacia abajo para ordenar</b></span>
+            <span class="order-scroll-cue-spark" aria-hidden="true">✦</span>
+          </a>
 
           <div class="menu-book" data-menu-book data-reveal>
             <div class="menu-book-nav" role="tablist" aria-label="Secciones de la carta">
               <button class="menu-book-tab" type="button" role="tab" aria-selected="false" data-menu-tab data-menu-filter="Todos" data-menu-image="assets/menu-especialidades.png" data-menu-title="Carta completa" data-menu-note="Todo el sabor de Como Te Lo Recetaron: cocina al carbón, antojitos, bebidas y postres.">Todo</button>
-              <button class="menu-book-tab" type="button" role="tab" aria-selected="false" data-menu-tab data-menu-filter="Entradas" data-menu-image="assets/menu-entradas.png" data-menu-title="Entradas y tradicionales" data-menu-note="Para comenzar al centro: costras, mulitas, volcanes, tostadas y entradas de la casa.">Entradas</button>
-              <button class="menu-book-tab" type="button" role="tab" aria-selected="false" data-menu-tab data-menu-filter="Especialidades" data-menu-image="assets/menu-especialidades.png" data-menu-title="Especialidades de la casa" data-menu-note="Birria, queso fundido, molcajetes y platos con ese toque de carbon que nos distingue.">Especialidades</button>
-              <button class="menu-book-tab" type="button" role="tab" aria-selected="false" data-menu-tab data-menu-filter="Hamburguesas" data-menu-image="assets/menu-hamburguesas.png" data-menu-title="Hamburguesas al carbon" data-menu-note="Carne al carbon, tocino, quesos y extras para armar tu hamburguesa favorita.">Hamburguesas</button>
-              <button class="menu-book-tab is-active" type="button" role="tab" aria-selected="true" data-menu-tab data-menu-filter="Cortes" data-menu-image="assets/menu-cortes.png" data-menu-title="Cortes y parrilla" data-menu-note="Rib-eye, picaña, New York, filete y tomahawk: el ritual de la brasa en su maxima expresion.">Cortes</button>
-              <button class="menu-book-tab" type="button" role="tab" aria-selected="false" data-menu-tab data-menu-filter="Tacos" data-menu-image="assets/menu-antojitos.png" data-menu-title="Para el puro antojo" data-menu-note="Carne por gramaje y tacos para compartir como se debe: con tortillas, cebolla y cilantro.">Antojitos</button>
-              <button class="menu-book-tab" type="button" role="tab" aria-selected="false" data-menu-tab data-menu-filter="Bebidas" data-menu-image="assets/menu-bebidas.png" data-menu-title="Bebidas y postres" data-menu-note="Aguas frescas, bebidas calientes, cervezas, mocktails y un final dulce para la mesa.">Bebidas</button>
-              <button class="menu-book-tab" type="button" role="tab" aria-selected="false" data-menu-tab data-menu-filter="Cocteleria" data-menu-image="assets/menu-cocteleria.png" data-menu-title="Cocteleria de la casa" data-menu-note="Cocteles clasicos e internacionales preparados para acompañar el fuego.">Cocteleria</button>
+              <button class="menu-book-tab" type="button" role="tab" aria-selected="false" data-menu-tab data-menu-filter="Entradas" data-menu-image="assets/menu-entradas.png" data-menu-title="Entradas" data-menu-note="Sopas y botanas para abrir la mesa.">Entradas</button>
+              <button class="menu-book-tab" type="button" role="tab" aria-selected="false" data-menu-tab data-menu-filter="Tradicionales" data-menu-image="assets/menu-entradas.png" data-menu-title="Los tradicionales" data-menu-note="Costras, mulitas, volcanes, tlayoyos y tostadas.">Tradicionales</button>
+              <button class="menu-book-tab" type="button" role="tab" aria-selected="false" data-menu-tab data-menu-filter="Especialidades" data-menu-image="assets/menu-especialidades.png" data-menu-title="Especialidades de la casa" data-menu-note="El toque de carbón que nos distingue.">Especialidades</button>
+              <button class="menu-book-tab" type="button" role="tab" aria-selected="false" data-menu-tab data-menu-filter="Birria" data-menu-image="assets/menu-especialidades.png" data-menu-title="Birria de la casa" data-menu-note="Consomé, tacos y quesabirrias preparados a tu gusto.">Birria</button>
+              <button class="menu-book-tab" type="button" role="tab" aria-selected="false" data-menu-tab data-menu-filter="Queso fundido" data-menu-image="assets/menu-especialidades.png" data-menu-title="Queso fundido" data-menu-note="Natural o con la proteína exacta de la carta.">Queso fundido</button>
+              <button class="menu-book-tab" type="button" role="tab" aria-selected="false" data-menu-tab data-menu-filter="Tuétanos" data-menu-image="assets/menu-cortes.png" data-menu-title="Tuétanos" data-menu-note="Médula asada con la proteína indicada en cada preparación.">Tuétanos</button>
+              <button class="menu-book-tab" type="button" role="tab" aria-selected="false" data-menu-tab data-menu-filter="Cortes" data-menu-image="assets/menu-cortes.png" data-menu-title="Cortes y parrilla" data-menu-note="Rib-eye, picaña, New York, filete y tomahawk a las brasas.">Cortes</button>
+              <button class="menu-book-tab" type="button" role="tab" aria-selected="false" data-menu-tab data-menu-filter="Tacos" data-menu-image="assets/menu-antojitos.png" data-menu-title="Tacos" data-menu-note="Elige tus complementos en cada orden.">Tacos</button>
+              <button class="menu-book-tab" type="button" role="tab" aria-selected="false" data-menu-tab data-menu-filter="Hamburguesas" data-menu-image="assets/menu-hamburguesas.png" data-menu-title="Hamburguesas al carbón" data-menu-note="Con tu elección de picante y guacamole.">Hamburguesas</button>
+              <button class="menu-book-tab" type="button" role="tab" aria-selected="false" data-menu-tab data-menu-filter="Bebidas frías" data-menu-image="assets/menu-bebidas.png" data-menu-title="Bebidas frías" data-menu-note="Aguas frescas y bebidas para acompañar la brasa.">Bebidas frías</button>
+              <button class="menu-book-tab" type="button" role="tab" aria-selected="false" data-menu-tab data-menu-filter="Bebidas calientes" data-menu-image="assets/menu-bebidas.png" data-menu-title="Bebidas calientes" data-menu-note="Café, té y sabores para la sobremesa.">Bebidas calientes</button>
+              <button class="menu-book-tab" type="button" role="tab" aria-selected="false" data-menu-tab data-menu-filter="Mocktails" data-menu-image="assets/menu-bebidas.png" data-menu-title="Mocktails" data-menu-note="Cocteles sin alcohol preparados al momento.">Mocktails</button>
+              <button class="menu-book-tab" type="button" role="tab" aria-selected="false" data-menu-tab data-menu-filter="Postres" data-menu-image="assets/menu-bebidas.png" data-menu-title="Postres" data-menu-note="El final dulce para tu mesa.">Postres</button>
+              <button class="menu-book-tab" type="button" role="tab" aria-selected="false" data-menu-tab data-menu-filter="Coctelería de la casa" data-menu-image="assets/menu-cocteleria.png" data-menu-title="Coctelería de la casa" data-menu-note="Recetas de la casa para acompañar el fuego.">Coctelería</button>
+              <button class="menu-book-tab" type="button" role="tab" aria-selected="false" data-menu-tab data-menu-filter="Internacional" data-menu-image="assets/menu-cocteleria.png" data-menu-title="Internacional" data-menu-note="Clásicos de barra con el carácter de la casa.">Internacional</button>
             </div>
             <div class="menu-book-view">
               <div class="menu-book-copy">
@@ -135,24 +148,37 @@
             </div>
           </div>
 
-          <div class="featured-menu menu-ordering" data-reveal>
+          <div class="featured-menu menu-ordering" id="ordenar-carta" data-reveal>
             <div class="featured-menu-heading">
               <div>
-                <p class="eyebrow" data-featured-menu-kicker>Cortes y parrilla</p>
-                <h3 data-featured-menu-title>Elige el corte que quieres llevar a la mesa.</h3>
+                <p class="eyebrow" data-featured-menu-kicker>Especialidades de la casa</p>
+                <h3 data-featured-menu-title>Elige una categoría y personaliza sólo lo que necesitas.</h3>
+                <small class="category-result-count" data-category-result-count></small>
               </div>
               <button class="btn btn-primary" type="button" data-open-cart>Mi selección <span data-cart-count>0</span></button>
             </div>
             <div class="order-filters menu-filters" aria-label="Filtrar carta completa">
               <button type="button" data-order-filter="Todos">Todo</button>
               <button type="button" data-order-filter="Entradas">Entradas</button>
+              <button type="button" data-order-filter="Esquites">Esquites</button>
+              <button type="button" data-order-filter="Para botanear">Para botanear</button>
+              <button type="button" data-order-filter="Tradicionales">Tradicionales</button>
               <button type="button" data-order-filter="Especialidades">Especialidades</button>
               <button type="button" data-order-filter="Birria">Birria</button>
-              <button type="button" data-order-filter="Tacos">Antojitos</button>
-              <button class="is-active" type="button" data-order-filter="Cortes">Cortes</button>
+              <button type="button" data-order-filter="Queso fundido">Queso fundido</button>
+              <button type="button" data-order-filter="Tuétanos">Tuétanos</button>
+              <button type="button" data-order-filter="Cortes">Cortes</button>
+              <button type="button" data-order-filter="Molcajetes">Molcajetes</button>
+              <button type="button" data-order-filter="Gramaje">Por gramaje</button>
+              <button type="button" data-order-filter="Tacos">Tacos</button>
               <button type="button" data-order-filter="Hamburguesas">Hamburguesas</button>
-              <button type="button" data-order-filter="Bebidas">Bebidas y postres</button>
-              <button type="button" data-order-filter="Cocteleria">Coctelería</button>
+              <button type="button" data-order-filter="Bebidas frías">Bebidas frías</button>
+              <button type="button" data-order-filter="Bebidas calientes">Bebidas calientes</button>
+              <button type="button" data-order-filter="Para festejar">Para festejar</button>
+              <button type="button" data-order-filter="Mocktails">Mocktails</button>
+              <button type="button" data-order-filter="Postres">Postres</button>
+              <button type="button" data-order-filter="Coctelería de la casa">Coctelería de la casa</button>
+              <button type="button" data-order-filter="Internacional">Internacional</button>
             </div>
             <div class="menu-order-layout">
               <div class="catalog-grid" data-products-grid aria-live="polite"></div>
@@ -161,9 +187,9 @@
                 <h3>La carta visual</h3>
                 <p>Todos los productos se pueden agregar a tu selección; los que lo necesitan te pedirán sus detalles.</p>
                 <div>
-                  <img src="assets/menu-especialidades.png" alt="Carta de especialidades de la casa" loading="lazy">
-                  <img src="assets/menu-bebidas.png" alt="Carta de bebidas y postres" loading="lazy">
-                  <img src="assets/menu-cocteleria.png" alt="Carta de coctelería de la casa" loading="lazy">
+                  <img src="assets/momento-brasa.png" alt="Momento gastronómico con tacos, costra y cortes al carbón" loading="lazy">
+                  <img src="assets/momento-bebidas.png" alt="Momento de bebidas y postre de la casa" loading="lazy">
+                  <img src="assets/momento-hamburguesa.png" alt="Hamburguesa al carbón con guacamole y papas" loading="lazy">
                 </div>
               </aside>
             </div>
@@ -194,12 +220,14 @@
               <p>Gracias por su consumo y preferencia. Su visita mantiene viva nuestra brasa.</p>
               <p>No olviden traer sus tarjetas para sellar y participar por consumibles del menu.</p>
             </div>
+            <a class="reservation-map-link" href="https://maps.app.goo.gl/98Uu8kPWvtGMrZLLA" target="_blank" rel="noopener">Abrir ubicación en Google Maps <span aria-hidden="true">↗</span></a>
           </div>
           <form class="reservation-form" data-reservation-form data-reveal>
             <div class="closed-notice">
               <span>Martes</span>
               <p>De 8:30 AM a 2:00 PM estaremos cerrados. Reanudamos servicio a partir de las 2:00 PM.</p>
             </div>
+            <p class="order-reservation-note" data-order-reservation-note hidden><b>Tu selección sigue guardada.</b> Completa esta reservación y no tendrás que elegir tus platillos nuevamente.</p>
             <div class="form-grid two-col">
               <label>Nombre<input name="name" type="text" placeholder="Tu nombre" required></label>
               <label>WhatsApp<input name="phone" type="tel" placeholder="10 digitos" required></label>
@@ -207,7 +235,7 @@
             <div class="form-grid three-col">
               <label>Fecha<input name="date" type="date" required></label>
               <label>Hora<select name="time" required><option value="">Elige</option><option value="08:30">8:30 AM</option><option value="09:00">9:00 AM</option><option value="09:30">9:30 AM</option><option value="10:00">10:00 AM</option><option value="10:30">10:30 AM</option><option value="11:00">11:00 AM</option><option value="11:30">11:30 AM</option><option value="12:00">12:00 PM</option><option value="12:30">12:30 PM</option><option value="13:00">1:00 PM</option><option value="13:30">1:30 PM</option><option value="14:00">2:00 PM</option><option value="14:30">2:30 PM</option><option value="15:00">3:00 PM</option><option value="15:30">3:30 PM</option><option value="16:00">4:00 PM</option><option value="16:30">4:30 PM</option><option value="17:00">5:00 PM</option><option value="17:30">5:30 PM</option><option value="18:00">6:00 PM</option><option value="18:30">6:30 PM</option><option value="19:00">7:00 PM</option><option value="19:30">7:30 PM</option><option value="20:00">8:00 PM</option><option value="20:30">8:30 PM</option><option value="21:00">9:00 PM</option><option value="21:30">9:30 PM</option><option value="22:00">10:00 PM</option><option value="22:30">10:30 PM</option><option value="23:00">11:00 PM</option></select></label>
-              <label>Personas<select name="people" required><option value="">Elige</option><option>2 personas</option><option>3 personas</option><option>4 personas</option><option>5 personas</option><option>6+ personas</option></select></label>
+              <label>Personas<input name="people" type="number" min="1" max="40" step="1" inputmode="numeric" placeholder="Ej. 4" required></label>
             </div>
             <fieldset class="area-picker">
               <legend>Area preferida</legend>
@@ -216,7 +244,7 @@
               <label><input type="radio" name="area" value="Salon"><span>Salon</span></label>
             </fieldset>
             <label>Nota especial<textarea name="note" rows="3" placeholder="Cumpleanos, silla para bebe, mesa tranquila... (opcional)"></textarea></label>
-            <button class="btn btn-primary" type="submit">Solicitar por WhatsApp <span aria-hidden="true">↗</span></button>
+            <button class="btn btn-primary" type="submit">Guardar y solicitar por WhatsApp <span aria-hidden="true">↗</span></button>
             <small>La reserva queda confirmada al recibir respuesta del restaurante.</small>
           </form>
         </div>
@@ -288,11 +316,53 @@
         </div>
         <div class="cart-items" data-cart-items></div>
         <div class="cart-drawer-footer">
+          <div class="cart-total"><span>Total estimado</span><strong data-cart-total>A confirmar</strong></div>
           <p data-cart-empty>Agrega favoritos desde la carta para enviarlos por WhatsApp.</p>
-          <button class="btn btn-primary" type="button" data-send-selection>Enviar seleccion <span aria-hidden="true">↗</span></button>
+          <button class="btn btn-primary" type="button" data-send-selection>Realizar orden <span aria-hidden="true">→</span></button>
+          <button class="btn btn-secondary" type="button" data-continue-choosing>Seguir eligiendo <span aria-hidden="true">←</span></button>
           <button class="btn btn-quiet" type="button" data-clear-selection>Vaciar seleccion</button>
         </div>
       </div>
+    </aside>
+
+    <aside class="checkout-modal" data-checkout-modal aria-label="Finalizar pedido" aria-hidden="true" hidden>
+      <div class="checkout-backdrop" data-close-checkout></div>
+      <form class="checkout-panel" data-checkout-form>
+        <div class="checkout-heading">
+          <div><span class="eyebrow">Un último detalle</span><h2>¿Cómo recibes tu orden?</h2></div>
+          <button class="icon-button" type="button" data-close-checkout aria-label="Cerrar finalización de pedido">×</button>
+        </div>
+        <div class="checkout-total"><span>Tu selección</span><strong data-checkout-total>A confirmar</strong></div>
+        <fieldset class="fulfillment-picker">
+          <legend>Elige una opción</legend>
+          <label><input type="radio" name="fulfillment" value="delivery"><span><b>Para llevar</b><small>Te la llevamos a donde estés.</small></span></label>
+          <label><input type="radio" name="fulfillment" value="pickup"><span><b>Pasar por mi pedido</b><small>Confirmamos cuando esté listo.</small></span></label>
+          <label><input type="radio" name="fulfillment" value="dine-in"><span><b>Consumir en el local</b><small>Conecta tu selección con una reservación.</small></span></label>
+        </fieldset>
+        <div class="checkout-contact form-grid two-col">
+          <label>Nombre<input name="customerName" type="text" autocomplete="name" placeholder="¿A nombre de quién?"></label>
+          <label>Teléfono<input name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="10 dígitos"></label>
+        </div>
+        <section class="checkout-delivery-fields" data-checkout-delivery hidden>
+          <div class="checkout-section-copy"><b>Datos para llevar tu orden</b><span>Comparte tu ubicación o escribe la dirección y una referencia.</span></div>
+          <label>Dirección o ubicación<textarea name="address" rows="2" placeholder="Calle, número, colonia o ubicación compartida"></textarea></label>
+          <button class="location-button" type="button" data-share-location><span aria-hidden="true">⌖</span> Mandar mi ubicación</button>
+          <input name="location" type="hidden">
+          <label>Referencia para entrega<input name="reference" type="text" placeholder="Portón, color de fachada, entre calles..."></label>
+          <label>¿Con cuánto pagas? <input name="payment" type="text" inputmode="decimal" placeholder="Ej. pago con $500, tarjeta o transferencia"></label>
+        </section>
+        <section class="checkout-pickup-note" data-checkout-pickup hidden>
+          <span aria-hidden="true">⏱</span>
+          <p>Dependiendo de tu orden, estará lista en <b>10 a 15 minutos</b>. Nuestro personal te confirmará a tiempo la salida de tu pedido.</p>
+        </section>
+        <section class="checkout-local-note" data-checkout-local hidden>
+          <span aria-hidden="true">✦</span>
+          <div><b>Tu selección se mantiene guardada.</b><p>Llévala a una reservación sin volver a elegir cada platillo.</p></div>
+          <button class="btn btn-secondary" type="button" data-go-to-reservation>Ir a reservar mesa <span aria-hidden="true">→</span></button>
+        </section>
+        <button class="btn btn-primary" type="submit" data-checkout-submit>Continuar por WhatsApp <span aria-hidden="true">↗</span></button>
+        <small class="checkout-help">La disponibilidad final y el tiempo de preparación se confirman directamente con el restaurante.</small>
+      </form>
     </aside>
 
     <aside class="item-modal" data-item-modal aria-label="Personalizar producto" aria-hidden="true" hidden>
@@ -308,12 +378,13 @@
           <button class="icon-button" type="button" data-close-item-modal aria-label="Cerrar personalizacion">×</button>
         </div>
         <div class="item-modal-options" data-item-modal-options></div>
+        <label class="item-quantity">Cantidad<input name="quantity" type="number" min="1" max="20" value="1" inputmode="numeric"></label>
         <label class="item-notes">Notas del pedido<textarea name="notes" rows="3" placeholder="Ej. salsa aparte, sin picante, entregar separado..."></textarea></label>
         <button class="btn btn-primary" type="submit">Agregar a mi seleccion</button>
       </form>
     </aside>
 
-    <script src="data/catalog-complete.js?v=20260813-complete" defer></script>
-    <script src="scripts.js?v=20260813-unified-menu" defer></script>
+    <script src="data/catalog-complete.js?v=20260820-order-bridge" defer></script>
+    <script src="scripts.js?v=20260820-order-bridge" defer></script>
   </body>
 </html>

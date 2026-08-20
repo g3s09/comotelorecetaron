@@ -1,5 +1,5 @@
 /* Carta base completa. Se combina con los cambios que se hagan desde el panel interno. */
-(() => {
+const CTLR_COMPLETE_MENU = (() => {
   const image = {
     entradas: "assets/menu-entradas.png",
     especialidades: "assets/menu-especialidades.png",
@@ -15,16 +15,11 @@
   const conHielo = [{ id: "hielos", label: "Hielos", type: "single", choices: ["Con hielos", "Sin hielos", "Poco hielo"] }];
   const item = (id, name, description, price, category, photo, options = [], tags = []) => ({ id, name, description, price, category, image: image[photo], available: true, options, tags });
 
-  window.CTLR_COMPLETE_MENU = {
+  return {
     products: [
-      item("esquites-suprema-brasas", "Esquites Suprema Brasas", "Rib-eye, granos de elote, mantequilla, tocino, champiñones, papas cambray y quesos gratinados.", "$250", "Especialidades", "especialidades", [], ["Para compartir"]),
-      item("esquites-nortenos", "Esquites Norteños", "Arrachera y chorizo argentino a las brasas, elote, mantequilla, tocino, champiñones, granitos y queso.", "$180", "Especialidades", "especialidades", [], ["Al carbón"]),
-      item("esquites-tradicionales", "Esquites Tradicionales", "Granos de elote con mantequilla, mayonesa, tocino, queso y chile en polvo.", "Precio en sucursal", "Especialidades", "especialidades"),
-      item("clasico-longaniza", "Clásico Longaniza", "Preparación clásica de la casa con longaniza.", "$70", "Especialidades", "especialidades"),
-      item("clasico-pastor", "Clásico Pastor", "Preparación clásica de la casa con pastor.", "$85", "Especialidades", "especialidades"),
-      item("clasico-asada-campechano", "Clásico Asada o Campechano", "Preparación clásica de la casa con asada o campechano.", "$100", "Especialidades", "especialidades"),
-      item("clasico-birria", "Clásico Birria", "Preparación clásica de la casa con birria.", "$140", "Especialidades", "especialidades"),
-      item("clasico-chistorra", "Clásico Chistorra", "Preparación clásica de la casa con chistorra.", "$140", "Especialidades", "especialidades"),
+      item("esquites-suprema-brasas", "Esquites Suprema Brasa", "Rib-eye, granos de elote, mantequilla, tocino, champiñones, papas cambray y quesos gratinados.", "$250", "Esquites", "especialidades", [], ["Para compartir"]),
+      item("esquites-nortenos", "Esquites Norteños", "Carne asada y chorizo argentino a las brasas, granos de elote con mantequilla, tocino, champiñones y queso gratinado.", "$180", "Esquites", "especialidades", [], ["Al carbón"]),
+      item("esquites-tradicionales", "Esquites Tradicionales", "Granos de elote con mantequilla, mayonesa, tocino, queso y chile en polvo. Clásico $70 · longaniza o pastor $85 · asada o campechano $100 · birria o chistorra $140.", "Desde $70", "Esquites", "especialidades"),
       item("tutano-extra", "Agrega un Tuétano", "Tuétano para agregar a tu platillo.", "$70", "Especialidades", "especialidades", [], ["Extra"]),
       item("joya-parrilla", "Joya de la Parrilla", "Tres tacos de rib-eye con costras de queso y un tuétano a las brasas.", "$320", "Especialidades", "especialidades", conTodo, ["Casa"]),
       item("arrachera-patron", "Arrachera del Patrón", "Cubos de arrachera al carbón sobre puré cremoso de papa, con champiñones y zanahorias.", "$280", "Especialidades", "especialidades"),
@@ -114,7 +109,7 @@
       item("te-sabores", "Té de Sabores", "Té caliente de sabores.", "$25", "Bebidas Calientes", "bebidas"),
       item("cerveza", "Cervezas", "Cerveza para acompañar la mesa.", "$35", "Para Festejar", "bebidas"),
       item("negra-modelo-especial", "Negra Modelo o Especial", "Cerveza de la casa.", "$40", "Para Festejar", "bebidas"),
-      item("tarro-helado", "Tarro Helado", "Tarro preparado y helado.", "$20", "Para Festejar", "bebidas"),
+      item("tarro-helado", "Tarro Chelado", "Tarro preparado y helado.", "$20", "Para Festejar", "bebidas"),
       item("tarro-michelado", "Tarro Michelado", "Tarro preparado estilo michelada.", "$25", "Para Festejar", "bebidas"),
       item("tarro-clamato", "Tarro Clamato", "Tarro preparado con clamato.", "$35", "Para Festejar", "bebidas"),
       item("burbujas-bosque", "Burbujas del Bosque", "Frutos rojos, jugo de naranja y ginger ale.", "$75", "Mocktails", "bebidas", conHielo),
@@ -153,3 +148,7 @@
     ]
   };
 })();
+
+/* El mismo catálogo puede ser leído por el sitio, el panel y la función de Vercel. */
+if (typeof window !== "undefined") window.CTLR_COMPLETE_MENU = CTLR_COMPLETE_MENU;
+if (typeof module !== "undefined" && module.exports) module.exports = CTLR_COMPLETE_MENU;
