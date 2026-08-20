@@ -22,6 +22,9 @@ try {
   console.error("No se pudo cargar la carta completa incluida.", error);
 }
 
+const retiredBaseProductIds = new Set(["tutano-extra"]);
+const canonicalBaseProductIds = new Set(["joya-parrilla", "arrachera-patron", "cazuela-ribeye", "macarrones-queso"]);
+
 const mimeTypes = {
   ".html": "text/html; charset=utf-8",
   ".css": "text/css; charset=utf-8",
@@ -59,7 +62,11 @@ const databaseError = (message) => {
 const mergeCatalogCollection = (complete = [], current = []) => {
   const merged = new Map();
   complete.forEach((item) => merged.set(item.id, item));
-  current.forEach((item) => merged.set(item.id, item));
+  current.forEach((item) => {
+    if (retiredBaseProductIds.has(item.id)) return;
+    if (canonicalBaseProductIds.has(item.id) && merged.has(item.id)) return;
+    merged.set(item.id, item);
+  });
   return Array.from(merged.values());
 };
 

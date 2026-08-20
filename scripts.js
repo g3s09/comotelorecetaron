@@ -130,6 +130,7 @@ const burgerExtras = [
   choice("Costra de asada", "Costra extra de carne asada.", { priceDelta: 20 }),
   choice("Cambiar a arrachera", "Sustituye la carne clásica por arrachera.", { priceDelta: 60 })
 ];
+const specialtyEsquiteIds = new Set(["joya-parrilla", "arrachera-patron", "cazuela-ribeye", "macarrones-queso"]);
 const standardBeerChoices = [
   choice("Victoria", "Cerveza Victoria para acompañar tu orden.", { price: 35 }),
   choice("Lager", "Cerveza Lager bien fría.", { price: 35 }),
@@ -180,20 +181,38 @@ const enrichMenuItem = (item) => {
     ]);
   }
 
-  if (id === "esquites-tradicionales") {
-    return replaceOptions([{
-      id: "preparacion",
-      label: "Elige tu preparación",
-      type: "single",
-      choices: [
-        choice("Clásico", "Granos de elote con mantequilla, mayonesa, tocino, queso y chile en polvo.", { price: 70 }),
-        choice("Con longaniza", "Esquites tradicionales con longaniza al carbón.", { price: 85 }),
-        choice("Con pastor", "Esquites tradicionales con carne al pastor.", { price: 85 }),
-        choice("Con asada o campechano", "Esquites tradicionales con carne asada o campechano.", { price: 100 }),
-        choice("Con birria", "Esquites tradicionales con birria de la casa.", { price: 140 }),
-        choice("Con chistorra", "Esquites tradicionales con chistorra.", { price: 140 })
-      ]
-    }]);
+  if (category === "Esquites") {
+    const options = [];
+    if (id === "esquites-tradicionales") {
+      options.push({
+        id: "preparacion",
+        label: "Elige tu preparación",
+        type: "single",
+        choices: [
+          choice("Clásico", "Granos de elote con mantequilla, mayonesa, tocino, queso y chile en polvo.", { price: 70 }),
+          choice("Con longaniza", "Esquites tradicionales con longaniza al carbón.", { price: 85 }),
+          choice("Con pastor", "Esquites tradicionales con carne al pastor.", { price: 85 }),
+          choice("Con asada o campechano", "Esquites tradicionales con carne asada o campechano.", { price: 100 }),
+          choice("Con birria", "Esquites tradicionales con birria de la casa.", { price: 140 }),
+          choice("Con chistorra", "Esquites tradicionales con chistorra.", { price: 140 })
+        ]
+      });
+    }
+    options.push({
+      id: "extra-tuetano",
+      label: "Extra para tus esquites",
+      type: "multiple",
+      choices: [choice("Agrega un tuétano", "Tuétano asado para acompañar únicamente tus esquites.", { priceDelta: 70 })]
+    });
+    if (specialtyEsquiteIds.has(id)) {
+      options.push({
+        id: "extra-arrachera",
+        label: "Extra de la casa",
+        type: "multiple",
+        choices: [choice("Agrega arrachera", "Porción extra de arrachera cocinada al carbón.", { priceDelta: 60 })]
+      });
+    }
+    return replaceOptions(options);
   }
 
   if (category === "Para Festejar") {
@@ -353,12 +372,18 @@ const normalizeArray = (items = [], type = "products") =>
     : [];
 
 const completeMenu = typeof window !== "undefined" && window.CTLR_COMPLETE_MENU ? window.CTLR_COMPLETE_MENU : {};
+const retiredBaseProductIds = new Set(["tutano-extra"]);
+const canonicalBaseProductIds = new Set(["joya-parrilla", "arrachera-patron", "cazuela-ribeye", "macarrones-queso"]);
 
 const mergeCatalogItems = (items = [], type = "products") => {
   const extras = Array.isArray(completeMenu[type]) ? completeMenu[type] : [];
   const merged = new Map();
   normalizeArray(extras, type).forEach((item) => merged.set(item.id, item));
-  normalizeArray(items, type).forEach((item) => merged.set(item.id, item));
+  normalizeArray(items, type).forEach((item) => {
+    if (type === "products" && retiredBaseProductIds.has(item.id)) return;
+    if (type === "products" && canonicalBaseProductIds.has(item.id) && merged.has(item.id)) return;
+    merged.set(item.id, item);
+  });
   return Array.from(merged.values()).map(enrichMenuItem);
 };
 
@@ -498,8 +523,8 @@ let menuTimer;
 let lastCatalogHash = "";
 let allOrderItems = [];
 let revealObserver;
-let activeOrderCategory = "Especialidades";
-let activeMenuCategory = "Especialidades";
+let activeOrderCategory = "Esquites";
+let activeMenuCategory = "Esquites";
 let modalItem = null;
 let modalEditingKey = "";
 
@@ -509,7 +534,6 @@ const categoryRules = {
   "Para botanear": (item) => item.category === "Entradas" && !entryIds.has(item.id),
   Esquites: (item) => item.category === "Esquites",
   Tradicionales: (item) => item.category === "Tradicionales",
-  Especialidades: (item) => item.category === "Especialidades",
   Birria: (item) => item.category === "Birria",
   "Queso fundido": (item) => item.category === "Queso Fundido",
   "Tuétanos": (item) => /^tutano-/.test(item.id),
@@ -531,9 +555,8 @@ const categoryCopy = {
   Todos: ["Carta completa", "Explora todas las opciones disponibles."],
   Entradas: ["Entradas", "Frijoles charros, sopa azteca, sopa de hongos y sopa de queso."],
   "Para botanear": ["Para botanear", "Papas, alitas, aros, chiles y antojos para compartir."],
-  Esquites: ["Esquites", "Suprema Brasa, Norteños y tradicionales con la preparación que tú elijas."],
+  Esquites: ["Esquites y especialidades", "Esquites de la casa y platillos especiales, con extras para personalizar."],
   Tradicionales: ["Los tradicionales", "Costras, mulitas, volcanes, tlayoyos y tostadas."],
-  Especialidades: ["Especialidades de la casa", "Platos de la casa con el sello del carbón."],
   Birria: ["Birria de la casa", "Consome, tacos y sabores de coccion lenta."],
   "Queso fundido": ["Queso fundido", "Elige natural o la proteína exacta de la carta."],
   "Tuétanos": ["Tuétanos", "Médula asada; cada preparación conserva sólo su proteína correspondiente."],
@@ -573,7 +596,7 @@ const updateMenuBook = (category) => {
     Todos: { image: "assets/menu-especialidades.png", title: "Carta completa", note: "Todo el sabor de Como Te Lo Recetaron: cocina al carbón, antojitos, bebidas y postres." },
     Birria: { image: "assets/menu-especialidades.png", title: "Birria de la casa", note: "Consomé, tacos y quesabirrias preparados a tu gusto." },
     Tacos: { image: "assets/menu-antojitos.png", title: "Antojitos y tacos", note: "Tacos y órdenes con los complementos que tú eliges." },
-    Especialidades: { image: "assets/menu-especialidades.png", title: "Especialidades de la casa", note: "Birria, molcajetes y queso fundido con el sello de la brasa." },
+    Esquites: { image: "assets/menu-especialidades.png", title: "Esquites y especialidades", note: "Esquites de la casa y platillos especiales, con extras para personalizar." },
     Bebidas: { image: "assets/menu-bebidas.png", title: "Bebidas, postres y para festejar", note: "Aguas frescas, bebidas calientes, cervezas, mocktails y postres." },
     Cocteleria: { image: "assets/menu-cocteleria.png", title: "Coctelería de la casa", note: "Cocteles de la casa, internacionales y mocktails para acompañar el fuego." }
   };
@@ -871,7 +894,8 @@ const checkoutMessage = (items, total, details) => {
     details.fulfillment === "delivery" ? `Dirección: ${details.address || "Ubicación por confirmar"}` : "",
     details.fulfillment === "delivery" && details.location ? `Ubicación: ${details.location}` : "",
     details.fulfillment === "delivery" && details.reference ? `Referencia: ${details.reference}` : "",
-    details.fulfillment === "delivery" && details.payment ? `Pago con: ${details.payment}` : "",
+    details.fulfillment === "delivery" && details.paymentMethod ? `Forma de pago: ${details.paymentMethod}` : "",
+    details.fulfillment === "delivery" && details.payment ? `Pago en efectivo con: ${details.payment}` : "",
     details.fulfillment === "pickup" ? "Entiendo que el tiempo estimado es de 10 a 15 minutos y espero su confirmación." : "",
     "",
     "¿Me confirman disponibilidad y el tiempo final de preparación?"
@@ -1119,6 +1143,7 @@ const initSelection = () => {
       address,
       location,
       reference: String(data.get("reference") || "").trim(),
+      paymentMethod: String(data.get("paymentMethod") || "").trim(),
       payment: String(data.get("payment") || "").trim()
     };
     const message = checkoutMessage(items, selectionTotal(items), details);

@@ -121,7 +121,7 @@
               <button class="menu-book-tab" type="button" role="tab" aria-selected="false" data-menu-tab data-menu-filter="Todos" data-menu-image="assets/menu-especialidades.png" data-menu-title="Carta completa" data-menu-note="Todo el sabor de Como Te Lo Recetaron: cocina al carbón, antojitos, bebidas y postres.">Todo</button>
               <button class="menu-book-tab" type="button" role="tab" aria-selected="false" data-menu-tab data-menu-filter="Entradas" data-menu-image="assets/menu-entradas.png" data-menu-title="Entradas" data-menu-note="Sopas y botanas para abrir la mesa.">Entradas</button>
               <button class="menu-book-tab" type="button" role="tab" aria-selected="false" data-menu-tab data-menu-filter="Tradicionales" data-menu-image="assets/menu-entradas.png" data-menu-title="Los tradicionales" data-menu-note="Costras, mulitas, volcanes, tlayoyos y tostadas.">Tradicionales</button>
-              <button class="menu-book-tab" type="button" role="tab" aria-selected="false" data-menu-tab data-menu-filter="Especialidades" data-menu-image="assets/menu-especialidades.png" data-menu-title="Especialidades de la casa" data-menu-note="El toque de carbón que nos distingue.">Especialidades</button>
+              <button class="menu-book-tab" type="button" role="tab" aria-selected="false" data-menu-tab data-menu-filter="Esquites" data-menu-image="assets/menu-especialidades.png" data-menu-title="Esquites y especialidades" data-menu-note="Esquites de la casa y platillos especiales, con extras para personalizar.">Esquites</button>
               <button class="menu-book-tab" type="button" role="tab" aria-selected="false" data-menu-tab data-menu-filter="Birria" data-menu-image="assets/menu-especialidades.png" data-menu-title="Birria de la casa" data-menu-note="Consomé, tacos y quesabirrias preparados a tu gusto.">Birria</button>
               <button class="menu-book-tab" type="button" role="tab" aria-selected="false" data-menu-tab data-menu-filter="Queso fundido" data-menu-image="assets/menu-especialidades.png" data-menu-title="Queso fundido" data-menu-note="Natural o con la proteína exacta de la carta.">Queso fundido</button>
               <button class="menu-book-tab" type="button" role="tab" aria-selected="false" data-menu-tab data-menu-filter="Tuétanos" data-menu-image="assets/menu-cortes.png" data-menu-title="Tuétanos" data-menu-note="Médula asada con la proteína indicada en cada preparación.">Tuétanos</button>
@@ -151,7 +151,7 @@
           <div class="featured-menu menu-ordering" id="ordenar-carta" data-reveal>
             <div class="featured-menu-heading">
               <div>
-                <p class="eyebrow" data-featured-menu-kicker>Especialidades de la casa</p>
+                <p class="eyebrow" data-featured-menu-kicker>Esquites y especialidades</p>
                 <h3 data-featured-menu-title>Elige una categoría y personaliza sólo lo que necesitas.</h3>
                 <small class="category-result-count" data-category-result-count></small>
               </div>
@@ -163,7 +163,6 @@
               <button type="button" data-order-filter="Esquites">Esquites</button>
               <button type="button" data-order-filter="Para botanear">Para botanear</button>
               <button type="button" data-order-filter="Tradicionales">Tradicionales</button>
-              <button type="button" data-order-filter="Especialidades">Especialidades</button>
               <button type="button" data-order-filter="Birria">Birria</button>
               <button type="button" data-order-filter="Queso fundido">Queso fundido</button>
               <button type="button" data-order-filter="Tuétanos">Tuétanos</button>
@@ -292,11 +291,12 @@
       <footer class="site-footer">
         <p>Como Te Lo Recetaron</p>
         <span>Gracias por su consumo y preferencia. No olviden sus tarjetas para sellar.</span>
+        <a class="footer-call" href="tel:+528181681933">Llamar al restaurante</a>
         <small>Diseño y desarrollo por Bit&amp;Gear · Todos los derechos reservados.</small>
       </footer>
     </main>
 
-    <a class="whatsapp-float" href="https://wa.me/528181681933" target="_blank" rel="noopener" aria-label="Ordena por WhatsApp">
+    <a class="whatsapp-float" href="https://wa.me/528181681933" target="_blank" rel="noopener" aria-label="Ordena por WhatsApp" title="Ordena por WhatsApp">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 3.5A11.8 11.8 0 0 0 2.3 18.1L1 23l5-1.3A11.8 11.8 0 0 0 20.5 3.5Zm-8.7 16.3c-1.8 0-3.6-.5-5.2-1.5l-.4-.2-3 .8.8-2.9-.2-.4a9.7 9.7 0 1 1 8 4.2Zm5.3-7.2c-.3-.2-1.8-.9-2.1-1-.3-.1-.5-.2-.7.2l-.9 1.1c-.2.2-.4.2-.7.1-.3-.2-1.3-.5-2.5-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6l.5-.6c.2-.2.2-.3.3-.5.1-.2.1-.4 0-.6l-1-2.4c-.3-.7-.5-.6-.7-.6h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.7s1.2 3.1 1.3 3.3c.2.2 2.3 3.5 5.5 4.9.8.3 1.4.5 1.9.7.8.2 1.5.2 2.1.1.6-.1 1.8-.7 2.1-1.5.3-.7.3-1.3.2-1.5-.1-.1-.3-.2-.6-.4Z"/></svg>
       <span>Ordena por WhatsApp</span>
     </a>
@@ -349,7 +349,11 @@
           <button class="location-button" type="button" data-share-location><span aria-hidden="true">⌖</span> Mandar mi ubicación</button>
           <input name="location" type="hidden">
           <label>Referencia para entrega<input name="reference" type="text" placeholder="Portón, color de fachada, entre calles..."></label>
-          <label>¿Con cuánto pagas? <input name="payment" type="text" inputmode="decimal" placeholder="Ej. pago con $500, tarjeta o transferencia"></label>
+          <div class="checkout-payment-grid form-grid two-col">
+            <label>Forma de pago<select name="paymentMethod"><option value="">Confirmar con el restaurante</option><option value="Efectivo">Efectivo</option><option value="Tarjeta">Tarjeta</option><option value="Transferencia">Transferencia</option></select></label>
+            <label>Si pagas efectivo, ¿con cuánto? <input name="payment" type="text" inputmode="decimal" placeholder="Ej. $500"></label>
+          </div>
+          <small class="delivery-coverage-note">La cobertura, costo de envío y tiempo final se confirman por WhatsApp antes de preparar tu orden.</small>
         </section>
         <section class="checkout-pickup-note" data-checkout-pickup hidden>
           <span aria-hidden="true">⏱</span>
@@ -362,6 +366,7 @@
         </section>
         <button class="btn btn-primary" type="submit" data-checkout-submit>Continuar por WhatsApp <span aria-hidden="true">↗</span></button>
         <small class="checkout-help">La disponibilidad final y el tiempo de preparación se confirman directamente con el restaurante.</small>
+        <small class="checkout-privacy">Tu teléfono y ubicación sólo se usan para atender esta solicitud; no se comparten con terceros.</small>
       </form>
     </aside>
 
@@ -379,12 +384,13 @@
         </div>
         <div class="item-modal-options" data-item-modal-options></div>
         <label class="item-quantity">Cantidad<input name="quantity" type="number" min="1" max="20" value="1" inputmode="numeric"></label>
-        <label class="item-notes">Notas del pedido<textarea name="notes" rows="3" placeholder="Ej. salsa aparte, sin picante, entregar separado..."></textarea></label>
+        <label class="item-notes">Notas del pedido<textarea name="notes" rows="3" placeholder="Ej. salsa aparte, sin picante, alergia a nuez o lácteos..."></textarea></label>
+        <small class="item-allergy-note">Si tienes alergias o restricciones, indícalas aquí. Haremos lo posible por atenderlas, aunque no podemos garantizar ausencia total de trazas.</small>
         <button class="btn btn-primary" type="submit">Agregar a mi seleccion</button>
       </form>
     </aside>
 
-    <script src="data/catalog-complete.js?v=20260820-order-bridge" defer></script>
-    <script src="scripts.js?v=20260820-order-bridge" defer></script>
+    <script src="data/catalog-complete.js?v=20260820-mobile-care" defer></script>
+    <script src="scripts.js?v=20260820-mobile-care" defer></script>
   </body>
 </html>
