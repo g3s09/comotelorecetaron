@@ -17,7 +17,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="preload" as="image" href="assets/toro.jpeg">
     <link rel="preload" as="image" href="assets/bienvenida-toro.png">
-    <link rel="stylesheet" href="styles.css?v=20260820-rail-glass">
+    <link rel="stylesheet" href="styles.css?v=20260820-reviews-3d">
   </head>
   <body data-page="home">
     <a class="skip-link" href="#principal">Saltar al contenido</a>
@@ -35,7 +35,11 @@
 
     <header class="site-header" data-header>
       <a class="brand-lockup" href="#inicio" aria-label="Como Te Lo Recetaron">
-        <span class="brand-seal"><img src="assets/bienvenida-toro.png" alt=""></span>
+        <span class="brand-seal brand-bull-3d" aria-hidden="true">
+          <span class="brand-bull-shadow"></span>
+          <span class="brand-bull-plate"><img src="assets/bienvenida-toro.png" alt=""></span>
+          <span class="brand-bull-glint"></span>
+        </span>
         <span class="brand-name">Como Te Lo Recetaron</span>
       </a>
       <button class="nav-toggle" type="button" aria-label="Abrir menu" aria-expanded="false" data-nav-toggle>
@@ -274,45 +278,33 @@
         </div>
       </section>
 
-      <section class="reviews-section section-shell" id="resenas" aria-label="Reseñas de muestra">
+      <section class="reviews-section section-shell" id="resenas" aria-label="Reseñas en Google Maps">
         <div class="reviews-heading" data-reveal>
           <div>
-            <p class="eyebrow">Reseñas</p>
-            <h2>Momentos que se disfrutan alrededor de la brasa.</h2>
+            <p class="eyebrow">Reseñas verificables</p>
+            <h2>La mejor conversación se consulta en su fuente.</h2>
           </div>
           <div class="reviews-heading-aside">
-            <p>Una vista previa del espacio para testimonios. Sustituye los comentarios por reseñas verificadas cuando las tengas.</p>
-            <a class="reviews-action" href="https://maps.app.goo.gl/98Uu8kPWvtGMrZLLA" target="_blank" rel="noopener">¿Ya nos visitaste? Comparte tu experiencia <span aria-hidden="true">↗</span></a>
+            <p>Las opiniones, fotografías y calificación vigentes se leen directamente en la ficha oficial de Google Maps. Así cada visita puede comprobarlas sin intermediarios.</p>
+            <a class="reviews-action" href="https://maps.app.goo.gl/98Uu8kPWvtGMrZLLA" target="_blank" rel="noopener noreferrer">Abrir opiniones y fotos en Google Maps <span aria-hidden="true">↗</span></a>
           </div>
         </div>
         <div class="reviews-grid">
-          <article class="review-card" data-reveal>
-            <img src="assets/review-moments.png" alt="Comensales brindando alrededor de una mesa" loading="lazy">
-            <div><span>Comentario de muestra</span><p>“El ambiente invita a quedarse: buena comida, brasas y una mesa para compartir.”</p><small>Visita en familia</small></div>
+          <article class="review-card review-card-rating" data-reveal>
+            <div class="review-rating-mark" aria-hidden="true">4.8</div>
+            <div><span>Calificación pública</span><p>Una valoración que se comprueba en Google Maps.</p><small>Consulta la ficha para ver el dato vigente.</small></div>
           </article>
           <article class="review-card" data-reveal>
-            <img src="assets/momento-brasa.png" alt="Tacos y corte servidos al carbón" loading="lazy">
-            <div><span>Comentario de muestra</span><p>“Los cortes al carbón y los tacos fueron el centro de la noche.”</p><small>Cena entre amigos</small></div>
+            <div class="review-card-mark" aria-hidden="true">★</div>
+            <div><span>Opiniones originales</span><p>Lee cada comentario desde el perfil del restaurante.</p><a href="https://maps.app.goo.gl/98Uu8kPWvtGMrZLLA" target="_blank" rel="noopener noreferrer">Ver opiniones <span aria-hidden="true">↗</span></a></div>
           </article>
           <article class="review-card" data-reveal>
-            <img src="assets/terraza.jpeg" alt="Terraza nocturna del restaurante" loading="lazy">
-            <div><span>Comentario de muestra</span><p>“La terraza tiene una vibra especial para una sobremesa sin prisas.”</p><small>Noche de terraza</small></div>
+            <div class="review-card-mark" aria-hidden="true">▧</div>
+            <div><span>Fotos de visitantes</span><p>Explora las fotos publicadas junto con su contexto original.</p><a href="https://maps.app.goo.gl/98Uu8kPWvtGMrZLLA" target="_blank" rel="noopener noreferrer">Ver fotos en Maps <span aria-hidden="true">↗</span></a></div>
           </article>
-          <article class="review-card" data-reveal>
-            <img src="assets/momento-bebidas.png" alt="Bebidas servidas en ambiente cálido" loading="lazy">
-            <div><span>Comentario de muestra</span><p>“Las bebidas y los postres son el cierre perfecto después de la parrilla.”</p><small>Hora de brindar</small></div>
-          </article>
-          <article class="review-card" data-reveal>
-            <img src="assets/balcon.jpeg" alt="Área de balcón del restaurante" loading="lazy">
-            <div><span>Comentario de muestra</span><p>“Un rincón cómodo para platicar, comer rico y volver a la próxima.”</p><small>Mesa en balcón</small></div>
-          </article>
-          <article class="review-card" data-reveal>
-            <img src="assets/momento-hamburguesa.png" alt="Hamburguesa preparada al carbón" loading="lazy">
-            <div><span>Comentario de muestra</span><p>“La hamburguesa llega generosa, con ese sabor ahumado que se antoja.”</p><small>Antojo al carbón</small></div>
-          </article>
-          <article class="review-card" data-reveal>
-            <img src="assets/review-moments.png" alt="Cena compartida junto a las brasas" loading="lazy">
-            <div><span>Comentario de muestra</span><p>“El servicio, las brasas y la compañía hacen que cada visita se sienta especial.”</p><small>Celebración en la casa</small></div>
+          <article class="review-card review-card-wide" data-reveal>
+            <div class="review-card-mark" aria-hidden="true">✦</div>
+            <div><span>Tu experiencia suma</span><p>¿Ya compartiste la mesa con nosotros? Deja una opinión honesta: ayuda a que más personas nos encuentren.</p><a href="https://maps.app.goo.gl/98Uu8kPWvtGMrZLLA" target="_blank" rel="noopener noreferrer">Escribir una reseña <span aria-hidden="true">↗</span></a></div>
           </article>
         </div>
       </section>

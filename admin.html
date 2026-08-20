@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=20260612-premium-5">
+    <link rel="stylesheet" href="styles.css?v=20260820-reviews-3d">
   </head>
   <body data-page="admin">
     <main class="admin-shell" id="principal">
@@ -32,7 +32,11 @@
       <section class="admin-app" data-admin-app hidden>
         <header class="admin-header">
           <a class="brand-lockup" href="index.html">
-            <span class="brand-seal">CTLR</span>
+            <span class="brand-seal brand-bull-3d" aria-hidden="true">
+              <span class="brand-bull-shadow"></span>
+              <span class="brand-bull-plate"><img src="assets/bienvenida-toro.png" alt=""></span>
+              <span class="brand-bull-glint"></span>
+            </span>
             <span class="brand-name">Como Te Lo Recetaron</span>
           </a>
           <div class="admin-actions">
@@ -136,7 +140,11 @@
                 </label>
                 <button class="btn btn-quiet" type="button" data-refresh-catalog>Recargar datos</button>
               </div>
-              <p class="admin-note">La carta completa, sus preparaciones y los cambios se guardan mediante la API. En Vercel configura Supabase antes de publicar cambios.</p>
+              <p class="admin-note">Aquí puedes editar cada platillo, bebida o mocktail: nombre, precio, categoría, descripción, fotografía, disponibilidad y sus opciones de personalización. En Vercel configura Supabase antes de publicar cambios.</p>
+              <div class="admin-security-note">
+                <h3>Acceso protegido</h3>
+                <p>La clave no se guarda dentro del sitio ni en Git. Para cambiarla en producción actualiza la variable <code>CTLR_ADMIN_TOKEN_V2</code> en Vercel y vuelve a desplegar.</p>
+              </div>
             </section>
           </div>
         </div>

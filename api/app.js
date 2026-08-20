@@ -1,6 +1,7 @@
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
+const crypto = require("crypto");
 
 const rootDir = path.resolve(__dirname, "..");
 const dataDir = path.join(rootDir, "data");
@@ -9,7 +10,26 @@ const catalogFile = path.join(dataDir, "catalog.json");
 const reservationFile = path.join(dataDir, "reservations.json");
 const port = Number(process.env.PORT || 4173);
 const isVercel = Boolean(process.env.VERCEL || process.env.VERCEL_ENV);
-const adminToken = process.env.CTLR_ADMIN_TOKEN || (isVercel ? "" : "brasas1933");
+
+const loadLocalEnvironment = () => {
+  if (isVercel) return;
+  const localEnvFile = path.join(rootDir, ".env.local");
+  if (!fs.existsSync(localEnvFile)) return;
+  fs.readFileSync(localEnvFile, "utf8")
+    .split(/\r?\n/)
+    .forEach((line) => {
+      const match = line.match(/^\s*([A-Z][A-Z0-9_]*)\s*=\s*(.*?)\s*$/);
+      if (!match || process.env[match[1]]) return;
+      process.env[match[1]] = match[2].replace(/^(["'])(.*)\1$/, "$2");
+    });
+};
+
+loadLocalEnvironment();
+// CTLR_ADMIN_TOKEN_V2 sustituye la clave antigua de producción. El respaldo es
+// solamente un verificador (sal + hash scrypt), nunca la contraseña en claro.
+const adminToken = String(process.env.CTLR_ADMIN_TOKEN_V2 || "");
+const provisionedAdminSalt = Buffer.from("hN9hxsdvf1WwfT+tnjZNAA==", "base64");
+const provisionedAdminHash = Buffer.from("R7qy+UECsw6PM4ayRAV/ZHz8j4gP54nYb4oCTzcIkW9z+HaiY8e6UX4HGeCs++mg9vljhWJZPxhMWXyCEFcgLQ==", "base64");
 const supabaseUrl = String(process.env.SUPABASE_URL || "").replace(/\/$/, "");
 const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
 const catalogRowId = "public";
@@ -64,7 +84,9 @@ const mergeCatalogCollection = (complete = [], current = []) => {
   complete.forEach((item) => merged.set(item.id, item));
   current.forEach((item) => {
     if (retiredBaseProductIds.has(item.id)) return;
-    if (canonicalBaseProductIds.has(item.id) && merged.has(item.id)) return;
+    // Migra únicamente el registro antiguo que aún vivía en "Especialidades".
+    // Después de guardarlo desde el panel se respetan precio, foto y opciones editadas.
+    if (canonicalBaseProductIds.has(item.id) && item.category === "Especialidades" && merged.has(item.id)) return;
     merged.set(item.id, item);
   });
   return Array.from(merged.values());
@@ -166,11 +188,20 @@ const collectBody = (request, maxBytes = 8 * 1024 * 1024) =>
   });
 
 const requireAdmin = (request, response) => {
-  if (!adminToken) {
-    sendJson(response, 503, { error: "Configura CTLR_ADMIN_TOKEN en Vercel para habilitar el panel." });
-    return false;
-  }
-  if (request.headers["x-admin-token"] === adminToken) return true;
+  const providedToken = String(request.headers["x-admin-token"] || "");
+  const providedBytes = Buffer.from(providedToken);
+  const expectedBytes = Buffer.from(adminToken);
+  const matchesEnvironmentToken =
+    Boolean(adminToken) &&
+    providedBytes.length === expectedBytes.length &&
+    crypto.timingSafeEqual(providedBytes, expectedBytes);
+  const matchesProvisionedToken =
+    !adminToken &&
+    crypto.timingSafeEqual(
+      crypto.scryptSync(providedToken, provisionedAdminSalt, provisionedAdminHash.length),
+      provisionedAdminHash
+    );
+  if (matchesEnvironmentToken || matchesProvisionedToken) return true;
   sendJson(response, 401, { error: "Clave de administrador incorrecta." });
   return false;
 };

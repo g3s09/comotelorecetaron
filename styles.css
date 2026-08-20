@@ -335,6 +335,83 @@ svg {
   filter: saturate(0.88) contrast(1.14);
 }
 
+/* Medallón del toro: capas, profundidad y reflejo para evitar una marca plana. */
+.brand-bull-3d {
+  position: relative;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  perspective: 18rem;
+  transform-style: preserve-3d;
+  isolation: isolate;
+}
+
+.brand-bull-shadow,
+.brand-bull-plate,
+.brand-bull-glint {
+  position: absolute;
+  inset: 0;
+  border-radius: 48% 48% 42% 42% / 42% 42% 56% 56%;
+  transform-style: preserve-3d;
+}
+
+.brand-bull-shadow {
+  inset: 0.22rem 0.06rem -0.16rem;
+  z-index: -2;
+  background: #030303;
+  box-shadow: 0 0.52rem 0.82rem rgba(0, 0, 0, 0.64), 0 0 1.25rem rgba(226, 88, 34, 0.2);
+  transform: translateZ(-0.7rem) rotateX(48deg) scale(0.86);
+}
+
+.brand-bull-plate {
+  z-index: 0;
+  overflow: hidden;
+  border: 1px solid rgba(250, 215, 119, 0.72);
+  background: linear-gradient(135deg, #6f4b16, #1d0c08 52%, #b47c24);
+  box-shadow:
+    inset 0 0 0 0.12rem rgba(10, 8, 7, 0.64),
+    inset 0 0.12rem 0.3rem rgba(255, 239, 190, 0.42),
+    0 0.2rem 0.45rem rgba(0, 0, 0, 0.46);
+  transform: translateZ(0.28rem) rotateX(8deg) rotateY(-10deg);
+  animation: bull-medallion-float 6s ease-in-out infinite;
+}
+
+.brand-bull-plate::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(118deg, rgba(255, 248, 214, 0.38), transparent 27%, transparent 68%, rgba(107, 4, 15, 0.38));
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+.brand-bull-plate img {
+  position: relative;
+  z-index: 0;
+  transform: scale(1.1) translateZ(0.16rem);
+  filter: sepia(0.18) saturate(0.88) contrast(1.24) brightness(0.84);
+}
+
+.brand-bull-plate::after { z-index: 1; }
+
+.brand-bull-glint {
+  z-index: 2;
+  inset: 0.1rem;
+  border: 1px solid rgba(255, 233, 175, 0.22);
+  pointer-events: none;
+  transform: translateZ(0.64rem) rotateX(8deg) rotateY(-10deg);
+}
+
+@keyframes bull-medallion-float {
+  0%, 100% { transform: translateZ(0.28rem) rotateX(8deg) rotateY(-10deg); }
+  50% { transform: translateZ(0.48rem) rotateX(2deg) rotateY(6deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brand-bull-plate { animation: none; }
+}
+
 .brand-name {
   color: var(--white);
   font-family: "Cormorant Garamond", Georgia, serif;
@@ -2151,6 +2228,20 @@ svg {
   color: var(--muted);
   line-height: 1.55;
 }
+
+.admin-security-note {
+  max-width: 42rem;
+  margin-top: 1rem;
+  padding: 1rem 1.05rem;
+  border: 1px solid rgba(212, 175, 55, 0.28);
+  border-radius: 1rem;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(177, 18, 38, 0.07));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.admin-security-note h3 { margin: 0 0 0.35rem; color: var(--gold); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.08em; }
+.admin-security-note p { margin: 0; color: var(--muted); font-size: 0.82rem; line-height: 1.55; }
+.admin-security-note code { color: #ffe4a0; }
 
 .admin-app {
   width: min(1380px, calc(100% - 2rem));
@@ -4111,13 +4202,16 @@ body[data-page="home"] .order-stage .catalog-card {
 
 .reviews-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: 1.1fr 1fr 1fr;
   gap: 0.75rem;
 }
 
 .review-card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: 0.8rem;
   min-width: 0;
-  overflow: hidden;
   border: 1px solid rgba(255, 235, 190, 0.17);
   border-radius: 1.05rem;
   background:
@@ -4130,15 +4224,32 @@ body[data-page="home"] .order-stage .catalog-card {
 }
 
 .review-card:hover { transform: translateY(-0.25rem); border-color: rgba(245, 220, 129, 0.48); }
-.review-card img { display: block; width: 100%; height: 4.9rem; object-fit: cover; filter: saturate(0.88) contrast(1.08); }
-.review-card:nth-child(1) img { object-position: 62% 48%; }
-.review-card:nth-child(3) img { object-position: center 63%; }
-.review-card:nth-child(5) img { object-position: center 45%; }
-.review-card:nth-child(7) img { object-position: 28% 52%; }
-.review-card > div { display: grid; align-content: start; gap: 0.42rem; min-height: 7.5rem; padding: 0.7rem 0.78rem 0.76rem; }
+.review-card > div:last-child { display: grid; align-content: start; gap: 0.42rem; min-height: 7.5rem; padding: 0.82rem 0.82rem 0.86rem 0; }
 .review-card span { color: var(--gold); font-size: 0.63rem; font-weight: 900; letter-spacing: 0.11em; text-transform: uppercase; }
 .review-card p { margin: 0; color: var(--white); font-family: "Cormorant Garamond", Georgia, serif; font-size: 1.1rem; font-weight: 700; line-height: 1; }
 .review-card small { color: rgba(245, 245, 245, 0.6); font-size: 0.68rem; }
+.review-card a { align-self: end; color: var(--gold); font-size: 0.73rem; font-weight: 900; text-decoration: none; }
+.review-card a:hover, .review-card a:focus-visible { color: #fff0bd; text-decoration: underline; outline: none; }
+
+.review-card-mark,
+.review-rating-mark {
+  display: grid;
+  place-items: center;
+  width: 3.25rem;
+  min-height: 3.25rem;
+  margin: 0.82rem 0 0 0.82rem;
+  border: 1px solid rgba(245, 220, 129, 0.46);
+  border-radius: 1rem;
+  color: var(--gold);
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.22), rgba(177, 18, 38, 0.13)), rgba(9, 8, 7, 0.56);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 0.55rem 1.2rem rgba(0, 0, 0, 0.18);
+  font-size: 1.22rem;
+  font-weight: 950;
+}
+
+.review-rating-mark { font-size: 1.02rem; letter-spacing: -0.04em; }
+.review-card-wide { grid-column: span 3; }
+.review-card-wide > div:last-child { min-height: 5.4rem; }
 
 .reviews-action {
   justify-self: start;
@@ -4162,6 +4273,9 @@ body[data-page="home"] .order-stage .catalog-card {
 
 @media (max-width: 920px) {
   .reviews-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .review-card { grid-template-columns: 1fr; gap: 0; }
+  .review-card-mark, .review-rating-mark { margin-bottom: 0; }
+  .review-card > div:last-child { padding-left: 0.82rem; }
 }
 
 @media (max-width: 620px) {
@@ -4169,8 +4283,9 @@ body[data-page="home"] .order-stage .catalog-card {
   .reviews-heading-aside { max-width: none; }
   .reviews-heading h2 { font-size: clamp(2.65rem, 13vw, 4rem); }
   .reviews-grid { grid-template-columns: 1fr; gap: 0.65rem; }
-  .review-card { display: grid; grid-template-columns: 6.25rem minmax(0, 1fr); }
-  .review-card img { height: 100%; min-height: 7.55rem; }
-  .review-card > div { min-height: 0; padding: 0.7rem 0.76rem; }
+  .review-card { grid-template-columns: 4.35rem minmax(0, 1fr); gap: 0; }
+  .review-card-mark, .review-rating-mark { width: 2.85rem; min-height: 2.85rem; margin: 0.72rem 0 0 0.72rem; }
+  .review-card > div:last-child { min-height: 0; padding: 0.72rem 0.76rem; }
   .review-card p { font-size: 1.13rem; }
+  .review-card-wide { grid-column: auto; }
 }
