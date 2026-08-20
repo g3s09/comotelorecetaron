@@ -42,7 +42,18 @@ try {
   console.error("No se pudo cargar la carta completa incluida.", error);
 }
 
-const retiredBaseProductIds = new Set(["tutano-extra"]);
+const retiredBaseProductIds = new Set([
+  "tutano-extra", "tutano-hueso", "tutano-asada", "tutano-arrachera",
+  "costra-asada", "costra-campechana", "costra-pastor", "costra-longaniza", "costra-arrachera",
+  "mulita-asada", "mulita-campechana", "mulita-pastor", "mulita-longaniza", "mulita-arrachera",
+  "volcan-asada", "volcan-campechana", "volcan-pastor", "volcan-lanchitas",
+  "tayoyo-asada", "tayoyo-pastor", "tayoyo-campechano", "tayoyo-arrachera",
+  "tostada-asada", "tostada-campechana", "tostada-pastor", "tostada-longaniza", "tostada-arrachera",
+  "orden-birria", "taco-birria", "orden-quesabirrias", "taco-quesabirria",
+  "queso-fundido-natural", "queso-fundido-asada", "queso-fundido-campechana", "queso-fundido-longaniza", "queso-fundido-pastor", "queso-fundido-arrachera", "queso-fundido-chistorra",
+  "asada-gramaje-1kg", "asada-gramaje-500", "asada-gramaje-250", "pastor-gramaje-1kg", "pastor-gramaje-500", "pastor-gramaje-250", "arrachera-gramaje-1kg", "arrachera-gramaje-500", "arrachera-gramaje-250",
+  "tarro-helado", "tarro-michelado", "tarro-clamato"
+]);
 const canonicalBaseProductIds = new Set(["joya-parrilla", "arrachera-patron", "cazuela-ribeye", "macarrones-queso"]);
 
 const mimeTypes = {

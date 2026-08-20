@@ -17,7 +17,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="preload" as="image" href="assets/toro.jpeg">
     <link rel="preload" as="image" href="assets/bienvenida-toro.png">
-    <link rel="stylesheet" href="styles.css?v=20260820-reviews-3d">
+    <link rel="stylesheet" href="styles.css?v=20260820-menu-polish">
   </head>
   <body data-page="home">
     <a class="skip-link" href="#principal">Saltar al contenido</a>
@@ -115,7 +115,7 @@
             <p>Explora por categoría, consulta cada detalle y personaliza solamente lo que tu orden necesita.</p>
           </div>
 
-          <a class="order-scroll-cue" href="#ordenar-carta" aria-label="Bajar a las opciones para ordenar">
+          <a class="order-scroll-cue" href="#ordenar-carta" data-order-scroll-cue aria-label="Bajar a las opciones para ordenar">
             <span class="order-scroll-cue-icon" aria-hidden="true">↓</span>
             <span><small>La carta está lista</small><b>Desliza hacia abajo para ordenar</b></span>
             <span class="order-scroll-cue-spark" aria-hidden="true">✦</span>
@@ -132,7 +132,7 @@
               <button class="menu-book-tab" type="button" role="tab" aria-selected="false" data-menu-tab data-menu-filter="Tuétanos" data-menu-image="assets/menu-cortes.png" data-menu-title="Tuétanos" data-menu-note="Médula asada con la proteína indicada en cada preparación.">Tuétanos</button>
               <button class="menu-book-tab" type="button" role="tab" aria-selected="false" data-menu-tab data-menu-filter="Cortes" data-menu-image="assets/menu-cortes.png" data-menu-title="Cortes y parrilla" data-menu-note="Rib-eye, picaña, New York, filete y tomahawk a las brasas.">Cortes</button>
               <button class="menu-book-tab" type="button" role="tab" aria-selected="false" data-menu-tab data-menu-filter="Tacos" data-menu-image="assets/menu-antojitos.png" data-menu-title="Tacos" data-menu-note="Elige tus complementos en cada orden.">Tacos</button>
-              <button class="menu-book-tab" type="button" role="tab" aria-selected="false" data-menu-tab data-menu-filter="Hamburguesas" data-menu-image="assets/menu-hamburguesas.png" data-menu-title="Hamburguesas al carbón" data-menu-note="Con tu elección de picante y guacamole.">Hamburguesas</button>
+              <button class="menu-book-tab" type="button" role="tab" aria-selected="false" data-menu-tab data-menu-filter="Hamburguesas" data-menu-image="assets/menu-hamburguesas.png" data-menu-title="Hamburguesas al carbón" data-menu-note="Con guacamole de la casa o sin guacamole.">Hamburguesas</button>
               <button class="menu-book-tab" type="button" role="tab" aria-selected="false" data-menu-tab data-menu-filter="Bebidas frías" data-menu-image="assets/menu-bebidas.png" data-menu-title="Bebidas frías" data-menu-note="Aguas frescas y bebidas para acompañar la brasa.">Bebidas frías</button>
               <button class="menu-book-tab" type="button" role="tab" aria-selected="false" data-menu-tab data-menu-filter="Bebidas calientes" data-menu-image="assets/menu-bebidas.png" data-menu-title="Bebidas calientes" data-menu-note="Café, té y sabores para la sobremesa.">Bebidas calientes</button>
               <button class="menu-book-tab" type="button" role="tab" aria-selected="false" data-menu-tab data-menu-filter="Mocktails" data-menu-image="assets/menu-bebidas.png" data-menu-title="Mocktails" data-menu-note="Cocteles sin alcohol preparados al momento.">Mocktails</button>
@@ -145,7 +145,6 @@
                 <span class="menu-book-kicker">Carta impresa · edicion actual</span>
                 <h3 data-menu-book-title>Cortes y parrilla</h3>
                 <p data-menu-book-note>Rib-eye, picanha, New York, filete y tomahawk: el ritual de la brasa en su maxima expresion.</p>
-                <a class="btn btn-primary" href="https://wa.me/528181681933" target="_blank" rel="noopener">Pedir por WhatsApp</a>
               </div>
               <figure class="menu-book-figure">
                 <img data-menu-book-image src="assets/menu-cortes.png" alt="Carta de cortes y parrilla" loading="eager">
@@ -332,11 +331,6 @@
       </footer>
     </main>
 
-    <a class="whatsapp-float" href="https://wa.me/528181681933" target="_blank" rel="noopener" aria-label="Ordena por WhatsApp" title="Ordena por WhatsApp">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 3.5A11.8 11.8 0 0 0 2.3 18.1L1 23l5-1.3A11.8 11.8 0 0 0 20.5 3.5Zm-8.7 16.3c-1.8 0-3.6-.5-5.2-1.5l-.4-.2-3 .8.8-2.9-.2-.4a9.7 9.7 0 1 1 8 4.2Zm5.3-7.2c-.3-.2-1.8-.9-2.1-1-.3-.1-.5-.2-.7.2l-.9 1.1c-.2.2-.4.2-.7.1-.3-.2-1.3-.5-2.5-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6l.5-.6c.2-.2.2-.3.3-.5.1-.2.1-.4 0-.6l-1-2.4c-.3-.7-.5-.6-.7-.6h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.7s1.2 3.1 1.3 3.3c.2.2 2.3 3.5 5.5 4.9.8.3 1.4.5 1.9.7.8.2 1.5.2 2.1.1.6-.1 1.8-.7 2.1-1.5.3-.7.3-1.3.2-1.5-.1-.1-.3-.2-.6-.4Z"/></svg>
-      <span>Ordena por WhatsApp</span>
-    </a>
-
     <button class="selection-float" type="button" data-open-cart aria-label="Abrir mi seleccion">
       <span class="selection-float-icon">✦</span>
       <span>Mi seleccion</span>
@@ -428,7 +422,7 @@
       </form>
     </aside>
 
-    <script src="data/catalog-complete.js?v=20260820-mobile-care" defer></script>
-    <script src="scripts.js?v=20260820-mobile-care" defer></script>
+    <script src="data/catalog-complete.js?v=20260820-menu-polish" defer></script>
+    <script src="scripts.js?v=20260820-menu-polish" defer></script>
   </body>
 </html>

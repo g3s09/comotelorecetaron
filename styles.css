@@ -2047,47 +2047,6 @@ svg {
   box-shadow: 0 24px 62px rgba(0, 0, 0, 0.42), 0 0 28px rgba(212, 175, 55, 0.22);
 }
 
-.whatsapp-float {
-  position: fixed;
-  right: 0;
-  top: 50%;
-  z-index: 80;
-  min-height: 3.25rem;
-  display: inline-flex;
-  align-items: center;
-  flex-direction: column;
-  gap: 0.65rem;
-  border: 1px solid rgba(37, 211, 102, 0.62);
-  border-radius: var(--radius);
-  background:
-    linear-gradient(180deg, rgba(37, 211, 102, 0.98), rgba(18, 140, 76, 0.96)),
-    #25d366;
-  color: #ffffff;
-  padding: 0.78rem 0.62rem;
-  font-weight: 950;
-  box-shadow: 0 18px 52px rgba(37, 211, 102, 0.26), 0 18px 62px rgba(0, 0, 0, 0.5);
-  transform: translateY(-50%);
-  transition: transform 180ms ease, box-shadow 180ms ease;
-}
-
-.whatsapp-float span {
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
-}
-
-.whatsapp-float svg {
-  width: 1.35rem;
-  height: 1.35rem;
-  fill: currentColor;
-}
-
-.whatsapp-float:hover,
-.whatsapp-float:focus-visible {
-  transform: translateY(-50%) translateX(-3px);
-  box-shadow: 0 24px 68px rgba(37, 211, 102, 0.34), 0 18px 62px rgba(0, 0, 0, 0.54);
-  outline: none;
-}
-
 .site-footer {
   display: flex;
   align-items: center;
@@ -2700,23 +2659,6 @@ svg {
     grid-column: 1 / -1;
   }
 
-  .whatsapp-float {
-    right: 1rem;
-    bottom: 1rem;
-    top: auto;
-    flex-direction: row;
-    padding: 0.76rem 1rem;
-    transform: none;
-  }
-
-  .whatsapp-float span {
-    writing-mode: horizontal-tb;
-  }
-
-  .whatsapp-float:hover,
-  .whatsapp-float:focus-visible {
-    transform: translateY(-3px);
-  }
 }
 
 @media (max-width: 520px) {
@@ -2772,7 +2714,7 @@ svg {
 
   .selection-float {
     right: 0.7rem;
-    bottom: 5rem;
+    bottom: 0.8rem;
   }
 
   .btn,
@@ -2799,12 +2741,6 @@ svg {
   .catalog-card figure,
   .team-card figure {
     height: 14rem;
-  }
-
-  .whatsapp-float {
-    left: 0.8rem;
-    right: 0.8rem;
-    justify-content: center;
   }
 
   .toast {
@@ -4002,7 +3938,8 @@ body[data-page="home"] .order-stage .catalog-card {
 
   .order-scroll-cue {
     width: 100%;
-    margin-bottom: 0.9rem;
+    margin-top: 1.25rem;
+    margin-bottom: 1.35rem;
     padding: 0.75rem 0.8rem;
   }
 
@@ -4071,27 +4008,9 @@ body[data-page="home"] .order-stage .catalog-card {
     scroll-padding-bottom: calc(5.6rem + env(safe-area-inset-bottom));
   }
 
-  .whatsapp-float {
-    left: max(0.75rem, env(safe-area-inset-left));
-    right: auto;
-    top: auto;
-    bottom: calc(0.75rem + env(safe-area-inset-bottom));
-    width: 3.25rem;
-    min-height: 3.25rem;
-    justify-content: center;
-    padding: 0;
-    border-radius: 1.05rem;
-    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.23);
-  }
-
-  .whatsapp-float span { display: none; }
-  .whatsapp-float svg { width: 1.42rem; height: 1.42rem; }
-  .whatsapp-float:hover,
-  .whatsapp-float:focus-visible { transform: translateY(-2px); }
-
   .selection-float {
     right: max(0.75rem, env(safe-area-inset-right));
-    bottom: calc(4.7rem + env(safe-area-inset-bottom));
+    bottom: calc(0.75rem + env(safe-area-inset-bottom));
     min-height: 3.1rem;
     border-radius: 1rem;
   }

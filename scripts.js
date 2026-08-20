@@ -86,14 +86,16 @@ const normalizeChoice = (rawChoice, optionId = "opcion") => {
 };
 
 const toppings = [
-  choice("Con todo: verdura y cebolla", "Se sirve con verdura y cebolla como acompañamiento."),
+  choice("Con todo: cebolla y cilantro", "Se sirve con cebolla y cilantro como acompañamiento."),
   choice("Solo cebolla", "Se prepara únicamente con cebolla."),
-  choice("Solo cilantro", "Se prepara únicamente con cilantro.")
+  choice("Solo cilantro", "Se prepara únicamente con cilantro."),
+  choice("Natural", "Se sirve sin cebolla ni cilantro.")
 ];
 const birriaToppings = [
   choice("Con todo: cebolla, cilantro y rábano", "Incluye los acompañamientos tradicionales de la birria."),
   choice("Solo cebolla", "Se prepara únicamente con cebolla."),
-  choice("Solo cilantro", "Se prepara únicamente con cilantro.")
+  choice("Solo cilantro", "Se prepara únicamente con cilantro."),
+  choice("Natural", "Se sirve sin cebolla, cilantro ni rábano.")
 ];
 const iceOptions = [
   choice("Con hielos", "Servida con hielo para mantenerla bien fría."),
@@ -112,7 +114,8 @@ const tacoPresentationById = {
   "taco-pastor": [28, 60],
   "taco-longaniza": [25, 70],
   "taco-pechuga": [28, 85],
-  "taco-chorizo-argentino": [30, 85]
+  "taco-chorizo-argentino": [30, 85],
+  "taco-arrachera": [53, 130]
 };
 const tacoDisplayNameById = {
   "taco-asada": "Asada",
@@ -120,7 +123,8 @@ const tacoDisplayNameById = {
   "taco-pastor": "Pastor",
   "taco-longaniza": "Longaniza",
   "taco-pechuga": "Pechuga",
-  "taco-chorizo-argentino": "Chorizo argentino"
+  "taco-chorizo-argentino": "Chorizo argentino",
+  "taco-arrachera": "Arrachera"
 };
 const burgerExtras = [
   choice("Carne doble", "Agrega una carne al carbón extra a tu hamburguesa.", { priceDelta: 60 }),
@@ -141,9 +145,11 @@ const premiumBeerChoices = [
   choice("Negra Modelo", "Cerveza Negra Modelo bien fría.", { price: 40 }),
   choice("Modelo Especial", "Cerveza Modelo Especial bien fría.", { price: 40 })
 ];
-const tarroBeerChoices = [
-  ...standardBeerChoices.map((beer) => ({ ...beer, price: null, priceDelta: 35 })),
-  ...premiumBeerChoices.map((beer) => ({ ...beer, price: null, priceDelta: 40 }))
+const beerPreparations = [
+  choice("Tarro frío", "Tarro frío sin cargo adicional.", { priceDelta: 0 }),
+  choice("Tarro chelado", "Tarro preparado con borde chelado.", { priceDelta: 20 }),
+  choice("Michelado", "Preparación michelada de la casa.", { priceDelta: 25 }),
+  choice("Clamato", "Preparación con clamato.", { priceDelta: 35 })
 ];
 
 const enrichMenuItem = (item) => {
@@ -169,16 +175,14 @@ const enrichMenuItem = (item) => {
 
   if (["clericot", "jarra-clericot"].includes(id)) {
     return replaceOptions([
-      pricedPresentation({ label: "Copa individual", price: 90, description: "Copa individual de clericot." }, { label: "Jarra para compartir", price: 210, description: "Jarra de clericot para compartir." }),
-      { id: "hielos", label: "Hielos", type: "single", choices: iceOptions }
+      pricedPresentation({ label: "Copa individual", price: 90, description: "Copa individual de clericot." }, { label: "Jarra para compartir", price: 210, description: "Jarra de clericot para compartir." })
     ]);
   }
 
   if (["margarita", "cantarito"].includes(id)) {
-    return replaceOptions([
-      { id: "alcohol", label: "¿Con alcohol?", type: "single", choices: [choice("Con alcohol", "Preparación tradicional con su destilado."), choice("Sin alcohol", "Versión sin destilado; confirma disponibilidad con el restaurante.")] },
-      { id: "hielos", label: "Hielos", type: "single", choices: iceOptions }
-    ]);
+    const options = [{ id: "alcohol", label: "¿Con alcohol?", type: "single", choices: [choice("Con alcohol", "Preparación tradicional con su destilado."), choice("Sin alcohol", "Versión sin destilado; confirma disponibilidad con el restaurante.")] }];
+    if (id === "cantarito") options.push({ id: "hielos", label: "Hielos", type: "single", choices: iceOptions });
+    return replaceOptions(options);
   }
 
   if (category === "Esquites") {
@@ -218,26 +222,60 @@ const enrichMenuItem = (item) => {
   if (category === "Para Festejar") {
     if (id === "cerveza") {
       return {
-        ...replaceOptions([{ id: "cerveza", label: "Elige tu cerveza", type: "single", choices: standardBeerChoices }]),
+        ...replaceOptions([
+          { id: "cerveza", label: "Elige tu cerveza", type: "single", choices: standardBeerChoices },
+          { id: "preparacion", label: "Elige tu preparación", type: "single", choices: beerPreparations }
+        ]),
         name: "Cervezas",
-        description: "Elige Victoria, Lager, Corona o Pacífico."
+        description: "Elige Victoria, Lager, Corona o Pacífico y cómo quieres tu tarro."
       };
     }
     if (id === "negra-modelo-especial") {
       return {
-        ...replaceOptions([{ id: "cerveza", label: "Elige tu cerveza", type: "single", choices: premiumBeerChoices }]),
+        ...replaceOptions([
+          { id: "cerveza", label: "Elige tu cerveza", type: "single", choices: premiumBeerChoices },
+          { id: "preparacion", label: "Elige tu preparación", type: "single", choices: beerPreparations }
+        ]),
         name: "Negra Modelo o Modelo Especial",
-        description: "Elige entre Negra Modelo o Modelo Especial."
+        description: "Elige Negra Modelo o Modelo Especial y cómo quieres tu tarro."
       };
     }
-    if (["tarro-helado", "tarro-michelado", "tarro-clamato"].includes(id)) {
-      const tarroName = id === "tarro-helado" ? "Tarro chelado" : item.name;
-      return {
-        ...replaceOptions([{ id: "cerveza", label: "Cerveza para tu tarro", type: "single", choices: tarroBeerChoices }]),
-        name: tarroName,
-        description: `${tarroName} preparado al momento. El precio de la preparación se suma a la cerveza que elijas.`
-      };
-    }
+  }
+
+  if (id === "costra") {
+    return replaceOptions([
+      { id: "proteina", label: "Elige tu proteína", type: "single", choices: [choice("Asada", "Costra de queso con carne asada.", { price: 75 }), choice("Pastor", "Costra de queso con carne al pastor.", { price: 70 }), choice("Campechana", "Costra de queso con carne campechana.", { price: 80 }), choice("Longaniza", "Costra de queso con longaniza.", { price: 70 }), choice("Arrachera", "Costra de queso con arrachera.", { price: 120 })] },
+      { id: "complementos", label: "¿Cómo la quieres?", type: "single", choices: toppings }
+    ]);
+  }
+
+  if (id === "mulita") {
+    return replaceOptions([
+      { id: "proteina", label: "Elige tu proteína", type: "single", choices: [choice("Asada", "Mulita de asada entre dos costras de queso.", { price: 90 }), choice("Pastor", "Mulita de pastor entre dos costras de queso.", { price: 85 }), choice("Campechana", "Mulita campechana entre dos costras de queso.", { price: 95 }), choice("Longaniza", "Mulita de longaniza entre dos costras de queso.", { price: 85 }), choice("Arrachera", "Mulita de arrachera entre dos costras de queso.", { price: 135 })] },
+      { id: "complementos", label: "¿Cómo la quieres?", type: "single", choices: toppings }
+    ]);
+  }
+
+  if (id === "volcan") {
+    return replaceOptions([
+      { id: "presentacion", label: "Elige tu volcán", type: "single", choices: [choice("Asada · individual", "Volcán de asada por pieza.", { price: 25 }), choice("Asada · orden", "Orden de volcanes de asada.", { price: 120 }), choice("Campechana · individual", "Volcán campechano por pieza.", { price: 28 }), choice("Campechana · orden", "Orden de volcanes campechanos.", { price: 120 }), choice("Pastor · individual", "Volcán de pastor por pieza.", { price: 23 }), choice("Pastor · orden", "Orden de volcanes de pastor.", { price: 100 }), choice("Lanchitas · individual", "Volcán lanchitas por pieza.", { price: 28 }), choice("Lanchitas · orden", "Orden de volcanes lanchitas.", { price: 120 })] },
+      { id: "complementos", label: "¿Cómo los quieres?", type: "single", choices: toppings }
+    ]);
+  }
+
+  if (id === "tlayoyo-ranchero") {
+    return replaceOptions([
+      { id: "proteina", label: "Elige proteína para tu orden de 3", type: "single", choices: [choice("Asada", "Orden de 3 tlayoyos rancheros con asada.", { price: 85 }), choice("Pastor", "Orden de 3 tlayoyos rancheros con pastor.", { price: 70 }), choice("Campechano", "Orden de 3 tlayoyos rancheros con campechano.", { price: 75 }), choice("Arrachera", "Orden de 3 tlayoyos rancheros con arrachera.", { price: 140 })] },
+      { id: "salsa", label: "Salsa", type: "single", choices: [choice("Salsa roja", "Salsa roja de la casa."), choice("Salsa verde", "Salsa verde de la casa.")] },
+      { id: "lacteos", label: "Queso y crema", type: "single", choices: [choice("Queso y crema", "Se termina con queso fresco y crema."), choice("Solo crema", "Se termina únicamente con crema."), choice("Solo queso", "Se termina únicamente con queso fresco.")] }
+    ]);
+  }
+
+  if (id === "tostada") {
+    return replaceOptions([
+      { id: "proteina", label: "Elige tu proteína", type: "single", choices: [choice("Asada", "Tostada con asada.", { price: 70 }), choice("Campechana", "Tostada con campechano.", { price: 75 }), choice("Pastor", "Tostada con pastor.", { price: 65 }), choice("Longaniza", "Tostada con longaniza.", { price: 65 }), choice("Arrachera", "Tostada con arrachera.", { price: 115 })] },
+      { id: "complementos", label: "¿Cómo la quieres?", type: "single", choices: toppings }
+    ]);
   }
 
   if (category === "Queso Fundido") {
@@ -251,17 +289,25 @@ const enrichMenuItem = (item) => {
         choice("Arrachera", "Queso fundido con arrachera.", { price: 165 }),
         choice("Chistorra", "Queso fundido con chistorra.", { price: 165 })
       ]
+    }, {
+      id: "tortilla", label: "Tortilla para acompañar", type: "single", choices: [
+        choice("Tortilla de maíz", "Acompañado con tortilla de maíz."),
+        choice("Tortilla de harina", "Acompañado con tortilla de harina.")
+      ]
     }]);
   }
 
-  if (id === "tutano-hueso") {
-    return replaceOptions([{ id: "presentacion", label: "Presentación", type: "single", choices: [choice("1 pieza", "Médula asada en su hueso.", { price: 100 }), choice("Orden de 3 piezas", "Tres tuétanos asados para compartir.", { price: 240 })] }]);
-  }
-  if (id === "tutano-asada") {
-    return replaceOptions([{ id: "presentacion", label: "Presentación con asada", type: "single", choices: [choice("1 pieza con asada", "Médula asada en su hueso con carne asada.", { price: 120 }), choice("Orden de 3 con asada", "Tres tuétanos con carne asada.", { price: 280 })] }]);
-  }
-  if (id === "tutano-arrachera") {
-    return replaceOptions([{ id: "presentacion", label: "Presentación con arrachera", type: "single", choices: [choice("1 pieza con arrachera", "Médula asada en su hueso con arrachera.", { price: 150 }), choice("Orden de 3 con arrachera", "Tres tuétanos con arrachera.", { price: 320 })] }]);
+  if (id === "tutano") {
+    return replaceOptions([{
+      id: "presentacion", label: "Elige tu presentación", type: "single", choices: [
+        choice("Individual · en su hueso", "Médula asada en su hueso.", { price: 100 }),
+        choice("Individual · con asada", "Médula asada en su hueso con asada.", { price: 120 }),
+        choice("Individual · con arrachera", "Médula asada en su hueso con arrachera.", { price: 150 }),
+        choice("Orden de 3 · en su hueso", "Tres tuétanos asados para compartir.", { price: 240 }),
+        choice("Orden de 3 · con asada", "Tres tuétanos con carne asada.", { price: 280 }),
+        choice("Orden de 3 · con arrachera", "Tres tuétanos con arrachera.", { price: 320 })
+      ]
+    }]);
   }
 
   if (id === "costillas-asadas") {
@@ -294,18 +340,37 @@ const enrichMenuItem = (item) => {
 
   if (category === "Hamburguesas") {
     return replaceOptions([
-      { id: "guacamole", label: "Guacamole", type: "single", choices: [choice("Guacamole con picante", "Guacamole de la casa con el toque picante de la hamburguesa."), choice("Guacamole sin picante", "Guacamole fresco preparado sin picante."), choice("Sin guacamole", "Se sirve sin guacamole.")] },
+      { id: "guacamole", label: "Guacamole", type: "single", choices: [choice("Con guacamole", "Guacamole de la casa; su preparación lleva picante."), choice("Sin guacamole", "Se sirve sin guacamole.")] },
       { id: "extras", label: "Extras para tu hamburguesa", type: "multiple", choices: burgerExtras }
     ]);
   }
 
-  if (id.startsWith("tayoyo-")) {
+  if (id === "papas-cambray") {
     return replaceOptions([
-      { id: "cantidad", label: "Cantidad", type: "single", choices: [choice("1 pieza", "Tlayoyo individual; el precio se confirma al solicitarlo."), choice("Orden de 2 piezas", "La presentación de carta incluye dos tlayoyos.")] },
-      { id: "salsa", label: "Salsa", type: "single", choices: [choice("Salsa roja", "Salsa roja de la casa."), choice("Salsa verde", "Salsa verde de la casa.")] },
-      { id: "lacteos", label: "Queso y crema", type: "single", choices: [choice("Con queso y crema", "Se termina con queso y crema."), choice("Sin queso ni crema", "Se sirve sin lácteos.")] }
+      { id: "preparacion", label: "¿Cómo quieres tus papas?", type: "single", choices: [choice("Con chiltepín", "Papas cambray con chiltepín."), choice("Al parmesano", "Papas cambray con queso parmesano."), choice("A la mantequilla", "Papas cambray salteadas a la mantequilla.")] }
     ]);
   }
+
+  if (id === "gramaje-asada-campechano") {
+    return replaceOptions([
+      { id: "carne", label: "Elige tu carne", type: "single", choices: [choice("Asada", "Carne asada al carbón."), choice("Campechano", "Preparación campechana al carbón.")] },
+      { id: "gramaje", label: "Elige la cantidad", type: "single", choices: [choice("1 kg", "Porción para compartir.", { price: 450 }), choice("1/2 kg", "Porción de 500 gramos.", { price: 250 }), choice("1/4 kg", "Porción de 250 gramos.", { price: 170 })] }
+    ]);
+  }
+
+  if (id === "gramaje-pastor") return replaceOptions([{ id: "gramaje", label: "Elige la cantidad", type: "single", choices: [choice("1 kg", "Porción para compartir.", { price: 360 }), choice("1/2 kg", "Porción de 500 gramos.", { price: 200 }), choice("1/4 kg", "Porción de 250 gramos.", { price: 140 })] }]);
+
+  if (id === "gramaje-arrachera") return replaceOptions([{ id: "gramaje", label: "Elige la cantidad", type: "single", choices: [choice("1 kg", "Porción para compartir.", { price: 645 }), choice("1/2 kg", "Porción de 500 gramos.", { price: 345 }), choice("1/4 kg", "Porción de 250 gramos.", { price: 195 })] }]);
+
+  if (["birria", "quesabirrias"].includes(id)) {
+    const isQuesabirria = id === "quesabirrias";
+    return replaceOptions([
+      { id: "presentacion", label: "Elige tu presentación", type: "single", choices: [choice("Individual", isQuesabirria ? "Quesabirria por pieza; puedes agregar las que quieras." : "Taco de birria por pieza; puedes agregar los que quieras.", { price: 46 }), choice("Orden de 3", isQuesabirria ? "Orden de 3 quesabirrias." : "Orden de 3 tacos de birria.", { price: isQuesabirria ? 140 : 125 })] },
+      { id: "complementos", label: "¿Cómo los quieres?", type: "single", choices: birriaToppings }
+    ]);
+  }
+
+  if (category === "Birria") return replaceOptions([]);
 
   if (["orden-asada", "orden-campechano", "orden-pastor"].includes(id)) return { ...item, available: false };
 
@@ -318,17 +383,33 @@ const enrichMenuItem = (item) => {
       : priceMatch
       ? [pricedPresentation({ label: "Individual", price: Number(priceMatch[2]), description: "Preparación por pieza." }, { label: "Orden", price: Number(priceMatch[1]), description: "Presentación completa de la carta." })]
       : [];
+    const tacoCheesePrice = ["taco-asada", "taco-pastor"].includes(id) ? 60 : 50;
+    const cheeseOptions = tacoPrice
+      ? [{ id: "queso", label: "Queso", type: "single", choices: [choice("Sin queso", "Se sirve sin queso extra."), choice("Queso para un taco", "Queso extra para una pieza.", { priceDelta: 12 }), choice("Queso para la orden", "Queso extra para toda la orden.", { priceDelta: tacoCheesePrice })] }]
+      : [];
     return {
-      ...replaceOptions([...presentation, { id: "complementos", label: "Complementos", type: "single", choices: isBirria ? birriaToppings : toppings }]),
+      ...replaceOptions([...presentation, { id: "complementos", label: "Complementos", type: "single", choices: isBirria ? birriaToppings : toppings }, ...cheeseOptions]),
       name: tacoDisplayNameById[id] || item.name
     };
   }
 
   if (category === "Cortes" && /rib|pica|new-york|filete|arrachera-corte|tomahawk/i.test(id)) return replaceOptions(cutOptions);
 
-  if (category === "Bebidas Frias" || category === "Mocktails") {
-    return replaceOptions(item.options?.length ? item.options : [{ id: "hielos", label: "Hielos", type: "single", choices: iceOptions }]);
+  if (["coca-cola", "boing"].includes(id)) {
+    return replaceOptions([{ id: "temperatura", label: "¿Cómo la quieres?", type: "single", choices: [choice("Al tiempo", "Bebida servida a temperatura ambiente."), choice("Fría", "Bebida servida fría.")] }]);
   }
+
+  if (id === "malteadas") {
+    return replaceOptions([{ id: "sabor", label: "Elige tu sabor", type: "single", choices: [choice("Fresa", "Malteada de fresa."), choice("Chocolate", "Malteada de chocolate.")] }]);
+  }
+
+  if (id === "jamaica-caliente") {
+    return replaceOptions([{ id: "azucar", label: "Azúcar", type: "single", choices: [choice("Con azúcar", "Jamaica caliente endulzada."), choice("Sin azúcar", "Jamaica caliente sin azúcar.")] }]);
+  }
+
+  if (["paloma", "mojito"].includes(id)) return replaceOptions([{ id: "hielos", label: "Hielos", type: "single", choices: iceOptions }]);
+
+  if (category === "Bebidas Frias" || category === "Mocktails" || /cocteler[ií]a de la casa/i.test(category) || category === "Internacional") return replaceOptions([]);
 
   return item;
 };
@@ -372,7 +453,18 @@ const normalizeArray = (items = [], type = "products") =>
     : [];
 
 const completeMenu = typeof window !== "undefined" && window.CTLR_COMPLETE_MENU ? window.CTLR_COMPLETE_MENU : {};
-const retiredBaseProductIds = new Set(["tutano-extra"]);
+const retiredBaseProductIds = new Set([
+  "tutano-extra", "tutano-hueso", "tutano-asada", "tutano-arrachera",
+  "costra-asada", "costra-campechana", "costra-pastor", "costra-longaniza", "costra-arrachera",
+  "mulita-asada", "mulita-campechana", "mulita-pastor", "mulita-longaniza", "mulita-arrachera",
+  "volcan-asada", "volcan-campechana", "volcan-pastor", "volcan-lanchitas",
+  "tayoyo-asada", "tayoyo-pastor", "tayoyo-campechano", "tayoyo-arrachera",
+  "tostada-asada", "tostada-campechana", "tostada-pastor", "tostada-longaniza", "tostada-arrachera",
+  "orden-birria", "taco-birria", "orden-quesabirrias", "taco-quesabirria",
+  "queso-fundido-natural", "queso-fundido-asada", "queso-fundido-campechana", "queso-fundido-longaniza", "queso-fundido-pastor", "queso-fundido-arrachera", "queso-fundido-chistorra",
+  "asada-gramaje-1kg", "asada-gramaje-500", "asada-gramaje-250", "pastor-gramaje-1kg", "pastor-gramaje-500", "pastor-gramaje-250", "arrachera-gramaje-1kg", "arrachera-gramaje-500", "arrachera-gramaje-250",
+  "tarro-helado", "tarro-michelado", "tarro-clamato"
+]);
 const canonicalBaseProductIds = new Set(["joya-parrilla", "arrachera-patron", "cazuela-ribeye", "macarrones-queso"]);
 
 const mergeCatalogItems = (items = [], type = "products") => {
@@ -380,8 +472,8 @@ const mergeCatalogItems = (items = [], type = "products") => {
   const merged = new Map();
   normalizeArray(extras, type).forEach((item) => merged.set(item.id, item));
   normalizeArray(items, type).forEach((item) => {
-    if (type === "products" && retiredBaseProductIds.has(item.id)) return;
-    if (type === "products" && canonicalBaseProductIds.has(item.id) && merged.has(item.id)) return;
+    if (retiredBaseProductIds.has(item.id)) return;
+    if (type === "products" && canonicalBaseProductIds.has(item.id) && item.category === "Especialidades" && merged.has(item.id)) return;
     merged.set(item.id, item);
   });
   return Array.from(merged.values()).map(enrichMenuItem);
@@ -485,7 +577,7 @@ const tagMarkup = (tags = []) =>
     : "";
 
 const signatureCategories = new Set(["Cortes", "Entradas", "Esquites", "Hamburguesas", "Birria"]);
-const isSignatureItem = (item) => signatureCategories.has(item.category) || /^tutano-/.test(item.id || "");
+const isSignatureItem = (item) => signatureCategories.has(item.category) || /^tutano(?:-|$)/.test(item.id || "");
 
 const productCardMarkup = (item, extraClass = "") => `
   <article class="catalog-card ${extraClass}" data-reveal>
@@ -536,8 +628,8 @@ const categoryRules = {
   Tradicionales: (item) => item.category === "Tradicionales",
   Birria: (item) => item.category === "Birria",
   "Queso fundido": (item) => item.category === "Queso Fundido",
-  "Tuétanos": (item) => /^tutano-/.test(item.id),
-  Cortes: (item) => item.category === "Cortes" && !/^tutano-/.test(item.id),
+  "Tuétanos": (item) => /^tutano(?:-|$)/.test(item.id),
+  Cortes: (item) => item.category === "Cortes" && !/^tutano(?:-|$)/.test(item.id),
   Molcajetes: (item) => item.category === "Molcajetes",
   Gramaje: (item) => item.category === "Gramaje",
   Tacos: (item) => item.category === "Tacos",
@@ -564,7 +656,7 @@ const categoryCopy = {
   Molcajetes: ["Molcajetes", "Elige salsa roja o verde; el mixto lleva arrachera, lomo adobado, pechuga y sirloin."],
   Gramaje: ["Carne por gramaje", "Elige la porción perfecta para compartir."],
   Tacos: ["Tacos", "Personaliza tus tacos con los complementos de tu preferencia."],
-  Hamburguesas: ["Hamburguesas al carbon", "Guacamole con o sin picante y extras incluidos dentro de cada hamburguesa."],
+  Hamburguesas: ["Hamburguesas al carbon", "Guacamole de la casa con picante o sin guacamole, con extras dentro de cada hamburguesa."],
   "Bebidas frías": ["Bebidas frías", "Aguas frescas, refrescos y malteadas, servidas como las prefieres."],
   "Bebidas calientes": ["Bebidas calientes", "Café, té y sabores para una sobremesa cálida."],
   "Para festejar": ["Para festejar", "Cervezas y tarros preparados para brindar."],
@@ -712,6 +804,22 @@ const getSelection = () => {
 const saveSelection = (items) => {
   window.localStorage.setItem(SELECTION_KEY, JSON.stringify(items));
   if (!items.length) window.localStorage.removeItem(ORDER_CONTACT_KEY);
+};
+
+const initOrderScrollCue = () => {
+  const cue = $("[data-order-scroll-cue]");
+  if (!cue) return;
+
+  cue.addEventListener("click", (event) => {
+    if (!window.matchMedia("(max-width: 820px)").matches) return;
+    const panel = $("#menu");
+    const grid = $("[data-products-grid]");
+    if (!panel || !grid) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    const gridTop = grid.getBoundingClientRect().top - panel.getBoundingClientRect().top + panel.scrollTop;
+    panel.scrollTo({ top: Math.max(0, gridTop - 88), behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+  }, { capture: true });
 };
 
 const selectionCount = (items) => items.reduce((total, item) => total + Number(item.qty || 1), 0);
@@ -1564,6 +1672,7 @@ const revealOnScroll = () => {
 const initPublic = async () => {
   initHeader();
   initWelcome();
+  initOrderScrollCue();
   initHorizontalRail();
   initMechanismControls();
   initMenuBook();
