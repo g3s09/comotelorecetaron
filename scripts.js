@@ -1887,6 +1887,51 @@ const initHorizontalRail = () => {
     goToPanel(targetIndex, { guardService: true, sunrise: panels[targetIndex]?.id === "desayunos" });
   });
 
+  // En móvil, la carta de desayunos se lee verticalmente: un gesto lateral
+  // accidental no debe llevar al cliente de vuelta a la carta de Al Carbón.
+  let breakfastTouch = null;
+  const isCompactScreen = () => window.matchMedia("(max-width: 820px)").matches;
+  const isBreakfastPanelActive = () => panels[currentIndex()]?.id === "desayunos";
+
+  rail.addEventListener("touchstart", (event) => {
+    if (!isCompactScreen() || !isBreakfastPanelActive() || event.target.closest(".breakfast-filters")) {
+      breakfastTouch = null;
+      return;
+    }
+
+    const touch = event.touches[0];
+    const breakfastPanel = panels.find((panel) => panel.id === "desayunos");
+    if (!touch || !breakfastPanel) return;
+    breakfastTouch = { x: touch.clientX, y: touch.clientY, panel: breakfastPanel, locked: false };
+  }, { passive: true });
+
+  rail.addEventListener("touchmove", (event) => {
+    if (!breakfastTouch) return;
+    const touch = event.touches[0];
+    if (!touch) return;
+
+    const deltaX = touch.clientX - breakfastTouch.x;
+    const deltaY = touch.clientY - breakfastTouch.y;
+    if (Math.abs(deltaX) <= Math.abs(deltaY) + 5) return;
+
+    breakfastTouch.locked = true;
+    lockedUntil = Date.now() + 180;
+    event.preventDefault();
+    rail.scrollLeft = breakfastTouch.panel.offsetLeft;
+  }, { passive: false });
+
+  const releaseBreakfastTouch = () => {
+    if (!breakfastTouch) return;
+    if (breakfastTouch.locked) {
+      rail.scrollLeft = breakfastTouch.panel.offsetLeft;
+      updateDial();
+    }
+    breakfastTouch = null;
+  };
+
+  rail.addEventListener("touchend", releaseBreakfastTouch, { passive: true });
+  rail.addEventListener("touchcancel", releaseBreakfastTouch, { passive: true });
+
   rail.addEventListener("scroll", () => {
     updateDial();
     if (railFrameId) return;

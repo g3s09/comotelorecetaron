@@ -4724,3 +4724,49 @@ body[data-page="home"] .order-stage .catalog-card {
   .breakfast-intro h2 { font-size: clamp(2.35rem, 12vw, 3.4rem); }
   .reservation-service-context { grid-template-columns: 1fr; }
 }
+
+/* La carta de desayunos debe conservar el ancho real del teléfono. Los
+   contenidos largos no pueden ensanchar la columna del panel horizontal. */
+@media (max-width: 820px) {
+  body[data-page="home"] main > #desayunos {
+    overflow-x: hidden;
+    overscroll-behavior-x: none;
+  }
+
+  body[data-page="home"] main > #desayunos .breakfast-shell {
+    grid-template-columns: minmax(0, 1fr);
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    margin-inline: 0;
+  }
+
+  body[data-page="home"] main > #desayunos .breakfast-shell > *,
+  body[data-page="home"] main > #desayunos .breakfast-intro,
+  body[data-page="home"] main > #desayunos .breakfast-layout,
+  body[data-page="home"] main > #desayunos .breakfast-menu,
+  body[data-page="home"] main > #desayunos .breakfast-service-switcher {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  body[data-page="home"] main > #desayunos .breakfast-intro,
+  body[data-page="home"] main > #desayunos .breakfast-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  body[data-page="home"] main > #desayunos .breakfast-menu,
+  body[data-page="home"] main > #desayunos .breakfast-service-switcher {
+    width: 100%;
+  }
+
+  body[data-page="home"] main > #desayunos .breakfast-intro > *,
+  body[data-page="home"] main > #desayunos .breakfast-menu-heading > * {
+    min-width: 0;
+  }
+
+  body[data-page="home"] main > #desayunos .breakfast-intro h2,
+  body[data-page="home"] main > #desayunos .breakfast-menu-heading h3 {
+    overflow-wrap: anywhere;
+  }
+}
