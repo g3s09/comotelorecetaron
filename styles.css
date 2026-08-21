@@ -4026,8 +4026,10 @@ body[data-page="home"] .order-stage .catalog-card {
 
 .checkout-pickup-note > span,
 .checkout-local-note > span { color: var(--gold); font-size: 1.35rem; line-height: 1; }
+.checkout-pickup-note > div { display: grid; gap: 0.32rem; }
 .checkout-pickup-note p,
 .checkout-local-note p { margin: 0; color: var(--muted); font-size: 0.82rem; line-height: 1.5; }
+.checkout-pickup-note small { color: rgba(255, 241, 198, 0.75); font-size: 0.72rem; line-height: 1.4; }
 .checkout-local-note { display: grid; grid-template-columns: auto 1fr; }
 .checkout-local-note .btn { grid-column: 2; justify-self: start; margin-top: 0.2rem; }
 .checkout-help { text-align: center; }
@@ -4287,6 +4289,19 @@ body[data-page="home"] .order-stage .catalog-card {
   font-size: 0.82rem;
   font-weight: 800;
 }
+
+.checkout-transfer-note {
+  margin: 0.7rem 0 0;
+  border: 1px solid rgba(132, 209, 255, 0.32);
+  border-radius: 0.9rem;
+  color: rgba(231, 248, 255, 0.82);
+  background: rgba(47, 127, 189, 0.12);
+  padding: 0.75rem 0.82rem;
+  font-size: 0.77rem;
+  line-height: 1.5;
+}
+
+.checkout-transfer-note b { color: #b8e8ff; }
 
 .checkout-panel select {
   width: 100%;

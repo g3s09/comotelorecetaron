@@ -700,10 +700,17 @@ const showServiceHoursNotice = (availability) => {
   if (!notice) return;
   const title = $("[data-service-hours-title]", notice);
   const message = $("[data-service-hours-message]", notice);
+  const preview = $("[data-service-hours-preview]", notice);
   const link = $("[data-service-hours-link]", notice);
+  const requestedService = availability.requestedService || "evening";
   const suggestedService = availability.suggestedService;
   if (title) title.textContent = availability.title;
   if (message) message.textContent = availability.message;
+  if (preview) {
+    preview.href = requestedService === "breakfast" ? "#desayunos" : "#menu";
+    preview.innerHTML = 'Visualizar carta <span aria-hidden="true">→</span>';
+    preview.setAttribute("aria-label", requestedService === "breakfast" ? "Visualizar carta de desayunos" : "Visualizar carta al carbón");
+  }
   if (link) {
     link.hidden = !suggestedService;
     link.href = suggestedService === "breakfast" ? "#desayunos" : "#menu";
@@ -721,7 +728,7 @@ const requestServiceAccess = (service) => {
   if (document.body?.dataset.page !== "home") return true;
   const availability = serviceAvailability(service);
   if (availability.available) return true;
-  showServiceHoursNotice(availability);
+  showServiceHoursNotice({ ...availability, requestedService: service });
   return false;
 };
 
@@ -1182,6 +1189,20 @@ const updateCheckoutMode = (mode = "") => {
   if (name) name.required = mode === "delivery" || mode === "pickup";
   if (phone) phone.required = mode === "delivery" || mode === "pickup";
   if (address) address.required = mode === "delivery";
+  updatePaymentMethod(form.elements.paymentMethod?.value || "");
+};
+
+const updatePaymentMethod = (method = "") => {
+  const form = $("[data-checkout-form]");
+  if (!form) return;
+  const cashPayment = $("[data-checkout-cash-payment]", form);
+  const transferNote = $("[data-checkout-transfer-note]", form);
+  const payment = form.elements.payment;
+  const isCash = method === "Efectivo";
+  const isTransfer = method === "Transferencia";
+  if (cashPayment) cashPayment.hidden = !isCash;
+  if (transferNote) transferNote.hidden = !isTransfer;
+  if (payment && !isCash) payment.value = "";
 };
 
 const openCheckout = () => {
@@ -1223,7 +1244,8 @@ const checkoutMessage = (items, total, details) => {
     details.fulfillment === "delivery" && details.location ? `Ubicación: ${details.location}` : "",
     details.fulfillment === "delivery" && details.reference ? `Referencia: ${details.reference}` : "",
     details.fulfillment === "delivery" && details.paymentMethod ? `Forma de pago: ${details.paymentMethod}` : "",
-    details.fulfillment === "delivery" && details.payment ? `Pago en efectivo con: ${details.payment}` : "",
+    details.fulfillment === "delivery" && details.paymentMethod === "Transferencia" ? "Solicito los datos de transferencia por este WhatsApp para realizar el pago." : "",
+    details.fulfillment === "delivery" && details.paymentMethod === "Efectivo" && details.payment ? `Pago en efectivo con: ${details.payment}` : "",
     details.fulfillment === "pickup" ? "Entiendo que el tiempo estimado es de 10 a 15 minutos y espero su confirmación." : "",
     "",
     "¿Me confirman disponibilidad y el tiempo final de preparación?"
@@ -1442,6 +1464,7 @@ const initSelection = () => {
   $('[data-send-selection]')?.addEventListener("click", openCheckout);
   $('[data-checkout-form]')?.addEventListener("change", (event) => {
     if (event.target.name === "fulfillment") updateCheckoutMode(event.target.value);
+    if (event.target.name === "paymentMethod") updatePaymentMethod(event.target.value);
   });
   $('[data-share-location]')?.addEventListener("click", (event) => shareCheckoutLocation(event.currentTarget));
   $('[data-go-to-reservation]')?.addEventListener("click", () => moveSelectionToReservation($("[data-checkout-form]")));
@@ -1761,6 +1784,7 @@ const initServiceHoursNotice = () => {
   if (!notice) return;
   $$('[data-close-service-hours]', notice).forEach((button) => button.addEventListener("click", closeServiceHoursNotice));
   $("[data-service-hours-link]", notice)?.addEventListener("click", closeServiceHoursNotice);
+  $("[data-service-hours-preview]", notice)?.addEventListener("click", closeServiceHoursNotice);
   window.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && !notice.hidden) closeServiceHoursNotice();
   });
@@ -1782,7 +1806,7 @@ const initHorizontalRail = () => {
   let settleTimer;
   let railFrameId = 0;
   const navLinks = $$('[data-nav] a[href^="#"]');
-  const panelLinks = $$('main a[href^="#"], [data-nav] a[href^="#"], .brand-lockup[href^="#"], [data-service-hours-link]');
+  const panelLinks = $$('main a[href^="#"], [data-nav] a[href^="#"], .brand-lockup[href^="#"], [data-service-hours-link], [data-service-hours-preview]');
 
   if (total) total.textContent = String(panels.length).padStart(2, "0");
 
@@ -1848,7 +1872,7 @@ const initHorizontalRail = () => {
       if (!target) return;
       event.preventDefault();
       const index = panels.indexOf(target);
-      if (index >= 0) goToPanel(index, { guardService: true, sunrise: target.id === "desayunos" });
+      if (index >= 0) goToPanel(index, { guardService: !link.matches("[data-service-hours-preview]"), sunrise: target.id === "desayunos" });
       else target.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth", block: "start" });
     });
   });

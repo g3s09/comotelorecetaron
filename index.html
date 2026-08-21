@@ -448,18 +448,19 @@
           <input name="location" type="hidden">
           <label>Referencia para entrega<input name="reference" type="text" placeholder="Portón, color de fachada, entre calles..."></label>
           <div class="checkout-payment-grid form-grid two-col">
-            <label>Forma de pago<select name="paymentMethod"><option value="">Confirmar con el restaurante</option><option value="Efectivo">Efectivo</option><option value="Tarjeta">Tarjeta</option><option value="Transferencia">Transferencia</option></select></label>
-            <label>Si pagas efectivo, ¿con cuánto? <input name="payment" type="text" inputmode="decimal" placeholder="Ej. $500"></label>
+            <label>Forma de pago<select name="paymentMethod"><option value="">Confirmar con el restaurante</option><option value="Efectivo">Efectivo</option><option value="Transferencia">Transferencia</option></select></label>
+            <label data-checkout-cash-payment hidden>Si pagas efectivo, ¿con cuánto? <input name="payment" type="text" inputmode="decimal" placeholder="Ej. $500"></label>
           </div>
+          <p class="checkout-transfer-note" data-checkout-transfer-note hidden><b>Transferencia</b> · Al enviar tu orden por WhatsApp, solicita ahí los datos bancarios para realizar el pago.</p>
           <small class="delivery-coverage-note">La cobertura, costo de envío y tiempo final se confirman por WhatsApp antes de preparar tu orden.</small>
         </section>
         <section class="checkout-pickup-note" data-checkout-pickup data-checkout-dependent hidden>
           <span aria-hidden="true">⏱</span>
-          <p>Dependiendo de tu orden, estará lista en <b>10 a 15 minutos</b>. Nuestro personal te confirmará a tiempo la salida de tu pedido.</p>
+          <div><p>Dependiendo de tu orden, estará lista en <b>10 a 15 minutos</b>. Nuestro personal te confirmará a tiempo la salida de tu pedido.</p><small>Al recoger puedes pagar con efectivo o tarjeta.</small></div>
         </section>
         <section class="checkout-local-note" data-checkout-local data-checkout-dependent hidden>
           <span aria-hidden="true">✦</span>
-          <div><b>Tu selección se mantiene guardada.</b><p>Llévala a una reservación sin volver a elegir cada platillo.</p></div>
+          <div><b>Tu selección se mantiene guardada.</b><p>Llévala a una reservación sin volver a elegir cada platillo. En el restaurante también puedes pagar con tarjeta.</p></div>
           <button class="btn btn-secondary" type="button" data-go-to-reservation>Ir a reservar mesa <span aria-hidden="true">→</span></button>
         </section>
         <div class="checkout-actions" data-checkout-dependent hidden>
@@ -497,14 +498,15 @@
         <p class="eyebrow">Horario del servicio</p>
         <h2 id="service-hours-title" data-service-hours-title>Esta carta aún no está disponible.</h2>
         <p id="service-hours-message" data-service-hours-message></p>
+        <a class="btn btn-primary" data-service-hours-preview href="#menu">Visualizar carta <span aria-hidden="true">→</span></a>
         <a class="btn btn-secondary" data-service-hours-link href="#desayunos">Ver carta disponible <span aria-hidden="true">→</span></a>
         <button class="btn btn-quiet" type="button" data-close-service-hours>Entendido</button>
       </section>
     </aside>
     <div class="toast" role="status" aria-live="polite"></div>
 
-    <script src="data/catalog-complete.js?v=20260821-service-hours" defer></script>
-    <script src="data/breakfast-menu.js?v=20260821-service-hours" defer></script>
-    <script src="scripts.js?v=20260821-service-hours" defer></script>
+    <script src="data/catalog-complete.js?v=20260821-service-hours-v2" defer></script>
+    <script src="data/breakfast-menu.js?v=20260821-service-hours-v2" defer></script>
+    <script src="scripts.js?v=20260821-service-hours-v2" defer></script>
   </body>
 </html>
