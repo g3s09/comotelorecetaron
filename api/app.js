@@ -42,6 +42,13 @@ try {
   console.error("No se pudo cargar la carta completa incluida.", error);
 }
 
+let breakfastMenu = { products: [], drinks: [] };
+try {
+  breakfastMenu = require(path.join(dataDir, "breakfast-menu.js"));
+} catch (error) {
+  console.error("No se pudo cargar la carta de desayunos incluida.", error);
+}
+
 const retiredBaseProductIds = new Set([
   "tutano-extra", "tutano-hueso", "tutano-asada", "tutano-arrachera",
   "costra-asada", "costra-campechana", "costra-pastor", "costra-longaniza", "costra-arrachera",
@@ -107,8 +114,8 @@ const withCompleteMenu = (catalog = {}) => ({
   ...catalog,
   version: 1,
   updatedAt: catalog.updatedAt || new Date().toISOString(),
-  products: mergeCatalogCollection(completeMenu.products || [], catalog.products || []),
-  drinks: mergeCatalogCollection(completeMenu.drinks || [], catalog.drinks || []),
+  products: mergeCatalogCollection([...(completeMenu.products || []), ...(breakfastMenu.products || [])], catalog.products || []),
+  drinks: mergeCatalogCollection([...(completeMenu.drinks || []), ...(breakfastMenu.drinks || [])], catalog.drinks || []),
   team: Array.isArray(catalog.team) ? catalog.team : []
 });
 

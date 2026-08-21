@@ -458,6 +458,7 @@ const normalizeArray = (items = [], type = "products") =>
     : [];
 
 const completeMenu = typeof window !== "undefined" && window.CTLR_COMPLETE_MENU ? window.CTLR_COMPLETE_MENU : {};
+const breakfastMenu = typeof window !== "undefined" && window.CTLR_BREAKFAST_MENU ? window.CTLR_BREAKFAST_MENU : {};
 const retiredBaseProductIds = new Set([
   "tutano-extra", "tutano-hueso", "tutano-asada", "tutano-arrachera",
   "costra-asada", "costra-campechana", "costra-pastor", "costra-longaniza", "costra-arrachera",
@@ -473,7 +474,10 @@ const retiredBaseProductIds = new Set([
 const canonicalBaseProductIds = new Set(["joya-parrilla", "arrachera-patron", "cazuela-ribeye", "macarrones-queso"]);
 
 const mergeCatalogItems = (items = [], type = "products") => {
-  const extras = Array.isArray(completeMenu[type]) ? completeMenu[type] : [];
+  const extras = [
+    ...(Array.isArray(completeMenu[type]) ? completeMenu[type] : []),
+    ...(Array.isArray(breakfastMenu[type]) ? breakfastMenu[type] : [])
+  ];
   const merged = new Map();
   normalizeArray(extras, type).forEach((item) => merged.set(item.id, item));
   normalizeArray(items, type).forEach((item) => {
@@ -619,11 +623,18 @@ let menuItems = [];
 let menuTimer;
 let lastCatalogHash = "";
 let allOrderItems = [];
+let breakfastOrderItems = [];
 let revealObserver;
 let activeOrderCategory = "Esquites";
 let activeMenuCategory = "Esquites";
+let activeBreakfastCategory = "Desayunos tradicionales";
 let modalItem = null;
 let modalEditingKey = "";
+
+const breakfastCategoryOrder = ["Desayunos tradicionales", "Dulce comienzo", "Frescura por la mañana", "Bebidas desayuno", "Jugos", "Licuados", "Smoothies"];
+const isBreakfastItem = (item = {}) => /^desayuno-/.test(String(item.id || "")) || breakfastCategoryOrder.includes(String(item.category || ""));
+const menuServiceFor = (item = {}) => (isBreakfastItem(item) || item.service === "breakfast" ? "breakfast" : "evening");
+const serviceLabel = (service) => (service === "breakfast" ? "Desayunos" : "Carbón y Brasas");
 
 const categoryRules = {
   Todos: () => true,
@@ -746,6 +757,50 @@ const selectMenuCategory = (category) => {
   if (menuPanel) menuPanel.scrollTo({ top: 0, behavior: "smooth" });
 };
 
+const breakfastCategoryCopy = {
+  "Desayunos tradicionales": ["Los tradicionales", "Chilaquiles, enfrijoladas, birria, molletes, enmoladas, antojitos, huevos y tortas."],
+  "Dulce comienzo": ["Dulce comienzo", "Waffles y hotcakes para comenzar la mañana sin prisas."],
+  "Frescura por la mañana": ["Frescura por la mañana", "Ensaladas completas, frescas y llenas de color."],
+  "Bebidas desayuno": ["Bebidas", "Café, pan, aguas frescas y jarras para compartir."],
+  Jugos: ["Jugos", "Jugos recién exprimidos y especialidades de la mañana."],
+  Licuados: ["Licuados", "Fruta natural y el topping que prefieras."],
+  Smoothies: ["Smoothies", "Bebidas frutales frías, suaves y refrescantes."],
+  Todos: ["Carta de desayunos", "Todo el menú de la mañana, disponible de 8:30 AM a 3:00 PM."]
+};
+
+const updateBreakfastFilterControls = () => {
+  $$('[data-breakfast-filter]').forEach((button) => {
+    button.classList.toggle("is-active", button.dataset.breakfastFilter === activeBreakfastCategory);
+  });
+};
+
+const renderBreakfastMenu = () => {
+  const grid = $('[data-breakfast-grid]');
+  const copy = breakfastCategoryCopy[activeBreakfastCategory] || breakfastCategoryCopy.Todos;
+  const kicker = $('[data-breakfast-menu-kicker]');
+  const title = $('[data-breakfast-menu-title]');
+  const count = $('[data-breakfast-result-count]');
+  const visible = activeBreakfastCategory === "Todos"
+    ? breakfastOrderItems
+    : breakfastOrderItems.filter((item) => item.category === activeBreakfastCategory);
+
+  if (kicker) kicker.textContent = copy[0];
+  if (title) title.textContent = copy[1];
+  if (count) count.textContent = `${visible.length} ${visible.length === 1 ? "opción disponible" : "opciones disponibles"}`;
+  if (grid) {
+    grid.innerHTML = visible.length
+      ? visible.map((item) => productCardMarkup(item, item.kind === "drink" ? "drink-card" : "")).join("")
+      : emptyMarkup("No hay opciones de desayunos en esta sección por ahora.");
+  }
+  revealOnScroll();
+};
+
+const selectBreakfastCategory = (category) => {
+  activeBreakfastCategory = category;
+  updateBreakfastFilterControls();
+  renderBreakfastMenu();
+};
+
 const renderMechanism = () => {
   const stack = $("[data-mechanism-stack]");
   if (!stack) return;
@@ -832,6 +887,7 @@ const initOrderScrollCue = () => {
 };
 
 const selectionCount = (items) => items.reduce((total, item) => total + Number(item.qty || 1), 0);
+const selectionService = (items = getSelection()) => (items.length ? menuServiceFor(items[0]) : "");
 
 const moneyAmount = (value) => {
   const match = String(value || "").replace(/,/g, "").match(/\$\s*(\d+(?:\.\d+)?)/);
@@ -875,10 +931,15 @@ const optionSummary = (item) => {
 };
 
 const selectionKeyFor = (item) =>
-  [item.id, ...(item.options || []), item.notes || ""].join("|").toLowerCase();
+  [menuServiceFor(item), item.id, ...(item.options || []), item.notes || ""].join("|").toLowerCase();
 
 const addSelectionItem = (item) => {
-  const items = getSelection();
+  let items = getSelection();
+  const incomingService = menuServiceFor(item);
+  if (items.some((entry) => menuServiceFor(entry) !== incomingService)) {
+    items = [];
+    showToast(`Iniciamos una selección de ${serviceLabel(incomingService)} para no mezclar las dos cartas.`);
+  }
   const key = selectionKeyFor(item);
   const quantity = Math.max(1, Math.min(20, Number(item.qty) || 1));
   const existing = items.find((entry) => selectionKeyFor(entry) === key);
@@ -898,6 +959,7 @@ const renderSelection = () => {
   const empty = $('[data-cart-empty]');
   const totalNode = $('[data-cart-total]');
   const summary = $('[data-cart-summary]');
+  const serviceNode = $('[data-cart-service]');
   const orderButton = $('[data-send-selection]');
   if (!list) return;
 
@@ -911,6 +973,11 @@ const renderSelection = () => {
     summary.textContent = count
       ? `${count} ${count === 1 ? "platillo" : "platillos"} · ${total ? moneyLabel(total) : "total por confirmar"}`
       : "Tu selección está lista para personalizar.";
+  }
+  if (serviceNode) {
+    const service = selectionService(items);
+    serviceNode.textContent = service ? serviceLabel(service) : "";
+    serviceNode.hidden = !service;
   }
   if (orderButton) orderButton.disabled = !items.length;
 
@@ -950,7 +1017,7 @@ const closeCart = () => {
 
 const continueChoosing = () => {
   closeCart();
-  const menu = $("#menu");
+  const menu = selectionService() === "breakfast" ? $("#desayunos") : $("#menu");
   const rail = document.body.dataset.page === "home" ? $("main") : null;
   if (menu && rail) rail.scrollTo({ left: menu.offsetLeft, behavior: "smooth" });
   else menu?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -1034,7 +1101,7 @@ const openCheckout = () => {
 const checkoutMessage = (items, total, details) => {
   const deliveryLabels = { delivery: "A domicilio", pickup: "Pasar por mi pedido" };
   const lines = [
-    "Hola, quiero hacer este pedido:",
+    `Hola, quiero hacer este pedido de ${serviceLabel(selectionService(items))}:`,
     ...items.flatMap((item) => [
       `• ${item.qty} x ${item.name} (${item.price})`,
       optionSummary(item) ? `  ${optionSummary(item)}` : ""
@@ -1188,7 +1255,7 @@ const initSelection = () => {
 
     if (editButton) {
       const selectedItem = getSelection().find((item) => selectionKeyFor(item) === editButton.dataset.editSelection);
-      const catalogItem = selectedItem && allOrderItems.find((item) => item.id === selectedItem.id);
+      const catalogItem = selectedItem && [...allOrderItems, ...breakfastOrderItems].find((item) => item.id === selectedItem.id && menuServiceFor(item) === menuServiceFor(selectedItem));
       if (selectedItem && catalogItem) openItemModal(catalogItem, selectedItem);
       else showToast("Este elemento ya no está disponible para editar.");
       return;
@@ -1196,7 +1263,7 @@ const initSelection = () => {
 
     if (addButton) {
       const id = addButton.dataset.itemId;
-      const catalogItem = allOrderItems.find((item) => item.id === id);
+      const catalogItem = [...allOrderItems, ...breakfastOrderItems].find((item) => item.id === id);
       if (catalogItem) {
         openItemModal(catalogItem);
         return;
@@ -1206,6 +1273,7 @@ const initSelection = () => {
         name: addButton.dataset.itemName,
         price: addButton.dataset.itemPrice,
         category: addButton.dataset.itemCategory,
+        service: "evening",
         options: [],
         notes: ""
       });
@@ -1246,6 +1314,7 @@ const initSelection = () => {
       price: Number.isFinite(unitPrice) ? moneyLabel(unitPrice) : modalItem.price,
       unitPrice,
       category: modalItem.category,
+      service: menuServiceFor(modalItem),
       options: selectedOptions,
       notes: String(data.get("notes") || "").trim(),
       qty: Math.max(1, Math.min(20, Number(data.get("quantity")) || 1))
@@ -1306,6 +1375,25 @@ const initSelection = () => {
   });
 };
 
+const reservationServiceForTime = (timeValue = "") => (timeValue && timeValue < "15:00" ? "breakfast" : "evening");
+
+const syncReservationService = (timeValue = "") => {
+  const note = $('[data-reservation-service-note]');
+  const link = $('[data-reservation-service-link]');
+  if (!note || !link) return;
+  if (!timeValue) {
+    note.textContent = "Elige una hora y te mostraremos la carta correspondiente.";
+    link.hidden = true;
+    return;
+  }
+  const service = reservationServiceForTime(timeValue);
+  const breakfast = service === "breakfast";
+  note.innerHTML = `<b>${breakfast ? "Desayunos" : "Carbón y Brasas"}</b> · ${breakfast ? "Tu horario es antes de las 3:00 PM; corresponde a la carta de la mañana." : "Tu horario es a partir de las 3:00 PM; corresponde a la carta al carbón."}`;
+  link.href = breakfast ? "#desayunos" : "#menu";
+  link.textContent = breakfast ? "Ver carta de desayunos" : "Ver carta al carbón";
+  link.hidden = false;
+};
+
 const initReservation = () => {
   const form = $('[data-reservation-form]');
   if (!form) return;
@@ -1321,6 +1409,9 @@ const initReservation = () => {
   }
   const dateInput = form.elements.date;
   if (dateInput) dateInput.min = new Date().toISOString().slice(0, 10);
+  const timeInput = form.elements.time;
+  syncReservationService(timeInput?.value || "");
+  timeInput?.addEventListener("change", () => syncReservationService(timeInput.value));
 
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -1329,6 +1420,7 @@ const initReservation = () => {
     const timeValue = String(data.get("time") || "");
     const selectedDate = dateValue ? new Date(`${dateValue}T12:00:00`) : null;
     const isTuesday = selectedDate?.getDay() === 2;
+    const reservationService = reservationServiceForTime(timeValue);
 
     if (isTuesday && timeValue && timeValue < "14:00") {
       window.alert("Los martes abrimos nuevamente a partir de las 2:00 PM. Elige un horario posterior, por favor.");
@@ -1345,6 +1437,11 @@ const initReservation = () => {
       note: String(data.get("note") || "").trim()
     };
     const savedSelection = getSelection();
+    const savedService = selectionService(savedSelection);
+    if (savedSelection.length && savedService !== reservationService) {
+      showToast(`Tu selección es de ${serviceLabel(savedService)}. Ajusta la hora o elige platillos de la carta correspondiente.`);
+      return;
+    }
     const includesSavedSelection = savedSelection.length > 0;
     const savedSelectionTotal = selectionTotal(savedSelection);
     const submitButton = form.querySelector('button[type="submit"]');
@@ -1377,6 +1474,7 @@ const initReservation = () => {
       `WhatsApp: ${reservation.phone}`,
       `Fecha: ${reservation.date}`,
       `Hora: ${reservation.time}`,
+      `Servicio: ${serviceLabel(reservationService)}`,
       `Personas: ${reservation.people}`,
       `Area preferida: ${reservation.area}`,
       reservation.note ? `Nota: ${reservation.note}` : "",
@@ -1411,20 +1509,36 @@ const initOrderFilters = () => {
   });
 };
 
+const initBreakfastFilters = () => {
+  $$('[data-breakfast-filter]').forEach((button) => {
+    button.addEventListener("click", () => selectBreakfastCategory(button.dataset.breakfastFilter || "Todos"));
+  });
+};
+
 const renderPublicCatalog = (catalog) => {
   const products = getVisibleItems(catalog.products);
   const drinks = getVisibleItems(catalog.drinks);
   const team = getVisibleItems(catalog.team);
 
-  menuItems = products;
+  const eveningProducts = products.filter((item) => !isBreakfastItem(item));
+  const eveningDrinks = drinks.filter((item) => !isBreakfastItem(item));
+  const breakfastProducts = products.filter(isBreakfastItem);
+  const breakfastDrinks = drinks.filter(isBreakfastItem);
+
+  menuItems = eveningProducts;
   allOrderItems = [
-    ...products.map((item) => ({ ...item, kind: "food" })),
-    ...drinks.map((item) => ({ ...item, kind: "drink" }))
+    ...eveningProducts.map((item) => ({ ...item, kind: "food", service: "evening" })),
+    ...eveningDrinks.map((item) => ({ ...item, kind: "drink", service: "evening" }))
+  ];
+  breakfastOrderItems = [
+    ...breakfastProducts.map((item) => ({ ...item, kind: "food", service: "breakfast" })),
+    ...breakfastDrinks.map((item) => ({ ...item, kind: "drink", service: "breakfast" }))
   ];
   if (menuIndex >= menuItems.length) menuIndex = 0;
   renderMechanism();
 
   selectMenuCategory(activeMenuCategory);
+  selectBreakfastCategory(activeBreakfastCategory);
 
   const drinksGrid = $("[data-drinks-grid]");
   if (drinksGrid) {
@@ -1688,6 +1802,7 @@ const initPublic = async () => {
   initSelection();
   initReservation();
   initOrderFilters();
+  initBreakfastFilters();
   await refreshPublicCatalog();
   menuTimer = window.setInterval(() => {
     if (!document.hidden) moveMechanism(1);

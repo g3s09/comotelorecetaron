@@ -17,7 +17,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="preload" as="image" href="assets/toro.jpeg">
     <link rel="preload" as="image" href="assets/bienvenida-toro.png">
-    <link rel="stylesheet" href="styles.css?v=20260820-mobile-order-reliable">
+    <link rel="stylesheet" href="styles.css?v=20260821-breakfast">
   </head>
   <body data-page="home">
     <a class="skip-link" href="#principal">Saltar al contenido</a>
@@ -47,6 +47,7 @@
         <span></span>
       </button>
       <nav class="top-nav" data-nav>
+        <a class="nav-breakfast" href="#desayunos">Desayunos</a>
         <a href="#menu">Ordenar</a>
         <a href="#reserva">Reservar</a>
         <a href="#areas">Areas</a>
@@ -80,7 +81,8 @@
           <h1 class="hero-title reveal-up delay-2">Como Te Lo Recetaron</h1>
           <p class="hero-slogan reveal-up delay-3">Fuego vivo, cortes con caracter y una cocina tradicional para disfrutarse sin prisas.</p>
           <div class="hero-actions reveal-up delay-4">
-            <a class="btn btn-primary" href="#menu">Ordenar ahora</a>
+            <a class="btn btn-breakfast" href="#desayunos"><span aria-hidden="true">☼</span> Desayunos</a>
+            <a class="btn btn-primary" href="#menu">Al carbón</a>
             <a class="btn btn-secondary" href="#reserva">Reservar mesa</a>
           </div>
           <p class="horizontal-hint reveal-up delay-4"><span aria-hidden="true">← →</span> Usa las flechas para explorar cada sección</p>
@@ -104,6 +106,52 @@
           <figure class="ritual-photo" data-reveal>
             <img src="assets/toro.jpeg" alt="Letrero al toro por los cuernos dentro del restaurante" loading="lazy">
           </figure>
+        </div>
+      </section>
+
+      <section class="breakfast-section" id="desayunos" aria-label="Carta de desayunos">
+        <div class="section-shell breakfast-shell">
+          <div class="breakfast-intro">
+            <div>
+              <p class="eyebrow breakfast-eyebrow">CTLR · Buenos días</p>
+              <h2>La mañana también se receta con intención.</h2>
+              <p>Una carta propia de desayunos: tradicionales, dulce comienzo, frescura y bebidas hechas al momento.</p>
+            </div>
+            <div class="breakfast-hours">
+              <span>Horario de desayunos</span>
+              <strong>8:30 AM — 3:00 PM</strong>
+              <small>Todos los desayunos incluyen fruta y café refill.</small>
+            </div>
+          </div>
+
+          <div class="breakfast-menu" id="desayuno-carta">
+            <div class="featured-menu-heading breakfast-menu-heading">
+              <div>
+                <p class="eyebrow" data-breakfast-menu-kicker>Los tradicionales</p>
+                <h3 data-breakfast-menu-title>Chilaquiles, enfrijoladas, birria, molletes, enmoladas, antojitos, huevos y tortas.</h3>
+                <small class="category-result-count" data-breakfast-result-count></small>
+              </div>
+              <button class="btn btn-breakfast" type="button" data-open-cart>Mi selección <span data-cart-count>0</span></button>
+            </div>
+            <div class="order-filters breakfast-filters" aria-label="Filtrar carta de desayunos">
+              <button type="button" data-breakfast-filter="Desayunos tradicionales">Tradicionales</button>
+              <button type="button" data-breakfast-filter="Dulce comienzo">Dulce comienzo</button>
+              <button type="button" data-breakfast-filter="Frescura por la mañana">Frescura</button>
+              <button type="button" data-breakfast-filter="Bebidas desayuno">Bebidas</button>
+              <button type="button" data-breakfast-filter="Jugos">Jugos</button>
+              <button type="button" data-breakfast-filter="Licuados">Licuados</button>
+              <button type="button" data-breakfast-filter="Smoothies">Smoothies</button>
+            </div>
+            <div class="breakfast-layout">
+              <div class="catalog-grid breakfast-grid" data-breakfast-grid aria-live="polite"></div>
+              <aside class="breakfast-aside">
+                <span>Una carta separada</span>
+                <h3>Desayunos sin mezclar.</h3>
+                <p>Esta selección está disponible hasta las 3:00 PM. A partir de esa hora, la experiencia continúa con la carta al carbón.</p>
+                <img src="assets/momento-bebidas.png" alt="Bebidas y desayuno de la casa" loading="lazy">
+              </aside>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -216,7 +264,7 @@
             <p>Selecciona fecha, hora, personas y area. Prepararemos tu mensaje para WhatsApp con todos los datos de tu visita.</p>
             <div class="reservation-perks">
               <span><b>Horario</b> 8:30 AM a 11:00 PM</span>
-              <span><b>Desayunos</b> 8:30 AM a 2:30 PM</span>
+              <span><b>Desayunos</b> 8:30 AM a 3:00 PM</span>
               <span><b>Martes</b> Cerrado de 8:30 AM a 2:00 PM</span>
             </div>
             <div class="guest-note-panel">
@@ -239,6 +287,10 @@
               <label>Fecha<input name="date" type="date" required></label>
               <label>Hora<select name="time" required><option value="">Elige</option><option value="08:30">8:30 AM</option><option value="09:00">9:00 AM</option><option value="09:30">9:30 AM</option><option value="10:00">10:00 AM</option><option value="10:30">10:30 AM</option><option value="11:00">11:00 AM</option><option value="11:30">11:30 AM</option><option value="12:00">12:00 PM</option><option value="12:30">12:30 PM</option><option value="13:00">1:00 PM</option><option value="13:30">1:30 PM</option><option value="14:00">2:00 PM</option><option value="14:30">2:30 PM</option><option value="15:00">3:00 PM</option><option value="15:30">3:30 PM</option><option value="16:00">4:00 PM</option><option value="16:30">4:30 PM</option><option value="17:00">5:00 PM</option><option value="17:30">5:30 PM</option><option value="18:00">6:00 PM</option><option value="18:30">6:30 PM</option><option value="19:00">7:00 PM</option><option value="19:30">7:30 PM</option><option value="20:00">8:00 PM</option><option value="20:30">8:30 PM</option><option value="21:00">9:00 PM</option><option value="21:30">9:30 PM</option><option value="22:00">10:00 PM</option><option value="22:30">10:30 PM</option><option value="23:00">11:00 PM</option></select></label>
               <label>Personas<input name="people" type="number" min="1" max="40" step="1" inputmode="numeric" placeholder="Ej. 4" required></label>
+            </div>
+            <div class="reservation-service-context">
+              <p data-reservation-service-note>Elige una hora y te mostraremos la carta correspondiente.</p>
+              <a class="reservation-service-link" data-reservation-service-link href="#desayunos" hidden>Ver carta de desayunos</a>
             </div>
             <fieldset class="area-picker">
               <legend>Area preferida</legend>
@@ -341,7 +393,7 @@
       <div class="cart-drawer-backdrop" data-close-cart></div>
       <div class="cart-drawer-panel">
         <div class="cart-drawer-heading">
-          <div><span class="eyebrow">Tu mesa, tu eleccion</span><h2>Mi seleccion</h2><p class="cart-drawer-summary" data-cart-summary>Tu selección está lista para personalizar.</p></div>
+          <div><span class="eyebrow">Tu mesa, tu eleccion</span><h2>Mi seleccion</h2><span class="cart-service-pill" data-cart-service hidden></span><p class="cart-drawer-summary" data-cart-summary>Tu selección está lista para personalizar.</p></div>
           <button class="icon-button" type="button" data-close-cart aria-label="Cerrar seleccion">×</button>
         </div>
         <div class="cart-items" data-cart-items></div>
@@ -422,7 +474,8 @@
       </form>
     </aside>
 
-    <script src="data/catalog-complete.js?v=20260820-mobile-order-reliable" defer></script>
-    <script src="scripts.js?v=20260820-mobile-order-reliable" defer></script>
+    <script src="data/catalog-complete.js?v=20260821-breakfast" defer></script>
+    <script src="data/breakfast-menu.js?v=20260821-breakfast" defer></script>
+    <script src="scripts.js?v=20260821-breakfast" defer></script>
   </body>
 </html>

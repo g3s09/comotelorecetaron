@@ -467,6 +467,21 @@ svg {
   color: var(--white);
 }
 
+.top-nav .nav-breakfast {
+  border-color: rgba(109, 198, 255, 0.56);
+  background: rgba(64, 136, 229, 0.16);
+  color: #cdeeff;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
+}
+
+.top-nav .nav-breakfast:hover,
+.top-nav .nav-breakfast:focus-visible,
+.top-nav .nav-breakfast.is-current {
+  border-color: rgba(178, 227, 255, 0.9);
+  background: rgba(71, 153, 244, 0.3);
+  color: #f3fbff;
+}
+
 .nav-toggle {
   display: none;
   width: 2.8rem;
@@ -682,6 +697,26 @@ svg {
 .btn-primary:hover,
 .btn-primary:focus-visible {
   box-shadow: 0 24px 62px rgba(177, 18, 38, 0.46), 0 0 34px rgba(226, 88, 34, 0.28);
+}
+
+.btn-breakfast {
+  border-color: rgba(109, 198, 255, 0.7);
+  background:
+    linear-gradient(135deg, rgba(87, 187, 255, 0.6), rgba(59, 91, 209, 0.38) 55%, rgba(157, 106, 255, 0.34)),
+    rgba(19, 67, 135, 0.48);
+  color: #f3fbff;
+  box-shadow: 0 18px 46px rgba(47, 133, 255, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.42);
+  backdrop-filter: blur(18px) saturate(150%);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+}
+
+.btn-breakfast:hover,
+.btn-breakfast:focus-visible {
+  border-color: rgba(203, 239, 255, 0.92);
+  background:
+    linear-gradient(135deg, rgba(104, 202, 255, 0.78), rgba(73, 110, 233, 0.52) 55%, rgba(173, 124, 255, 0.46)),
+    rgba(19, 67, 135, 0.62);
+  box-shadow: 0 23px 58px rgba(47, 133, 255, 0.36), inset 0 1px 0 rgba(255, 255, 255, 0.56);
 }
 
 .btn-secondary:hover,
@@ -4219,4 +4254,173 @@ body[data-page="home"] .order-stage .catalog-card {
   .review-card > div:last-child { min-height: 0; padding: 0.72rem 0.76rem; }
   .review-card p { font-size: 1.13rem; }
   .review-card-wide { grid-column: auto; }
+}
+
+/* Carta de desayunos: identidad azul de mañana, separada de Carbón y Brasas. */
+.breakfast-section {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: clamp(6rem, 9vh, 7.4rem) 0 clamp(2.4rem, 6vh, 4.5rem);
+  background:
+    radial-gradient(circle at 87% 9%, rgba(130, 209, 255, 0.25), transparent 23%),
+    radial-gradient(circle at 13% 92%, rgba(88, 116, 255, 0.22), transparent 28%),
+    linear-gradient(135deg, #071221 0%, #0b1b31 44%, #140f27 100%);
+}
+
+.breakfast-section::before,
+.breakfast-section::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.breakfast-section::before {
+  opacity: 0.52;
+  background:
+    linear-gradient(118deg, transparent 0 35%, rgba(234, 250, 255, 0.11) 42%, transparent 50%),
+    repeating-linear-gradient(104deg, transparent 0 3.7rem, rgba(205, 239, 255, 0.035) 3.72rem 3.78rem);
+}
+
+.breakfast-section::after {
+  inset: auto -8% -24%;
+  height: 20rem;
+  filter: blur(8px);
+  background: radial-gradient(ellipse at 50% 100%, rgba(100, 191, 255, 0.22), transparent 58%);
+}
+
+.breakfast-shell { display: grid; gap: clamp(1.1rem, 2.4vw, 1.7rem); }
+
+.breakfast-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(15rem, 0.34fr);
+  align-items: stretch;
+  gap: 1rem;
+}
+
+.breakfast-intro > div,
+.breakfast-menu,
+.breakfast-aside {
+  border: 1px solid rgba(205, 239, 255, 0.19);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+}
+
+.breakfast-intro > div:first-child {
+  padding: clamp(1.15rem, 2.7vw, 2rem);
+  border-radius: 1.7rem;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.14), rgba(169, 221, 255, 0.055) 48%, rgba(103, 91, 224, 0.15));
+}
+
+.breakfast-eyebrow { color: #9edfff; }
+.breakfast-intro h2 { max-width: 41rem; margin: 0; font-family: "Cormorant Garamond", Georgia, serif; font-size: clamp(2.35rem, 4.4vw, 4.35rem); line-height: 0.9; }
+.breakfast-intro p { max-width: 43rem; margin: 1rem 0 0; color: rgba(245, 250, 255, 0.72); line-height: 1.65; }
+
+.breakfast-hours {
+  display: grid;
+  align-content: center;
+  gap: 0.5rem;
+  border-radius: 1.7rem;
+  background: linear-gradient(145deg, rgba(78, 174, 255, 0.23), rgba(111, 84, 221, 0.17)), rgba(5, 18, 34, 0.5);
+  padding: 1.35rem;
+}
+
+.breakfast-hours span { color: #bceaff; font-size: 0.66rem; font-weight: 950; letter-spacing: 0.12em; text-transform: uppercase; }
+.breakfast-hours strong { color: #f5fcff; font-family: "Cormorant Garamond", Georgia, serif; font-size: clamp(1.8rem, 3vw, 2.55rem); line-height: 0.95; }
+.breakfast-hours small { color: rgba(245, 250, 255, 0.7); font-size: 0.75rem; line-height: 1.5; }
+
+.breakfast-menu {
+  border-radius: 1.7rem;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.11), rgba(100, 171, 255, 0.05) 42%, rgba(91, 71, 185, 0.13)), rgba(7, 18, 33, 0.7);
+  padding: clamp(1rem, 2.3vw, 1.6rem);
+}
+
+.breakfast-menu-heading { margin-bottom: 0.6rem; }
+.breakfast-menu-heading .eyebrow { color: #9edfff; }
+.breakfast-filters { margin: 1rem 0 1.3rem; }
+.breakfast-filters button:hover,
+.breakfast-filters button:focus-visible,
+.breakfast-filters button.is-active {
+  border-color: rgba(137, 211, 255, 0.8);
+  background: rgba(82, 166, 255, 0.18);
+  color: #d8f4ff;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.breakfast-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(15rem, 0.31fr); gap: 1rem; align-items: start; }
+.breakfast-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.breakfast-grid .catalog-card { border-color: rgba(169, 222, 255, 0.2); background: linear-gradient(145deg, rgba(113, 190, 255, 0.1), rgba(157, 114, 255, 0.08)), rgba(6, 15, 28, 0.77); }
+.breakfast-grid .catalog-card:hover { border-color: rgba(157, 222, 255, 0.6); }
+
+.breakfast-aside {
+  position: sticky;
+  top: 1rem;
+  display: grid;
+  gap: 0.7rem;
+  overflow: hidden;
+  border-radius: 1.35rem;
+  background: rgba(7, 18, 33, 0.64);
+  padding: 1rem;
+}
+
+.breakfast-aside > span { color: #9edfff; font-size: 0.65rem; font-weight: 950; letter-spacing: 0.11em; text-transform: uppercase; }
+.breakfast-aside h3 { margin: 0; font-family: "Cormorant Garamond", Georgia, serif; font-size: 2rem; line-height: 0.92; }
+.breakfast-aside p { margin: 0; color: rgba(245, 250, 255, 0.67); font-size: 0.8rem; line-height: 1.55; }
+.breakfast-aside img { width: 100%; min-height: 12rem; border-radius: 0.95rem; object-fit: cover; }
+
+.cart-service-pill {
+  display: inline-flex;
+  align-items: center;
+  width: max-content;
+  margin-top: 0.42rem;
+  border: 1px solid rgba(137, 211, 255, 0.5);
+  border-radius: 999px;
+  color: #cfefff;
+  background: rgba(68, 147, 233, 0.14);
+  padding: 0.28rem 0.55rem;
+  font-size: 0.62rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.reservation-service-context {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.75rem;
+  margin: -0.1rem 0 0.2rem;
+  border: 1px solid rgba(137, 211, 255, 0.25);
+  border-radius: 0.95rem;
+  background: rgba(57, 122, 206, 0.09);
+  padding: 0.75rem 0.85rem;
+}
+
+.reservation-service-context p { margin: 0; color: rgba(237, 249, 255, 0.76); font-size: 0.76rem; line-height: 1.45; }
+.reservation-service-context p b { color: #aee5ff; }
+.reservation-service-link { color: #c8efff; font-size: 0.72rem; font-weight: 900; text-decoration: none; white-space: nowrap; }
+.reservation-service-link:hover, .reservation-service-link:focus-visible { color: #fff; text-decoration: underline; outline: none; }
+
+@media (max-width: 820px) {
+  body[data-page="home"] main > .breakfast-section { padding-inline: 1rem; }
+  body[data-page="home"] .breakfast-section [data-reveal] { opacity: 1 !important; transform: none !important; }
+  .breakfast-section { padding-top: 5.5rem; }
+  .breakfast-intro, .breakfast-layout { grid-template-columns: 1fr; }
+  .breakfast-aside { position: static; }
+  .breakfast-aside img { min-height: 9rem; }
+  .breakfast-filters { display: flex; flex-wrap: nowrap; overflow-x: auto; overscroll-behavior-x: contain; padding-bottom: 0.45rem; }
+  .breakfast-filters button { flex: 0 0 auto; }
+}
+
+@media (max-width: 620px) {
+  .breakfast-section { padding-top: 5.1rem; }
+  .breakfast-intro > div:first-child, .breakfast-hours, .breakfast-menu { border-radius: 1.25rem; }
+  .breakfast-menu-heading { align-items: stretch; flex-direction: column; }
+  .breakfast-menu-heading .btn { width: 100%; }
+  .breakfast-grid { grid-template-columns: 1fr; }
+  .breakfast-intro h2 { font-size: clamp(2.35rem, 12vw, 3.4rem); }
+  .reservation-service-context { grid-template-columns: 1fr; }
 }
