@@ -724,8 +724,22 @@ const showServiceHoursNotice = (availability) => {
   window.setTimeout(() => $("[data-close-service-hours]", notice)?.focus(), 60);
 };
 
-const requestServiceAccess = (service) => {
+const reservationServiceForTime = (timeValue = "") => (timeValue && timeValue < "15:00" ? "breakfast" : "evening");
+const reservationTimeValue = (form) => String(form?.elements.namedItem("time")?.value || "");
+
+const reservationMenuAllowsService = (service) => {
+  const form = $("[data-reservation-form]");
+  const timeValue = reservationTimeValue(form);
+  return Boolean(
+    timeValue &&
+    form?.dataset.reservationMenuService === service &&
+    reservationServiceForTime(timeValue) === service
+  );
+};
+
+const requestServiceAccess = (service, { allowReservationMenu = false } = {}) => {
   if (document.body?.dataset.page !== "home") return true;
+  if (allowReservationMenu && reservationMenuAllowsService(service)) return true;
   const availability = serviceAvailability(service);
   if (availability.available) return true;
   showServiceHoursNotice({ ...availability, requestedService: service });
@@ -1044,7 +1058,7 @@ const selectionKeyFor = (item) =>
   [menuServiceFor(item), item.id, ...(item.options || []), item.notes || ""].join("|").toLowerCase();
 
 const addSelectionItem = (item) => {
-  if (!requestServiceAccess(menuServiceFor(item))) return false;
+  if (!requestServiceAccess(menuServiceFor(item), { allowReservationMenu: true })) return false;
   let items = getSelection();
   const incomingService = menuServiceFor(item);
   if (items.some((entry) => menuServiceFor(entry) !== incomingService)) {
@@ -1129,7 +1143,7 @@ const closeCart = () => {
 
 const continueChoosing = () => {
   const service = selectionService() || "evening";
-  if (!requestServiceAccess(service)) return;
+  if (!requestServiceAccess(service, { allowReservationMenu: true })) return;
   closeCart();
   const menu = service === "breakfast" ? $("#desayunos") : $("#menu");
   const rail = document.body.dataset.page === "home" ? $("main") : null;
@@ -1316,7 +1330,7 @@ const closeItemModal = () => {
 };
 
 const openItemModal = (item, editingItem = null) => {
-  if (!requestServiceAccess(menuServiceFor(item))) return;
+  if (!requestServiceAccess(menuServiceFor(item), { allowReservationMenu: true })) return;
   const modal = $("[data-item-modal]");
   const form = $("[data-item-modal-form]");
   if (!modal || !form) return;
@@ -1433,7 +1447,7 @@ const initSelection = () => {
   $('[data-item-modal-form]')?.addEventListener("submit", (event) => {
     event.preventDefault();
     if (!modalItem) return;
-    if (!requestServiceAccess(menuServiceFor(modalItem))) return;
+    if (!requestServiceAccess(menuServiceFor(modalItem), { allowReservationMenu: true })) return;
     const data = new FormData(event.currentTarget);
     const chosenOptions = getChosenOptions(modalItem, data);
     const selectedOptions = chosenOptions.map(({ option, selectedChoice }) => `${option.label}: ${selectedChoice.label}`);
@@ -1511,22 +1525,26 @@ const initSelection = () => {
   });
 };
 
-const reservationServiceForTime = (timeValue = "") => (timeValue && timeValue < "15:00" ? "breakfast" : "evening");
-
-const syncReservationService = (timeValue = "") => {
+const syncReservationService = (form, timeValue = "") => {
   const note = $('[data-reservation-service-note]');
   const link = $('[data-reservation-service-link]');
   if (!note || !link) return;
   if (!timeValue) {
+    delete form?.dataset.reservationMenuService;
     note.textContent = "Elige una hora y te mostraremos la carta correspondiente.";
     link.hidden = true;
     return;
   }
   const service = reservationServiceForTime(timeValue);
+  if (form?.dataset.reservationMenuService && form.dataset.reservationMenuService !== service) {
+    delete form.dataset.reservationMenuService;
+  }
   const breakfast = service === "breakfast";
-  note.innerHTML = `<b>${breakfast ? "Desayunos" : "Carbón y Brasas"}</b> · ${breakfast ? "Tu horario es antes de las 3:00 PM; corresponde a la carta de la mañana." : "Tu horario es a partir de las 3:00 PM; corresponde a la carta al carbón."}`;
+  const choosingForReservation = form?.dataset.reservationMenuService === service;
+  note.innerHTML = `<b>${breakfast ? "Desayunos" : "Carbón y Brasas"}</b> · ${breakfast ? "Tu horario es antes de las 3:00 PM; corresponde a la carta de la mañana." : "Tu horario es a partir de las 3:00 PM; corresponde a la carta al carbón."}${choosingForReservation ? " Tus platillos se agregarán a esta reservación." : ""}`;
   link.href = breakfast ? "#desayunos" : "#menu";
-  link.textContent = breakfast ? "Ver carta de desayunos" : "Ver carta al carbón";
+  link.textContent = breakfast ? "Elegir platillos de desayuno" : "Elegir platillos al carbón";
+  link.dataset.reservationService = service;
   link.hidden = false;
 };
 
@@ -1545,9 +1563,15 @@ const initReservation = () => {
   }
   const dateInput = form.elements.date;
   if (dateInput) dateInput.min = new Date().toISOString().slice(0, 10);
-  const timeInput = form.elements.time;
-  syncReservationService(timeInput?.value || "");
-  timeInput?.addEventListener("change", () => syncReservationService(timeInput.value));
+  const timeInput = form.elements.namedItem("time");
+  syncReservationService(form, timeInput?.value || "");
+  timeInput?.addEventListener("change", () => syncReservationService(form, timeInput.value));
+  $("[data-reservation-service-link]")?.addEventListener("click", () => {
+    const timeValue = reservationTimeValue(form);
+    if (!timeValue) return;
+    form.dataset.reservationMenuService = reservationServiceForTime(timeValue);
+    syncReservationService(form, timeValue);
+  });
 
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -1872,7 +1896,7 @@ const initHorizontalRail = () => {
       if (!target) return;
       event.preventDefault();
       const index = panels.indexOf(target);
-      if (index >= 0) goToPanel(index, { guardService: !link.matches("[data-service-hours-preview]"), sunrise: target.id === "desayunos" });
+      if (index >= 0) goToPanel(index, { guardService: !link.matches("[data-service-hours-preview], [data-reservation-service-link]"), sunrise: target.id === "desayunos" });
       else target.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth", block: "start" });
     });
   });
