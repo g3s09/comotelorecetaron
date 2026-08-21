@@ -17,7 +17,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="preload" as="image" href="assets/toro.jpeg">
     <link rel="preload" as="image" href="assets/bienvenida-toro.png">
-    <link rel="stylesheet" href="styles.css?v=20260821-breakfast">
+    <link rel="stylesheet" href="styles.css?v=20260821-service-hours">
   </head>
   <body data-page="home">
     <a class="skip-link" href="#principal">Saltar al contenido</a>
@@ -32,6 +32,14 @@
       </div>
     </aside>
 
+    <div class="breakfast-sunrise" data-breakfast-sunrise aria-hidden="true">
+      <span class="breakfast-sunrise-sky"></span>
+      <span class="breakfast-sunrise-sun"></span>
+      <span class="breakfast-sunrise-rays"></span>
+      <span class="breakfast-mountain breakfast-mountain-back"></span>
+      <span class="breakfast-mountain breakfast-mountain-front"></span>
+      <span class="breakfast-sunrise-copy">Buenos días · CTLR</span>
+    </div>
 
     <header class="site-header" data-header>
       <a class="brand-lockup" href="#inicio" aria-label="Como Te Lo Recetaron">
@@ -48,7 +56,7 @@
       </button>
       <nav class="top-nav" data-nav>
         <a class="nav-breakfast" href="#desayunos">Desayunos</a>
-        <a href="#menu">Ordenar</a>
+        <a class="nav-charcoal" href="#menu">Al carbón</a>
         <a href="#reserva">Reservar</a>
         <a href="#areas">Areas</a>
         <a href="#resenas">Reseñas</a>
@@ -111,6 +119,10 @@
 
       <section class="breakfast-section" id="desayunos" aria-label="Carta de desayunos">
         <div class="section-shell breakfast-shell">
+          <nav class="service-switcher breakfast-service-switcher" aria-label="Cambiar entre cartas">
+            <a class="service-switcher-option is-active" href="#desayunos" aria-current="page"><small>8:30 AM — 3:00 PM</small><b>☼ Desayunos</b></a>
+            <a class="service-switcher-option service-switcher-charcoal" href="#menu"><small>Desde las 3:00 PM</small><b>✦ Al carbón</b></a>
+          </nav>
           <div class="breakfast-intro">
             <div>
               <p class="eyebrow breakfast-eyebrow">CTLR · Buenos días</p>
@@ -155,10 +167,14 @@
         </div>
       </section>
 
-      <section class="menu-section order-stage" id="menu" aria-label="Ordenar">
+      <section class="menu-section order-stage" id="menu" aria-label="Al carbón">
         <div class="section-shell">
+          <nav class="service-switcher charcoal-service-switcher" aria-label="Cambiar entre cartas">
+            <a class="service-switcher-option service-switcher-breakfast" href="#desayunos"><small>8:30 AM — 3:00 PM</small><b>☼ Desayunos</b></a>
+            <a class="service-switcher-option service-switcher-charcoal is-active" href="#menu" aria-current="page"><small>Desde las 3:00 PM</small><b>✦ Al carbón</b></a>
+          </nav>
           <div class="section-heading" data-reveal>
-            <p class="eyebrow">Ordenar</p>
+            <p class="eyebrow charcoal-eyebrow">Al carbón</p>
             <h2>Elige a tu ritmo. Nosotros encendemos la brasa.</h2>
             <p>Explora por categoría, consulta cada detalle y personaliza solamente lo que tu orden necesita.</p>
           </div>
@@ -474,8 +490,21 @@
       </form>
     </aside>
 
-    <script src="data/catalog-complete.js?v=20260821-breakfast" defer></script>
-    <script src="data/breakfast-menu.js?v=20260821-breakfast" defer></script>
-    <script src="scripts.js?v=20260821-breakfast" defer></script>
+    <aside class="service-hours-notice" data-service-hours-notice aria-label="Disponibilidad de la carta" aria-hidden="true" hidden>
+      <div class="service-hours-notice-backdrop" data-close-service-hours></div>
+      <section class="service-hours-notice-panel" role="alertdialog" aria-modal="true" aria-labelledby="service-hours-title" aria-describedby="service-hours-message">
+        <span class="service-hours-notice-icon" aria-hidden="true">◷</span>
+        <p class="eyebrow">Horario del servicio</p>
+        <h2 id="service-hours-title" data-service-hours-title>Esta carta aún no está disponible.</h2>
+        <p id="service-hours-message" data-service-hours-message></p>
+        <a class="btn btn-secondary" data-service-hours-link href="#desayunos">Ver carta disponible <span aria-hidden="true">→</span></a>
+        <button class="btn btn-quiet" type="button" data-close-service-hours>Entendido</button>
+      </section>
+    </aside>
+    <div class="toast" role="status" aria-live="polite"></div>
+
+    <script src="data/catalog-complete.js?v=20260821-service-hours" defer></script>
+    <script src="data/breakfast-menu.js?v=20260821-service-hours" defer></script>
+    <script src="scripts.js?v=20260821-service-hours" defer></script>
   </body>
 </html>

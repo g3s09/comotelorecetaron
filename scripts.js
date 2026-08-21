@@ -636,6 +636,104 @@ const isBreakfastItem = (item = {}) => /^desayuno-/.test(String(item.id || "")) 
 const menuServiceFor = (item = {}) => (isBreakfastItem(item) || item.service === "breakfast" ? "breakfast" : "evening");
 const serviceLabel = (service) => (service === "breakfast" ? "Desayunos" : "Carbón y Brasas");
 
+const restaurantClock = (date = new Date()) => {
+  try {
+    const parts = new Intl.DateTimeFormat("en-US", {
+      timeZone: "America/Monterrey",
+      weekday: "short",
+      hour: "2-digit",
+      minute: "2-digit",
+      hourCycle: "h23"
+    }).formatToParts(date);
+    const value = (type) => parts.find((part) => part.type === type)?.value || "";
+    return { minutes: Number(value("hour")) * 60 + Number(value("minute")), weekday: value("weekday") };
+  } catch {
+    return { minutes: date.getHours() * 60 + date.getMinutes(), weekday: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][date.getDay()] };
+  }
+};
+
+const serviceAvailability = (service, clock = restaurantClock()) => {
+  const { minutes, weekday } = clock;
+  const suggestedService = service === "breakfast" ? "evening" : "breakfast";
+  const closedMessage = "Nuestro servicio opera de 8:30 AM a 11:00 PM. Te esperamos cuando iniciemos nuevamente.";
+
+  if (minutes < 510 || minutes > 1380) {
+    return { available: false, title: "En este momento estamos cerrados.", message: closedMessage, suggestedService: "" };
+  }
+  if (weekday === "Tue" && minutes < 840) {
+    return {
+      available: false,
+      title: "Los martes reanudamos a las 2:00 PM.",
+      message: "De 8:30 AM a 2:00 PM permanecemos cerrados para preparar el servicio. Gracias por ayudarnos a brindarte una mejor atención.",
+      suggestedService: ""
+    };
+  }
+  if (service === "evening" && minutes < 900) {
+    return {
+      available: false,
+      title: "La brasa se enciende a las 3:00 PM.",
+      message: "Las preparaciones al carbón están disponibles a partir de las 3:00 PM, como marca nuestro horario. Esto nos permite brindarte una mejor atención con nuestro personal.",
+      suggestedService
+    };
+  }
+  if (service === "breakfast" && minutes >= 900) {
+    return {
+      available: false,
+      title: "El horario de desayunos terminó.",
+      message: "Los desayunos se sirven de 8:30 AM a 3:00 PM. A esta hora ya está disponible nuestra carta al carbón.",
+      suggestedService
+    };
+  }
+  return { available: true, title: "", message: "", suggestedService: "" };
+};
+
+const closeServiceHoursNotice = () => {
+  const notice = $("[data-service-hours-notice]");
+  if (!notice) return;
+  notice.hidden = true;
+  notice.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("service-hours-open");
+};
+
+const showServiceHoursNotice = (availability) => {
+  const notice = $("[data-service-hours-notice]");
+  if (!notice) return;
+  const title = $("[data-service-hours-title]", notice);
+  const message = $("[data-service-hours-message]", notice);
+  const link = $("[data-service-hours-link]", notice);
+  const suggestedService = availability.suggestedService;
+  if (title) title.textContent = availability.title;
+  if (message) message.textContent = availability.message;
+  if (link) {
+    link.hidden = !suggestedService;
+    link.href = suggestedService === "breakfast" ? "#desayunos" : "#menu";
+    link.innerHTML = suggestedService === "breakfast"
+      ? 'Ver carta de desayunos <span aria-hidden="true">→</span>'
+      : 'Ver carta al carbón <span aria-hidden="true">→</span>';
+  }
+  notice.hidden = false;
+  notice.setAttribute("aria-hidden", "false");
+  document.body.classList.add("service-hours-open");
+  window.setTimeout(() => $("[data-close-service-hours]", notice)?.focus(), 60);
+};
+
+const requestServiceAccess = (service) => {
+  if (document.body?.dataset.page !== "home") return true;
+  const availability = serviceAvailability(service);
+  if (availability.available) return true;
+  showServiceHoursNotice(availability);
+  return false;
+};
+
+const playBreakfastSunrise = () => {
+  const sunrise = $("[data-breakfast-sunrise]");
+  if (!sunrise || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  window.clearTimeout(playBreakfastSunrise.timer);
+  sunrise.classList.remove("is-playing");
+  window.requestAnimationFrame(() => sunrise.classList.add("is-playing"));
+  playBreakfastSunrise.timer = window.setTimeout(() => sunrise.classList.remove("is-playing"), 1480);
+};
+
 const categoryRules = {
   Todos: () => true,
   Entradas: (item) => entryIds.has(item.id),
@@ -871,6 +969,11 @@ const initOrderScrollCue = () => {
   if (!cue) return;
 
   cue.addEventListener("click", (event) => {
+    if (!requestServiceAccess("evening")) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      return;
+    }
     if (!window.matchMedia("(max-width: 820px)").matches) return;
     const panel = $("#menu");
     const orderMenu = $("#ordenar-carta");
@@ -934,6 +1037,7 @@ const selectionKeyFor = (item) =>
   [menuServiceFor(item), item.id, ...(item.options || []), item.notes || ""].join("|").toLowerCase();
 
 const addSelectionItem = (item) => {
+  if (!requestServiceAccess(menuServiceFor(item))) return false;
   let items = getSelection();
   const incomingService = menuServiceFor(item);
   if (items.some((entry) => menuServiceFor(entry) !== incomingService)) {
@@ -947,6 +1051,7 @@ const addSelectionItem = (item) => {
   else items.push({ ...item, qty: quantity });
   saveSelection(items);
   renderSelection();
+  return true;
 };
 
 const renderSelection = () => {
@@ -1016,8 +1121,10 @@ const closeCart = () => {
 };
 
 const continueChoosing = () => {
+  const service = selectionService() || "evening";
+  if (!requestServiceAccess(service)) return;
   closeCart();
-  const menu = selectionService() === "breakfast" ? $("#desayunos") : $("#menu");
+  const menu = service === "breakfast" ? $("#desayunos") : $("#menu");
   const rail = document.body.dataset.page === "home" ? $("main") : null;
   if (menu && rail) rail.scrollTo({ left: menu.offsetLeft, behavior: "smooth" });
   else menu?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -1083,6 +1190,7 @@ const openCheckout = () => {
     showToast("Agrega al menos un platillo antes de continuar.");
     return;
   }
+  if (!requestServiceAccess(selectionService(items))) return;
   const modal = $("[data-checkout-modal]");
   const form = $("[data-checkout-form]");
   if (!modal || !form) return;
@@ -1186,6 +1294,7 @@ const closeItemModal = () => {
 };
 
 const openItemModal = (item, editingItem = null) => {
+  if (!requestServiceAccess(menuServiceFor(item))) return;
   const modal = $("[data-item-modal]");
   const form = $("[data-item-modal-form]");
   if (!modal || !form) return;
@@ -1268,7 +1377,7 @@ const initSelection = () => {
         openItemModal(catalogItem);
         return;
       }
-      addSelectionItem({
+      const added = addSelectionItem({
         id,
         name: addButton.dataset.itemName,
         price: addButton.dataset.itemPrice,
@@ -1277,6 +1386,7 @@ const initSelection = () => {
         options: [],
         notes: ""
       });
+      if (!added) return;
       addButton.classList.add("is-added");
       addButton.innerHTML = "Agregado · sumar otro <span aria-hidden=\"true\">+</span>";
       window.setTimeout(() => addButton.classList.remove("is-added"), 900);
@@ -1301,6 +1411,7 @@ const initSelection = () => {
   $('[data-item-modal-form]')?.addEventListener("submit", (event) => {
     event.preventDefault();
     if (!modalItem) return;
+    if (!requestServiceAccess(menuServiceFor(modalItem))) return;
     const data = new FormData(event.currentTarget);
     const chosenOptions = getChosenOptions(modalItem, data);
     const selectedOptions = chosenOptions.map(({ option, selectedChoice }) => `${option.label}: ${selectedChoice.label}`);
@@ -1308,7 +1419,7 @@ const initSelection = () => {
     if (modalEditingKey) {
       saveSelection(getSelection().filter((item) => selectionKeyFor(item) !== modalEditingKey));
     }
-    addSelectionItem({
+    const added = addSelectionItem({
       id: modalItem.id,
       name: modalItem.name,
       price: Number.isFinite(unitPrice) ? moneyLabel(unitPrice) : modalItem.price,
@@ -1319,8 +1430,10 @@ const initSelection = () => {
       notes: String(data.get("notes") || "").trim(),
       qty: Math.max(1, Math.min(20, Number(data.get("quantity")) || 1))
     });
-    closeItemModal();
-    openCart();
+    if (added) {
+      closeItemModal();
+      openCart();
+    }
   });
   $('[data-clear-selection]')?.addEventListener("click", () => {
     saveSelection([]);
@@ -1643,6 +1756,16 @@ const initWelcome = () => {
   window.addEventListener("keydown", dismiss, { once: true });
 };
 
+const initServiceHoursNotice = () => {
+  const notice = $("[data-service-hours-notice]");
+  if (!notice) return;
+  $$('[data-close-service-hours]', notice).forEach((button) => button.addEventListener("click", closeServiceHoursNotice));
+  $("[data-service-hours-link]", notice)?.addEventListener("click", closeServiceHoursNotice);
+  window.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !notice.hidden) closeServiceHoursNotice();
+  });
+};
+
 const initHorizontalRail = () => {
   const rail = document.body.dataset.page === "home" ? $("main") : null;
   if (!rail) return;
@@ -1659,7 +1782,7 @@ const initHorizontalRail = () => {
   let settleTimer;
   let railFrameId = 0;
   const navLinks = $$('[data-nav] a[href^="#"]');
-  const panelLinks = $$('main a[href^="#"], [data-nav] a[href^="#"], .brand-lockup[href^="#"]');
+  const panelLinks = $$('main a[href^="#"], [data-nav] a[href^="#"], .brand-lockup[href^="#"], [data-service-hours-link]');
 
   if (total) total.textContent = String(panels.length).padStart(2, "0");
 
@@ -1679,9 +1802,12 @@ const initHorizontalRail = () => {
     if (nextButton) nextButton.disabled = index >= panels.length - 1;
   };
 
-  const goToPanel = (index) => {
+  const goToPanel = (index, { guardService = false, sunrise = false } = {}) => {
     const next = panels[Math.max(0, Math.min(index, panels.length - 1))];
     if (!next) return;
+    const nextService = next.id === "desayunos" ? "breakfast" : next.id === "menu" ? "evening" : "";
+    if (guardService && nextService && !requestServiceAccess(nextService)) return;
+    if (sunrise && next.id === "desayunos") playBreakfastSunrise();
     const start = rail.scrollLeft;
     const destination = next.offsetLeft;
     const distance = destination - start;
@@ -1722,18 +1848,19 @@ const initHorizontalRail = () => {
       if (!target) return;
       event.preventDefault();
       const index = panels.indexOf(target);
-      if (index >= 0) goToPanel(index);
+      if (index >= 0) goToPanel(index, { guardService: true, sunrise: target.id === "desayunos" });
       else target.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth", block: "start" });
     });
   });
 
-  previousButton?.addEventListener("click", () => goToPanel(currentIndex() - 1));
-  nextButton?.addEventListener("click", () => goToPanel(currentIndex() + 1));
+  previousButton?.addEventListener("click", () => goToPanel(currentIndex() - 1, { guardService: true, sunrise: panels[currentIndex() - 1]?.id === "desayunos" }));
+  nextButton?.addEventListener("click", () => goToPanel(currentIndex() + 1, { guardService: true, sunrise: panels[currentIndex() + 1]?.id === "desayunos" }));
 
   rail.addEventListener("keydown", (event) => {
     if (!["ArrowLeft", "ArrowRight"].includes(event.key) || event.target.closest("input, textarea, select, [contenteditable=\"true\"]")) return;
     event.preventDefault();
-    goToPanel(currentIndex() + (event.key === "ArrowRight" ? 1 : -1));
+    const targetIndex = currentIndex() + (event.key === "ArrowRight" ? 1 : -1);
+    goToPanel(targetIndex, { guardService: true, sunrise: panels[targetIndex]?.id === "desayunos" });
   });
 
   rail.addEventListener("scroll", () => {
@@ -1796,6 +1923,7 @@ const initPublic = async () => {
   initHeader();
   initWelcome();
   initOrderScrollCue();
+  initServiceHoursNotice();
   initHorizontalRail();
   initMechanismControls();
   initMenuBook();
